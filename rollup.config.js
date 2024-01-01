@@ -1,20 +1,4 @@
-import commonjs from '@rollup/plugin-commonjs';
+import { rocketjsConfig } from './buildconfig/rocketjs-config.js';
+import { htmxExtensionsConfig } from './buildconfig/htmxExtensions.js';
 
-export default [{
-    input: 'rocketjs/rocket.js',
-    output: {
-        name: 'rocket',
-        file: 'dist/rocket.js',
-        format: 'umd'
-    },
-    plugins: [commonjs()]
-},
-{
-    input: 'rocketjs/rocket.js',
-    output: {
-        name: 'rocket',
-        file: 'dist/rocket.es.js',
-        format: 'es'
-    },
-    plugins: [commonjs()]
-}];
+export default [...rocketjsConfig, ...htmxExtensionsConfig];
