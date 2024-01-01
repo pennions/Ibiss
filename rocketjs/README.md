@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [1. This is Rocket](#1-this-is-rocket)
+- [1. This is RocketJS](#1-this-is-rocketjs)
 - [2. Installation](#2-installation)
 - [3. Design principles:](#3-design-principles)
 - [4. Architecture](#4-architecture)
@@ -27,7 +27,7 @@
 
 <!-- /TOC -->
 
-# 1. This is Rocket
+# 1. This is RocketJS
 
 Rocket stands for Readable, Clean and Easy Templating. I have created this library
 because I could not find a good library that is very small and that is not bulky with too many features. doT.js came very close, but its syntax was
