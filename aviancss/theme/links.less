@@ -1,0 +1,113 @@
+a {
+    color: var(--primary);
+    text-decoration: none;
+
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:active {
+        outline: unset;
+        text-decoration: underline;
+    }
+
+    &.accent {
+        color: var(--accent);
+    }
+    &.danger {
+        color: var(--danger);
+    }
+
+    &.contrast {
+        color: var(--contrast);
+    }
+
+    &.button {
+        border-radius: 2px;
+        color: var(--button-colour);
+        text-decoration: none;
+        padding: 0.9rem 1.5rem;
+        background-color: transparent;
+        display: inline-block;
+        text-align: center;
+
+        &.normal {
+            .border();
+
+            &.disabled {
+                color: var(--disabled-button-colour);
+                background-color: var(--disabled-button-background);
+                border-color: var(--disabled-button-background);
+                cursor: default;
+            }
+        }
+
+        &:hover {
+            cursor: pointer;
+            background-color: var(--button-hover);
+        }
+
+        &:focus,
+        &:active {
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 0 0 1px var(--button-outline-colour);
+        }
+
+        &.primary {
+            border: 0;
+            color: var(--colour-on-primary);
+            background-color: var(--primary);
+
+            &:hover {
+                background-color: var(--primary-hover);
+            }
+        }
+
+        &.danger {
+            border: 0;
+            color: var(--colour-on-danger);
+            background-color: var(--danger);
+
+            &:hover {
+                background-color: var(--danger-hover);
+            }
+        }
+
+        &.accent {
+            border: 0;
+            color: var(--colour-on-accent);
+            background-color: var(--accent);
+
+            &:hover {
+                background-color: var(--accent-hover);
+            }
+        }
+
+        &.contrast {
+            border: 0;
+            color: var(--colour-on-contrast);
+            background-color: var(--contrast);
+
+            &:hover {
+                background-color: var(--contrast-hover);
+            }
+        }
+
+        &.primary,
+        &.danger,
+        &.contrast,
+        &.accent {
+            &:focus,
+            &:active {
+                box-shadow: 0 0 0 2px var(--button-outline-colour);
+            }
+
+            &.disabled {
+                color: var(--coloured-disabled-button-colour);
+                background-color: var(--disabled-button-background);
+                border-color: var(--disabled-button-background);
+                cursor: default;
+            }
+        }
+    }
+}

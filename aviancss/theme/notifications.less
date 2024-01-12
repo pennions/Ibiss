@@ -1,0 +1,41 @@
+.notification {
+  .border();
+  background-color: var(--background);
+  border-color: var(--border-colour);
+
+  &.error {
+    background-color: var(--error);
+    color: var(--colour-on-error);
+
+    & > .icon {
+      color: var(--icon-error);
+    }
+  }
+
+  &.warning {
+    background-color: var(--warning);
+    color: var(--colour-on-warning);
+
+    & > .icon {
+      color: var(--icon-warning);
+    }
+  }
+
+  &.success {
+    background-color: var(--success);
+    color: var(--colour-on-success);
+
+    & > .icon {
+      color: var(--icon-success);
+    }
+  }
+
+  & > .close {
+    border: unset;
+    background-color: transparent;
+
+    &:hover {
+      outline: 0.5px solid var(--button-outline-colour);
+    }
+  }
+}
