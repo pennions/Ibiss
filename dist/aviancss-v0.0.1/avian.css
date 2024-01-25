@@ -72,14 +72,193 @@
   --distance-3: 1.5rem;
   --distance-4: 2rem;
   --distance-5: 2.5rem;
+  /** typography | 1 rem = 10 px **/
+  --h1-font-size: 3.2rem;
+  --h2-font-size: 3rem;
+  --h3-font-size: 2.8rem;
+  --h4-font-size: 2.6rem;
+  --h5-font-size: 2.4rem;
+  --h6-font-size: 2.2rem;
+  --th-font-size: 2.2rem;
+  --paragraph-font-size: 1.6rem;
+  --label-font-size: 1.6rem;
+  --small-font-size: 1.4rem;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 }
 /** Taken and adapted from Fluent UI */
 /** Timing curves. */
 /** Durations. */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font: inherit;
+  font-weight: var(--font-weight-normal);
+}
+html {
+  hanging-punctuation: first last;
+  /** the quotation mark will be outside the text, only webkit for now */
+  /** 1 rem = 10px */
+  font-size: 62.5%;
+}
+body {
+  font-family: Segoe UI, 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
+  font-size: 1.6rem;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+  min-height: 100svh;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+  /** wraps text for 2 - 4 lines. */
+}
+p {
+  max-width: 75ch;
+  /** max character count per line */
+  text-wrap: pretty;
+  /** removes orphans e.g. single words on the end */
+}
+/** add a default space for the marker to show */
+ul,
+ol {
+  margin-left: 2rem;
+}
+/** Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+/** Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html,
+  :has(:target) {
+    scroll-behavior: smooth;
+    scroll-padding-top: 3rem;
+    /** space above when you go to target, e.g. sticky header */
+  }
+}
+h1 {
+  font-size: var(--h1-font-size);
+  font-weight: var(--font-weight-bold);
+}
+h2 {
+  font-size: var(--h2-font-size);
+  font-weight: var(--font-weight-bold);
+}
+h3 {
+  font-size: var(--h3-font-size);
+  font-weight: var(--font-weight-bold);
+}
+h4 {
+  font-size: var(--h4-font-size);
+  font-weight: var(--font-weight-semibold);
+}
+h5 {
+  font-size: var(--h5-font-size);
+  font-weight: var(--font-weight-semibold);
+}
+h6 {
+  font-size: var(--h6-font-size);
+  font-weight: var(--font-weight-semibold);
+}
+p {
+  font-size: var(--paragraph-font-size);
+}
+label {
+  font-size: var(--label-font-size);
+}
+small {
+  font-size: var(--small-font-size);
+}
+b,
+strong {
+  font-weight: var(--font-weight-bold);
+}
+kbd,
+code:not([class*='language']) {
+  margin: 0 0.2rem;
+  padding: 0.2rem 0.4rem;
+  position: relative;
+  background-color: var(--code-background);
+  border-radius: 0.2rem;
+  border: 0.5px solid var(--border-colour);
+  bottom: 0.1rem;
+}
+mark {
+  background-color: var(--accent);
+}
+th {
+  font-size: var(--th-font-size);
+  font-weight: var(--font-weight-semibold);
+}
+.font-size-68 {
+  font-size: 6.8rem;
+}
+.font-size-42 {
+  font-size: 4.2rem;
+}
+.font-size-32 {
+  font-size: 3.2rem;
+}
+.font-size-28 {
+  font-size: 2.8rem;
+}
+.font-size-24 {
+  font-size: 2.4rem;
+}
+.font-size-20 {
+  font-size: 2rem;
+}
+.font-size-18 {
+  font-size: 1.8rem;
+}
+.font-size-16 {
+  font-size: 1.6rem;
+}
+.font-size-14 {
+  font-size: 1.4rem;
+}
+.font-size-12 {
+  font-size: 1.2rem;
+}
+.font-size-10 {
+  font-size: 1rem;
+}
+.font-weight-normal {
+  font-weight: 400;
+}
+.font-weight-semibold {
+  font-weight: 600;
+}
+.font-weight-bold {
+  font-weight: 700;
+}
 html {
   background-color: var(--html-background);
 }
-/** used internally, so can not be important. */
 .border {
   border: 0.5px solid var(--border-colour);
 }
@@ -95,115 +274,144 @@ html {
 .border-left {
   border-left: 0.5px solid var(--border-colour);
 }
-/** */
 .bg-grey {
-  background-color: var(--grey) !important;
-  color: var(--colour-on-grey) !important;
+  background-color: var(--grey);
+  color: var(--colour-on-grey);
 }
 .bg-grey-dark {
-  background-color: var(--grey-dark) !important;
-  color: var(--colour-on-grey-dark) !important;
+  background-color: var(--grey-dark);
+  color: var(--colour-on-grey-dark);
 }
 .bg-black {
-  background-color: var(--black) !important;
-  color: var(--colour-on-black) !important;
+  background-color: var(--black);
+  color: var(--colour-on-black);
 }
 .bg-white {
-  background-color: var(--white) !important;
-  color: var(--font-colour) !important;
+  background-color: var(--white);
+  color: var(--font-colour);
 }
 .bg-primary {
-  background-color: var(--primary) !important;
-  color: var(--colour-on-primary) !important;
+  background-color: var(--primary);
+  color: var(--colour-on-primary);
 }
 .bg-accent {
-  background-color: var(--accent) !important;
-  color: var(--colour-on-accent) !important;
+  background-color: var(--accent);
+  color: var(--colour-on-accent);
 }
 .bg-danger {
-  background-color: var(--danger) !important;
-  color: var(--colour-on-danger) !important;
+  background-color: var(--danger);
+  color: var(--colour-on-danger);
 }
 .bg-success {
-  background-color: var(--success) !important;
-  color: var(--colour-on-success) !important;
+  background-color: var(--success);
+  color: var(--colour-on-success);
 }
 .bg-error {
-  background-color: var(--error) !important;
-  color: var(--colour-on-error) !important;
+  background-color: var(--error);
+  color: var(--colour-on-error);
 }
 .bg-warning {
-  background-color: var(--warning) !important;
-  color: var(--colour-on-warning) !important;
+  background-color: var(--warning);
+  color: var(--colour-on-warning);
 }
 .text-black {
-  color: var(--black) !important;
+  color: var(--black);
 }
 .text-white {
-  color: var(--white) !important;
+  color: var(--white);
 }
 .text-grey {
-  color: var(--grey-darker) !important;
+  color: var(--grey-darker);
 }
 .icon-grey {
-  color: var(--grey) !important;
+  color: var(--grey);
 }
 .icon-grey-dark {
-  color: var(--grey-dark) !important;
+  color: var(--grey-dark);
 }
 .icon-success {
-  color: var(--icon-success) !important;
+  color: var(--icon-success);
 }
 .icon-primary {
-  color: var(--primary) !important;
+  color: var(--primary);
 }
 .icon-accent {
-  color: var(--accent) !important;
+  color: var(--accent);
 }
 .icon-danger {
-  color: var(--danger) !important;
+  color: var(--danger);
 }
 .icon-black {
-  color: var(--black) !important;
+  color: var(--black);
 }
 .icon-white {
-  color: var(--white) !important;
+  color: var(--white);
 }
 .text-primary {
-  color: var(--primary) !important;
+  color: var(--primary);
 }
 .text-accent {
-  color: var(--accent) !important;
+  color: var(--accent);
 }
 .text-danger {
-  color: var(--danger) !important;
+  color: var(--danger);
 }
 .text-success {
-  color: var(--icon-success) !important;
+  color: var(--icon-success);
 }
 .border-black {
-  border-color: var(--black) !important;
+  border-color: var(--black);
 }
 .border-white {
-  border-color: var(--white) !important;
+  border-color: var(--white);
 }
 .border-primary {
-  border-color: var(--primary) !important;
+  border-color: var(--primary);
 }
 .border-accent {
-  border-color: var(--accent) !important;
+  border-color: var(--accent);
 }
 .border-danger {
-  border-color: var(--danger) !important;
+  border-color: var(--danger);
 }
 .border-light {
-  border-color: var(--light) !important;
+  border-color: var(--light);
 }
 .border-success {
-  border-color: var(--icon-success) !important;
+  border-color: var(--icon-success);
 }
 .text-normal {
-  font-weight: normal !important;
+  font-weight: normal;
+}
+.shadow {
+  box-shadow: 0 0.6px 3.6px 0 rgba(var(--shadow-colour), 0.132), 0 0.3px 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+.shadow-top {
+  box-shadow: 0 -1.6px 3.6px 0 rgba(var(--shadow-colour), 0.132), 0 -0.3px 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+.shadow-left {
+  box-shadow: -1.6px 0 3.6px 0 rgba(var(--shadow-colour), 0.132), 0.3px 0 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+.shadow-right {
+  box-shadow: 1.6px 0 3.6px 0 rgba(var(--shadow-colour), 0.132), -0.3px 0 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+.shadow-bottom {
+  box-shadow: 0 1.6px 3.6px 0 rgba(var(--shadow-colour), 0.132), 0 0.3px 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+.shadow-top-lg {
+  box-shadow: 0px -3px 0px 0px rgba(var(--shadow-colour), 0.132);
+}
+.shadow-bottom-lg {
+  box-shadow: 0px 3px 5px 0px rgba(var(--shadow-colour), 0.132);
+}
+.shadow-left-lg {
+  box-shadow: -3px 0px 5px 0px rgba(var(--shadow-colour), 0.132);
+}
+.shadow-right-lg {
+  box-shadow: 3px 0px 5px 0px rgba(var(--shadow-colour), 0.132);
+}
+.shadow-lg {
+  box-shadow: 0px 0px 5px 0px rgba(var(--shadow-colour), 0.132);
 }
 summary.button,
 button {
@@ -391,12 +599,21 @@ button:disabled:not(.link):not(.icon) {
   background-color: var(--disabled-button-background);
   border-color: var(--disabled-button-background);
 }
+summary.button.disabled.link,
+button.disabled.link,
+summary.button:disabled.link,
+button:disabled.link {
+  color: var(--disabled-button-colour);
+}
 summary.button.disabled:hover,
 button.disabled:hover,
 summary.button:disabled:hover,
 button:disabled:hover {
   text-decoration: none;
   outline: none;
+}
+select {
+  padding-left: 0.5rem;
 }
 input,
 textarea {
@@ -413,20 +630,20 @@ textarea:focus {
   border-color: var(--primary);
   box-shadow: inset 1px 1px 0 var(--primary), inset -1px -1px 0 var(--primary);
 }
-input:invalid:not([invalid='false']:not(:required)),
-textarea:invalid:not([invalid='false']:not(:required)),
-input[invalid]:not([invalid='false']:not(:required)),
-textarea[invalid]:not([invalid='false']:not(:required)) {
+input:invalid:not([invalid='false']):not([required]),
+textarea:invalid:not([invalid='false']):not([required]),
+input[invalid]:not([invalid='false']),
+textarea[invalid]:not([invalid='false']) {
   border-color: var(--danger);
 }
-input:invalid:not([invalid='false']:not(:required)):hover,
-textarea:invalid:not([invalid='false']:not(:required)):hover,
-input[invalid]:not([invalid='false']:not(:required)):hover,
-textarea[invalid]:not([invalid='false']:not(:required)):hover,
-input:invalid:not([invalid='false']:not(:required)):focus,
-textarea:invalid:not([invalid='false']:not(:required)):focus,
-input[invalid]:not([invalid='false']:not(:required)):focus,
-textarea[invalid]:not([invalid='false']:not(:required)):focus {
+input:invalid:not([invalid='false']):not([required]):hover,
+textarea:invalid:not([invalid='false']):not([required]):hover,
+input[invalid]:not([invalid='false']):hover,
+textarea[invalid]:not([invalid='false']):hover,
+input:invalid:not([invalid='false']):not([required]):focus,
+textarea:invalid:not([invalid='false']):not([required]):focus,
+input[invalid]:not([invalid='false']):focus,
+textarea[invalid]:not([invalid='false']):focus {
   box-shadow: inset 1px 1px 0 var(--danger), inset -1px -1px 0 var(--danger);
 }
 input:disabled,
@@ -717,25 +934,25 @@ textarea.underline:focus {
 }
 input.underline:disabled:hover,
 textarea.underline:disabled:hover,
-input.underline:invalid:not([invalid='false']:not(:required)):hover,
-textarea.underline:invalid:not([invalid='false']:not(:required)):hover,
+input.underline:invalid:not([invalid='false']):not([required]):hover,
+textarea.underline:invalid:not([invalid='false']):not([required]):hover,
 input.underline:disabled:focus,
 textarea.underline:disabled:focus,
-input.underline:invalid:not([invalid='false']:not(:required)):focus,
-textarea.underline:invalid:not([invalid='false']:not(:required)):focus {
+input.underline:invalid:not([invalid='false']):not([required]):focus,
+textarea.underline:invalid:not([invalid='false']):not([required]):focus {
   box-shadow: none;
   border-left: 0;
   border-right: 0;
   border-top: 0;
 }
-input.underline:invalid:not([invalid='false']:not(:required)):hover,
-textarea.underline:invalid:not([invalid='false']:not(:required)):hover,
-input.underline[invalid]:not([invalid='false']:not(:required)):hover,
-textarea.underline[invalid]:not([invalid='false']:not(:required)):hover,
-input.underline:invalid:not([invalid='false']:not(:required)):focus,
-textarea.underline:invalid:not([invalid='false']:not(:required)):focus,
-input.underline[invalid]:not([invalid='false']:not(:required)):focus,
-textarea.underline[invalid]:not([invalid='false']:not(:required)):focus {
+input.underline:invalid:not([invalid='false']):not([required]):hover,
+textarea.underline:invalid:not([invalid='false']):not([required]):hover,
+input.underline[invalid]:not([invalid='false']):hover,
+textarea.underline[invalid]:not([invalid='false']):hover,
+input.underline:invalid:not([invalid='false']):not([required]):focus,
+textarea.underline:invalid:not([invalid='false']):not([required]):focus,
+input.underline[invalid]:not([invalid='false']):focus,
+textarea.underline[invalid]:not([invalid='false']):focus {
   border-color: var(--danger);
   box-shadow: inset 0 -1px 0 var(--danger);
 }
@@ -844,68 +1061,17 @@ a.button.accent.disabled {
   border-color: var(--disabled-button-background);
   cursor: default;
 }
-.notification {
-  border: 0.5px solid var(--border-colour);
-  background-color: var(--background);
-  border-color: var(--border-colour);
+table {
+  border-collapse: collapse;
 }
-.notification.error {
-  background-color: var(--error);
-  color: var(--colour-on-error);
+table th,
+table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5rem 2.5rem 0.6rem 0.5rem;
 }
-.notification.error > .icon {
-  color: var(--icon-error);
-}
-.notification.warning {
-  background-color: var(--warning);
-  color: var(--colour-on-warning);
-}
-.notification.warning > .icon {
-  color: var(--icon-warning);
-}
-.notification.success {
-  background-color: var(--success);
-  color: var(--colour-on-success);
-}
-.notification.success > .icon {
-  color: var(--icon-success);
-}
-.notification > .close {
-  border: unset;
-  background-color: transparent;
-}
-.notification > .close:hover {
-  outline: 0.5px solid var(--button-outline-colour);
-}
-label.switch {
-  display: inline-flex;
-}
-label.switch > .toggle {
-  background-color: var(--switch-toggle-off-colour);
-}
-label.switch input ~ .toggle-background {
-  background-color: transparent;
-  border: 0.5px solid var(--switch-border-colour);
-}
-label.switch input:checked ~ .toggle {
-  background-color: var(--switch-toggle-on-colour);
-}
-label.switch input:checked ~ .toggle-background {
-  background-color: var(--primary);
-  border: 0.5px solid var(--primary);
-}
-label.switch input:checked:disabled ~ .toggle {
-  background-color: var(--disabled-button-colour);
-}
-label.switch input:checked:disabled ~ .toggle-background {
-  background-color: var(--disabled);
-  border-color: var(--disabled-button-colour);
-}
-label.switch input:disabled ~ .toggle {
-  background-color: var(--disabled-button-colour);
-}
-label.switch input:disabled ~ .toggle-background {
-  border: 0.5px solid var(--disabled-button-colour);
+table th {
+  padding-left: 0.3rem;
 }
 table tbody tr:hover {
   background-color: var(--table-hover);
@@ -922,6 +1088,11 @@ table.table tfoot {
   font-style: italic;
 }
 table.sticky-header > thead {
+  top: 0;
+  position: sticky;
+  position: -webkit-sticky;
+  z-index: 2;
+  white-space: nowrap;
   background-color: var(--background);
   -webkit-box-shadow: 0 1px 4px 0 rgba(var(--shadow-colour), 0.16), 0 1px 4px 0 rgba(var(--shadow-colour), 0.12);
   box-shadow: 0 1px 4px 0 rgba(var(--shadow-colour), 0.16), 0 1px 4px 0 rgba(var(--shadow-colour), 0.12);
@@ -935,253 +1106,16 @@ table.striped tbody tr:hover {
 }
 .table-container {
   border: 0.5px solid var(--border-colour);
-  border-color: var(--light) !important;
+  border-color: var(--light);
+  /** only target mozilla, so edge won't break */
+  display: inline-block;
+  width: fit-content;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
-/** Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE in the project root for license information.
-  * Outputs the keyframes used by the animation classes
-  */
-@keyframes ms-motion-fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes ms-motion-fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-@keyframes ms-motion-scaleDownIn {
-  from {
-    transform: scale3d(1.15, 1.15, 1);
-  }
-  to {
-    transform: scale3d(1, 1, 1);
-  }
-}
-@keyframes ms-motion-scaleDownOut {
-  from {
-    transform: scale3d(1, 1, 1);
-  }
-  to {
-    transform: scale3d(0.9, 0.9, 1);
-  }
-}
-@keyframes ms-motion-slideLeftOut {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-48px, 0, 0);
-  }
-}
-@keyframes ms-motion-slideRightOut {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(48px, 0, 0);
-  }
-}
-@keyframes ms-motion-slideLeftIn {
-  from {
-    transform: translate3d(48px, 0, 0);
-  }
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-@keyframes ms-motion-slideRightIn {
-  from {
-    transform: translate3d(-48px, 0, 0);
-  }
-  to {
-    transform: translate3d(0px, 0, 0);
-  }
-}
-@keyframes ms-motion-slideUpOut {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(0, -48px, 0);
-  }
-}
-@keyframes ms-motion-slideDownOut {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(0, 48px, 0);
-  }
-}
-@keyframes ms-motion-slideUpIn {
-  from {
-    transform: translate3d(0, 48px, 0);
-  }
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-@keyframes ms-motion-slideDownIn {
-  from {
-    transform: translate3d(0, -48px, 0);
-  }
-  to {
-    transform: translate3d(0px, 0, 0);
-  }
-}
-/** Fades. */
-.ms-motion-fadeIn {
-  animation: ms-motion-fadeIn 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-fadeOut {
-  animation: ms-motion-fadeOut 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-/** Scales. */
-.ms-motion-scaleDownIn {
-  animation: ms-motion-scaleDownIn 300ms cubic-bezier(0.1, 0.9, 0.2, 1) both, ms-motion-fadeIn 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-scaleDownOut {
-  animation: ms-motion-scaleDownOut 300ms cubic-bezier(0.1, 0.9, 0.2, 1) both, ms-motion-fadeOut 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-/** Slides, default with ltr */
-.ms-motion-slideLeftOut {
-  animation: ms-motion-slideLeftOut 100ms cubic-bezier(0.9, 0.1, 1, 0.2) both, ms-motion-fadeOut 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideLeftOut[dir='rtl'] {
-  animation: ms-motion-slideRightOut 100ms cubic-bezier(0.9, 0.1, 1, 0.2) both, ms-motion-fadeOut 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideRightOut {
-  animation: ms-motion-slideRightOut 100ms cubic-bezier(0.9, 0.1, 1, 0.2) both, ms-motion-fadeOut 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideRightOut[dir='rtl'] {
-  animation: ms-motion-slideLeftOut 100ms cubic-bezier(0.9, 0.1, 1, 0.2) both, ms-motion-fadeOut 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideLeftIn {
-  animation: ms-motion-slideLeftIn 100ms cubic-bezier(0.1, 0.9, 0.2, 1) both, ms-motion-fadeIn 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideLeftIn[dir='rtl'] {
-  animation: ms-motion-slideRightIn 100ms cubic-bezier(0.1, 0.9, 0.2, 1) both, ms-motion-fadeIn 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideRightIn {
-  animation: ms-motion-slideRightIn 100ms cubic-bezier(0.1, 0.9, 0.2, 1) both, ms-motion-fadeIn 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideRightIn[dir='rtl'] {
-  animation: ms-motion-slideLeftIn 100ms cubic-bezier(0.1, 0.9, 0.2, 1) both, ms-motion-fadeIn 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideUpOut {
-  animation: ms-motion-slideUpOut 100ms cubic-bezier(0.9, 0.1, 1, 0.2) both, ms-motion-fadeOut 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideDownOut {
-  animation: ms-motion-slideDownOut 100ms cubic-bezier(0.9, 0.1, 1, 0.2) both, ms-motion-fadeOut 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideUpIn {
-  animation: ms-motion-slideUpIn 100ms cubic-bezier(0.1, 0.9, 0.2, 1) both, ms-motion-fadeIn 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-.ms-motion-slideDownIn {
-  animation: ms-motion-slideDownIn 100ms cubic-bezier(0.1, 0.9, 0.2, 1) both, ms-motion-fadeIn 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-select {
-  border: 0.5px solid var(--input-border-colour);
-  padding: 0.5rem;
-  outline: var(--primary) none 0px;
-  background-color: var(--background);
-}
-select:focus {
-  border-color: var(--primary);
-  box-shadow: inset 1px 1px 0 var(--primary), inset -1px -1px 0 var(--primary);
-}
-select:disabled {
-  color: var(--disabled-button-colour);
-  background-color: var(--disabled-button-background);
-  border-color: var(--disabled-button-background);
-  box-shadow: none;
-  cursor: initial;
-}
-details > summary:hover {
-  cursor: pointer;
-  background-color: var(--button-hover);
-}
-details.button summary {
-  border: 0.5px solid var(--border-colour);
-  padding: 0.9rem 1.5rem;
-}
-details[open]:not(details[open='false']) > *:not(summary) {
-  animation: ms-motion-slideDownIn 100ms cubic-bezier(0.1, 0.9, 0.2, 1) both, ms-motion-fadeIn 100ms cubic-bezier(0, 0, 1, 1) both;
-}
-*,
-*::after,
-*::before {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font: inherit;
-}
-html {
-  hanging-punctuation: first last;
-  /** the quotation mark will be outside the text, only webkit for now */
-  /** 1 rem = 10px */
-  font-size: 62.5%;
-}
-body {
-  font-family: Segoe UI, 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
-  font-size: 1.6rem;
-  text-rendering: optimizeSpeed;
-  line-height: 1.5;
-  min-height: 100svh;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  text-wrap: balance;
-  /** wraps text for 2 - 4 lines. */
-}
-p {
-  max-width: 75ch;
-  /** max character count per line */
-  text-wrap: pretty;
-  /** removes orphans e.g. single words on the end */
-}
-/** add a default space for the marker to show */
-ul,
-ol {
-  margin-left: 2rem;
-}
-/** Make images easier to work with */
-img,
-picture {
-  max-width: 100%;
-  display: block;
-}
-/** Remove all animations, transitions and smooth scroll for people that prefer not to see them */
-@media (prefers-reduced-motion: reduce) {
-  html:focus-within {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms;
-    animation-iteration-count: 1;
-    transition-duration: 0.01ms;
-    scroll-behavior: auto;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  html,
-  :has(:target) {
-    scroll-behavior: smooth;
-    scroll-padding-top: 3rem;
-    /** space above when you go to target, e.g. sticky header */
+@-moz-document url-prefix() {
+  .table-container {
+    padding-right: 1.7rem;
   }
 }
 .align-center {
@@ -1207,10 +1141,17 @@ picture {
 }
 .row {
   display: flex;
+  flex-wrap: wrap;
 }
 .column {
   display: flex;
   flex-direction: column;
+}
+.no-wrap {
+  flex-wrap: nowrap;
+}
+.wrap-reverse {
+  flex-wrap: wrap-reverse;
 }
 .gap-0 {
   gap: var(--distance-0);
@@ -1458,6 +1399,9 @@ picture {
 }
 .inline-flex {
   display: inline-flex;
+}
+.block {
+  display: block;
 }
 /* manual device utilities */
 @media (min-width: 768px) {

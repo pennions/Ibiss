@@ -1,55 +1,59 @@
 .no-scroll {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 .text-no-wrap {
-  white-space: nowrap;
+    white-space: nowrap;
 }
 
 .sticky {
-  position: sticky;
-  position: -webkit-sticky;
-  top: 0;
-  z-index: 1000;
-  height: auto;
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 1000;
+    height: auto;
 }
 
 .inline-block {
-  display: inline-block;
+    display: inline-block;
 }
 
 .inline-flex {
-  display: inline-flex;
+    display: inline-flex;
+}
+
+.block {
+    display: block;
 }
 
 /* manual device utilities */
 .display-mobile {
-  @media (min-width: @md) {
-    display: none;
-  }
+    @media (min-width: @md) {
+        display: none;
+    }
 }
 
 .tablet {
-  display: none;
-  @media (min-width: @md) and (max-width: @lg) {
-    display: inherit;
-  }
+    display: none;
+    @media (min-width: @md) and (max-width: @lg) {
+        display: inherit;
+    }
 }
 
 .desktop {
-  @media (min-width: @lg) {
-    display: none;
-  }
+    @media (min-width: @lg) {
+        display: none;
+    }
 }
 
 .small-screen {
-  @media (min-width: (@md + 1px)) {
-    display: none;
-  }
+    @media (min-width: (@md + 1px)) {
+        display: none;
+    }
 }
 
 .large-screen {
-  @media (max-width: @lg) {
-    display: none;
-  }
+    @media (max-width: @lg) {
+        display: none;
+    }
 }

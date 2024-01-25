@@ -9,6 +9,7 @@
   "module": "./dist/rocket.es.js",
   "scripts": {
     "build": "node ./build-ibiss.js",
+    "dev": "npm run dev --prefix documentation",
     "test": "jest --collectCoverage",
     "lint": "npx prettier -w rocketjs/**",
     "publish": "npm run build && npm publish --access public"

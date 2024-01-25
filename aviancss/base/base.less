@@ -5,10 +5,11 @@
     padding: 0;
     box-sizing: border-box;
     font: inherit;
+    font-weight: var(--font-weight-normal);
 }
 
 html {
-    hanging-punctuation: first last; /** the quotation mark will be outside the text, only webkit for now */ 
+    hanging-punctuation: first last; /** the quotation mark will be outside the text, only webkit for now */
     /** 1 rem = 10px */
     font-size: 62.5%;
 }
@@ -66,7 +67,8 @@ picture {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    html, :has(:target) {
+    html,
+    :has(:target) {
         scroll-behavior: smooth;
         scroll-padding-top: 3rem; /** space above when you go to target, e.g. sticky header */
     }

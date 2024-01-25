@@ -2,7 +2,6 @@ html {
     background-color: var(--html-background);
 }
 
-/** used internally, so can not be important. */
 .border {
     border: 0.5px solid var(--border-colour);
 }
@@ -22,146 +21,189 @@ html {
 .border-left {
     border-left: 0.5px solid var(--border-colour);
 }
-/** */
 
 .bg-grey {
-    background-color: var(--grey) !important;
-    color: var(--colour-on-grey) !important;
+    background-color: var(--grey);
+    color: var(--colour-on-grey);
 }
 
 .bg-grey-dark {
-    background-color: var(--grey-dark) !important;
-    color: var(--colour-on-grey-dark) !important;
+    background-color: var(--grey-dark);
+    color: var(--colour-on-grey-dark);
 }
 
 .bg-black {
-    background-color: var(--black) !important;
-    color: var(--colour-on-black) !important;
+    background-color: var(--black);
+    color: var(--colour-on-black);
 }
 
 .bg-white {
-    background-color: var(--white) !important;
-    color: var(--font-colour) !important;
+    background-color: var(--white);
+    color: var(--font-colour);
 }
 
 .bg-primary {
-    background-color: var(--primary) !important;
-    color: var(--colour-on-primary) !important;
+    background-color: var(--primary);
+    color: var(--colour-on-primary);
 }
 
 .bg-accent {
-    background-color: var(--accent) !important;
-    color: var(--colour-on-accent) !important;
+    background-color: var(--accent);
+    color: var(--colour-on-accent);
 }
 
 .bg-danger {
-    background-color: var(--danger) !important;
-    color: var(--colour-on-danger) !important;
+    background-color: var(--danger);
+    color: var(--colour-on-danger);
 }
 
 .bg-success {
-    background-color: var(--success) !important;
-    color: var(--colour-on-success) !important;
+    background-color: var(--success);
+    color: var(--colour-on-success);
 }
 
 .bg-error {
-    background-color: var(--error) !important;
-    color: var(--colour-on-error) !important;
+    background-color: var(--error);
+    color: var(--colour-on-error);
 }
 
 .bg-warning {
-    background-color: var(--warning) !important;
-    color: var(--colour-on-warning) !important;
+    background-color: var(--warning);
+    color: var(--colour-on-warning);
 }
 
 .text-black {
-    color: var(--black) !important;
+    color: var(--black);
 }
 
 .text-white {
-    color: var(--white) !important;
+    color: var(--white);
 }
 
 .text-grey {
-    color: var(--grey-darker) !important;
+    color: var(--grey-darker);
 }
 
 .icon-grey {
-    color: var(--grey) !important;
+    color: var(--grey);
 }
 
 .icon-grey-dark {
-    color: var(--grey-dark) !important;
+    color: var(--grey-dark);
 }
 
 .icon-success {
-    color: var(--icon-success) !important;
+    color: var(--icon-success);
 }
 
 .icon-primary {
-    color: var(--primary) !important;
+    color: var(--primary);
 }
 
 .icon-accent {
-    color: var(--accent) !important;
+    color: var(--accent);
 }
 
 .icon-danger {
-    color: var(--danger) !important;
+    color: var(--danger);
 }
 
 .icon-black {
-    color: var(--black) !important;
+    color: var(--black);
 }
 
 .icon-white {
-    color: var(--white) !important;
+    color: var(--white);
 }
 
 .text-primary {
-    color: var(--primary) !important;
+    color: var(--primary);
 }
 
 .text-accent {
-    color: var(--accent) !important;
+    color: var(--accent);
 }
 
 .text-danger {
-    color: var(--danger) !important;
+    color: var(--danger);
 }
 
 .text-success {
-    color: var(--icon-success) !important;
+    color: var(--icon-success);
 }
 
 .border-black {
-    border-color: var(--black) !important;
+    border-color: var(--black);
 }
 
 .border-white {
-    border-color: var(--white) !important;
+    border-color: var(--white);
 }
 
 .border-primary {
-    border-color: var(--primary) !important;
+    border-color: var(--primary);
 }
 
 .border-accent {
-    border-color: var(--accent) !important;
+    border-color: var(--accent);
 }
 
 .border-danger {
-    border-color: var(--danger) !important;
+    border-color: var(--danger);
 }
 
 .border-light {
-    border-color: var(--light) !important;
+    border-color: var(--light);
 }
 
 .border-success {
-    border-color: var(--icon-success) !important;
+    border-color: var(--icon-success);
 }
 
 .text-normal {
-    font-weight: normal !important;
+    font-weight: normal;
+}
+
+.shadow {
+    box-shadow: 0 0.6px 3.6px 0 rgba(var(--shadow-colour), 0.132),
+        0 0.3px 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+
+.shadow-top {
+    box-shadow: 0 -1.6px 3.6px 0 rgba(var(--shadow-colour), 0.132),
+        0 -0.3px 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+
+.shadow-left {
+    box-shadow: -1.6px 0 3.6px 0 rgba(var(--shadow-colour), 0.132),
+        0.3px 0 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+
+.shadow-right {
+    box-shadow: 1.6px 0 3.6px 0 rgba(var(--shadow-colour), 0.132),
+        -0.3px 0 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+
+.shadow-bottom {
+    box-shadow: 0 1.6px 3.6px 0 rgba(var(--shadow-colour), 0.132),
+        0 0.3px 0.9px 0 rgba(var(--shadow-colour), 0.108);
+}
+
+.shadow-top-lg {
+    box-shadow: 0px -3px 0px 0px rgba(var(--shadow-colour), 0.132);
+}
+
+.shadow-bottom-lg {
+    box-shadow: 0px 3px 5px 0px rgba(var(--shadow-colour), 0.132);
+}
+
+.shadow-left-lg {
+    box-shadow: -3px 0px 5px 0px rgba(var(--shadow-colour), 0.132);
+}
+
+.shadow-right-lg {
+    box-shadow: 3px 0px 5px 0px rgba(var(--shadow-colour), 0.132);
+}
+.shadow-lg {
+    box-shadow: 0px 0px 5px 0px rgba(var(--shadow-colour), 0.132);
 }
