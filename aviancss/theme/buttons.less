@@ -9,7 +9,7 @@ button {
     &:active {
         outline: none;
         cursor: pointer;
-        box-shadow: 0 0 0 1px var(--button-outline-colour);
+        box-shadow: 0 0 0 1px var(--button-outline-color);
     }
 
     &:not(.no-border) {
@@ -40,7 +40,7 @@ button {
 
     &.primary {
         border: 0;
-        color: var(--colour-on-primary);
+        color: var(--color-on-primary);
         background-color: var(--primary);
 
         &:hover {
@@ -50,7 +50,7 @@ button {
 
     &.danger {
         border: 0;
-        color: var(--colour-on-danger);
+        color: var(--color-on-danger);
         background-color: var(--danger);
 
         &:hover {
@@ -60,7 +60,7 @@ button {
 
     &.accent {
         border: 0;
-        color: var(--colour-on-accent);
+        color: var(--color-on-accent);
         background-color: var(--accent);
 
         &:hover {
@@ -70,7 +70,7 @@ button {
 
     &.contrast {
         border: 0;
-        color: var(--colour-on-contrast);
+        color: var(--color-on-contrast);
         background-color: var(--contrast);
 
         &:hover {
@@ -84,12 +84,12 @@ button {
     &.contrast {
         &:focus,
         &:active {
-            box-shadow: 0 0 0 1px var(--button-outline-colour);
+            box-shadow: 0 0 0 1px var(--button-outline-color);
         }
 
         &.disabled,
         &:disabled {
-            color: var(--coloured-disabled-button-colour);
+            color: var(--colored-disabled-button-color);
             cursor: initial;
             outline: none;
 
@@ -102,7 +102,7 @@ button {
 
     &.outline-hover:hover {
         background-color: transparent;
-        outline: 0.5px solid var(--button-outline-colour);
+        outline: 0.5px solid var(--button-outline-color);
     }
 
     &.link {
@@ -134,7 +134,7 @@ button {
 
     &.disabled,
     &:disabled {
-        color: var(--disabled-button-colour);
+        color: var(--disabled-button-color);
         cursor: initial;
 
         &:not(.link):not(.icon) {
@@ -143,7 +143,7 @@ button {
         }
 
         &.link {
-            color: var(--disabled-button-colour);
+            color: var(--disabled-button-color);
         }
 
         &:hover {

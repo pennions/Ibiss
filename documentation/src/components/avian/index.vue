@@ -9,7 +9,7 @@ import Card from '../shared/Card.vue'
       <p>
         I have written this style system so you can quickly make any webpage look consistent and
         good without having an overkill on features.
-        Keeping its footprint low. And I separated theming. Which means colours, borders,
+        Keeping its footprint low. And I separated theming. Which means colors, borders,
         box-shadows, fonts and the like can be adjusted super easy.
       </p>
     </section>

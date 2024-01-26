@@ -38,12 +38,12 @@ import { RouterLink } from 'vue-router'
 }
 
 .normal {
-  color: var(--font-colour);
+  color: var(--font-color);
 }
 
 .card:hover {
   transform: scale(1.1);
-  border: 1px solid var(--hr-colour);
+  border: 1px solid var(--hr-color);
 }
 
 .card:hover a {

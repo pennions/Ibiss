@@ -47,6 +47,11 @@ const router = createRouter({
           name: 'avian-table',
           component: () => import('../components/avian/table.vue'),
         },
+        {
+          path: '/colors',
+          name: 'avian-colors',
+          component: () => import('../components/avian/utilities/colors.vue'),
+        },
       ]
     }
   ]

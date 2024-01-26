@@ -12,7 +12,7 @@ table {
         padding-left: 0.3rem;
     }
 
-    & tbody tr {
+    &:not(.no-hover) tbody tr {
         &:hover {
             background-color: var(--table-hover);
         }
@@ -42,10 +42,10 @@ table {
             z-index: 2;
             white-space: nowrap;
             background-color: var(--background);
-            -webkit-box-shadow: 0 1px 4px 0 rgba(var(--shadow-colour), 0.16),
-                0 1px 4px 0 rgba(var(--shadow-colour), 0.12);
-            box-shadow: 0 1px 4px 0 rgba(var(--shadow-colour), 0.16),
-                0 1px 4px 0 rgba(var(--shadow-colour), 0.12);
+            -webkit-box-shadow: 0 1px 4px 0 rgba(var(--shadow-color), 0.16),
+                0 1px 4px 0 rgba(var(--shadow-color), 0.12);
+            box-shadow: 0 1px 4px 0 rgba(var(--shadow-color), 0.16),
+                0 1px 4px 0 rgba(var(--shadow-color), 0.12);
             border-bottom: 0;
         }
     }

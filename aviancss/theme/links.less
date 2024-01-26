@@ -23,7 +23,7 @@ a {
 
     &.button {
         border-radius: 2px;
-        color: var(--button-colour);
+        color: var(--button-color);
         text-decoration: none;
         padding: 0.9rem 1.5rem;
         background-color: transparent;
@@ -34,7 +34,7 @@ a {
             .border();
 
             &.disabled {
-                color: var(--disabled-button-colour);
+                color: var(--disabled-button-color);
                 background-color: var(--disabled-button-background);
                 border-color: var(--disabled-button-background);
                 cursor: default;
@@ -50,12 +50,12 @@ a {
         &:active {
             outline: none;
             cursor: pointer;
-            box-shadow: 0 0 0 1px var(--button-outline-colour);
+            box-shadow: 0 0 0 1px var(--button-outline-color);
         }
 
         &.primary {
             border: 0;
-            color: var(--colour-on-primary);
+            color: var(--color-on-primary);
             background-color: var(--primary);
 
             &:hover {
@@ -65,7 +65,7 @@ a {
 
         &.danger {
             border: 0;
-            color: var(--colour-on-danger);
+            color: var(--color-on-danger);
             background-color: var(--danger);
 
             &:hover {
@@ -75,7 +75,7 @@ a {
 
         &.accent {
             border: 0;
-            color: var(--colour-on-accent);
+            color: var(--color-on-accent);
             background-color: var(--accent);
 
             &:hover {
@@ -85,7 +85,7 @@ a {
 
         &.contrast {
             border: 0;
-            color: var(--colour-on-contrast);
+            color: var(--color-on-contrast);
             background-color: var(--contrast);
 
             &:hover {
@@ -99,11 +99,11 @@ a {
         &.accent {
             &:focus,
             &:active {
-                box-shadow: 0 0 0 2px var(--button-outline-colour);
+                box-shadow: 0 0 0 2px var(--button-outline-color);
             }
 
             &.disabled {
-                color: var(--coloured-disabled-button-colour);
+                color: var(--colored-disabled-button-color);
                 background-color: var(--disabled-button-background);
                 border-color: var(--disabled-button-background);
                 cursor: default;

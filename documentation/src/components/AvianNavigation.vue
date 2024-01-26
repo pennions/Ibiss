@@ -21,6 +21,7 @@ import { RouterLink } from 'vue-router'
         <li class="ml-1"><router-link to="/links">Links</router-link></li>
         <li class="ml-1"><router-link to="/inputs">Inputs</router-link></li>
         <li class="ml-1"><router-link to="/table">Table</router-link></li>
+        <li class="ml-1"><router-link to="/colors">Colors</router-link></li>
       </ul>
     </nav>
   </section>
@@ -32,7 +33,7 @@ import { RouterLink } from 'vue-router'
   max-width: 14rem;
 }
 .router-link-exact-active {
-  color: var(--colour-on-contrast);
+  color: var(--color-on-contrast);
   max-width: fit-content;
   text-decoration: underline;
 }
