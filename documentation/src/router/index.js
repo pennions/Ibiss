@@ -48,9 +48,24 @@ const router = createRouter({
           component: () => import('../components/avian/table.vue'),
         },
         {
+          path: '/icons',
+          name: 'avian-icons',
+          component: () => import('../components/avian/icons.vue'),
+        },
+        {
           path: '/colors',
           name: 'avian-colors',
           component: () => import('../components/avian/utilities/colors.vue'),
+        },
+        {
+          path: '/borders',
+          name: 'avian-borders',
+          component: () => import('../components/avian/utilities/borders.vue'),
+        },
+        {
+          path: '/shadows',
+          name: 'avian-shadows',
+          component: () => import('../components/avian/utilities/shadows.vue'),
         },
       ]
     }

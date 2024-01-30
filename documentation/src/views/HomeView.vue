@@ -37,6 +37,10 @@ import { RouterLink } from 'vue-router'
   transition: transform 1s ease;
 }
 
+.card a {
+  text-decoration: none;
+}
+
 .normal {
   color: var(--font-color);
 }
