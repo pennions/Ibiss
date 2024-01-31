@@ -21,6 +21,7 @@ import { RouterLink } from 'vue-router'
       <hr />
       <ul class="ml-0 list-style-none">
         <li class="ml-1"><router-link to="/table">Table</router-link></li>
+        <li class="ml-1"><router-link to="/margins-paddings">Margins and Paddings</router-link></li>
       </ul>
       <h3 class="mt-3">Interactive</h3>
       <hr />

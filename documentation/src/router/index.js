@@ -48,6 +48,11 @@ const router = createRouter({
           component: () => import('../components/avian/table.vue'),
         },
         {
+          path: '/margins-paddings',
+          name: 'avian-margins-paddings',
+          component: () => import('../components/avian/margins-paddings.vue'),
+        },
+        {
           path: '/icons',
           name: 'avian-icons',
           component: () => import('../components/avian/icons.vue'),

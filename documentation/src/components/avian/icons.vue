@@ -236,9 +236,3 @@ import Card from '../shared/Card.vue'
     </article>
   </Card>
 </template>
-
-<style scoped>
-.fit-content {
-  max-width: fit-content;
-}
-</style>

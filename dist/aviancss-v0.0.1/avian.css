@@ -197,6 +197,11 @@ b,
 strong {
   font-weight: var(--font-weight-bold);
 }
+i,
+em,
+cite {
+  font-style: italic;
+}
 kbd,
 code:not([class*='language']) {
   margin: 0 0.2rem;
@@ -572,6 +577,9 @@ th {
   .large-screen {
     display: none;
   }
+}
+.fit-content {
+  max-width: fit-content;
 }
 .list-style-none {
   list-style: none !important;

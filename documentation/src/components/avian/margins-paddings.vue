@@ -1,0 +1,244 @@
+<script setup>
+import Card from '../shared/Card.vue'
+</script>
+
+<template>
+  <Card class="flex-100 column gap-5">
+    <article>
+      <header>
+        <h1 class="mb-2">Margins and Paddings</h1>
+        <hr />
+      </header>
+
+      <section class="column overflow-horizontal gap-2 mb-3">
+        <p>
+          Each version has a number ranging from 0 and 5 and auto. 0 means no padding or margin for
+          that direction. <br />
+        </p>
+
+        <h3>CSS Variables</h3>
+        <hr />
+
+        <p>
+          Each of these variables corresponds directly to the number of the margin / padding class.
+          <br />
+          So <i>pl-3</i> applies the <i>--distance-3</i> as padding-left.
+        </p>
+        <table class="table fit-content">
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>--distance-0</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>--distance-1</td>
+              <td>0.5rem</td>
+            </tr>
+            <tr>
+              <td>--distance-2</td>
+              <td>1rem</td>
+            </tr>
+            <tr>
+              <td>--distance-3</td>
+              <td>1.5rem</td>
+            </tr>
+            <tr>
+              <td>--distance-4</td>
+              <td>2rem</td>
+            </tr>
+            <tr>
+              <td>--distance-5</td>
+              <td>2.5rem</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">These distances are also used for the .gap classes</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Padding class</th>
+              <th>Margin class</th>
+              <th>Top</th>
+              <th>Right</th>
+              <th>Bottom</th>
+              <th>Left</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>p-0</td>
+              <td>m-0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>p-1</td>
+              <td>m-1</td>
+              <td>0.5rem</td>
+              <td>0.5rem</td>
+              <td>0.5rem</td>
+              <td>0.5rem</td>
+            </tr>
+            <tr>
+              <td>pt-auto</td>
+              <td>mt-auto</td>
+              <td>auto</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>pt-0</td>
+              <td>mt-0</td>
+              <td>0</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>pt-1</td>
+              <td>mt-1</td>
+              <td>0.5rem</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>pb-auto</td>
+              <td>mb-auto</td>
+              <td>-</td>
+              <td>-</td>
+              <td>auto</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>pb-0</td>
+              <td>mb-0</td>
+              <td>-</td>
+              <td>-</td>
+              <td>0</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>pb-1</td>
+              <td>mb-1</td>
+              <td>-</td>
+              <td>-</td>
+              <td>0.5rem</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>pl-auto</td>
+              <td>ml-auto</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>auto</td>
+            </tr>
+            <tr>
+              <td>pl-0</td>
+              <td>ml-0</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>pl-1</td>
+              <td>ml-1</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>0.5rem</td>
+            </tr>
+            <tr>
+              <td>pr-auto</td>
+              <td>mr-auto</td>
+              <td>-</td>
+              <td>auto</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>pr-0</td>
+              <td>mr-0</td>
+              <td>-</td>
+              <td>0</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>pr-1</td>
+              <td>mr-1</td>
+              <td>-</td>
+              <td>0.5rem</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>px-auto</td>
+              <td>mx-auto</td>
+              <td>unchanged</td>
+              <td>auto</td>
+              <td>unchanged</td>
+              <td>auto</td>
+            </tr>
+            <tr>
+              <td>px-0</td>
+              <td>mx-0</td>
+              <td>unchanged</td>
+              <td>0</td>
+              <td>unchanged</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>px-1</td>
+              <td>mx-1</td>
+              <td>-</td>
+              <td>0.5rem</td>
+              <td>-</td>
+              <td>0.5rem</td>
+            </tr>
+            <tr>
+              <td>py-auto</td>
+              <td>my-auto</td>
+              <td>auto</td>
+              <td>unchanged</td>
+              <td>auto</td>
+              <td>unchanged</td>
+            </tr>
+            <tr>
+              <td>py-0</td>
+              <td>my-0</td>
+              <td>0</td>
+              <td>unchanged</td>
+              <td>0</td>
+              <td>unchanged</td>
+            </tr>
+            <tr>
+              <td>py-1</td>
+              <td>my-1</td>
+              <td>0.5rem</td>
+              <td>-</td>
+              <td>0.5rem</td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </article>
+  </Card>
+</template>
