@@ -43,6 +43,16 @@ const router = createRouter({
           component: () => import('../components/avian/inputs.vue'),
         },
         {
+          path: '/responsive',
+          name: 'avian-responsive',
+          component: () => import('../components/avian/responsive.vue'),
+        },
+        {
+          path: '/display-utilities',
+          name: 'avian-display-utilities',
+          component: () => import('../components/avian/display-utilities.vue'),
+        },
+        {
           path: '/table',
           name: 'avian-table',
           component: () => import('../components/avian/table.vue'),

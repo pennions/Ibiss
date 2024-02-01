@@ -31,34 +31,34 @@
 }
 
 /* manual device utilities */
-.display-mobile {
+.mobile {
     @media (min-width: @md) {
-        display: none;
+        display: none !important;
     }
 }
 
 .tablet {
     display: none;
     @media (min-width: @md) and (max-width: @lg) {
-        display: inherit;
+        display: inherit !important;
     }
 }
 
 .desktop {
-    @media (min-width: @lg) {
-        display: none;
+    @media (max-width: @lg) {
+        display: none !important;
     }
 }
 
 .small-screen {
     @media (min-width: (@md + 1px)) {
-        display: none;
+        display: none !important;
     }
 }
 
 .large-screen {
-    @media (max-width: @lg) {
-        display: none;
+    @media (max-width: @md) {
+        display: none !important;
     }
 }
 

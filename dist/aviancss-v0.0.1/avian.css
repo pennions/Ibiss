@@ -551,8 +551,8 @@ th {
 }
 /* manual device utilities */
 @media (min-width: 768px) {
-  .display-mobile {
-    display: none;
+  .mobile {
+    display: none !important;
   }
 }
 .tablet {
@@ -560,22 +560,22 @@ th {
 }
 @media (min-width: 768px) and (max-width: 992px) {
   .tablet {
-    display: inherit;
+    display: inherit !important;
   }
 }
-@media (min-width: 992px) {
+@media (max-width: 992px) {
   .desktop {
-    display: none;
+    display: none !important;
   }
 }
 @media (min-width: 769px) {
   .small-screen {
-    display: none;
+    display: none !important;
   }
 }
-@media (max-width: 992px) {
+@media (max-width: 768px) {
   .large-screen {
-    display: none;
+    display: none !important;
   }
 }
 .fit-content {

@@ -53,6 +53,39 @@ onMounted(() => {
           </tfoot>
         </table>
 
+        <p>Table with the <code>no-hover</code>class:</p>
+        <table class="no-hover">
+          <thead>
+            <tr>
+              <th>Column header 1</th>
+              <th>Column header 2</th>
+              <th>Column header 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A</td>
+              <td>B</td>
+              <td>C</td>
+            </tr>
+            <tr>
+              <td>D</td>
+              <td>E</td>
+              <td>F</td>
+            </tr>
+            <tr>
+              <td>G</td>
+              <td>H</td>
+              <td>I</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">Table footer with colspan 3</td>
+            </tr>
+          </tfoot>
+        </table>
+
         <p>A table with the <code class="language-html">table</code> class.</p>
 
         <table class="table">
