@@ -23,7 +23,7 @@ import { RouterLink } from 'vue-router'
         <li class="ml-1"><router-link to="/table">Table</router-link></li>
         <li class="ml-1"><router-link to="/flex">Flex</router-link></li>
         <li class="ml-1"><router-link to="/margins-paddings">Margins and Paddings</router-link></li>
-        <li class="ml-1"><router-link to="/responsive">Responsive classes</router-link></li>
+        <li class="ml-1"><router-link to="/responsive">Responsive hide/show</router-link></li>
         <li class="ml-1"><router-link to="/display-utilities">Display utilities</router-link></li>
       </ul>
       <h3 class="mt-3">Interactive</h3>

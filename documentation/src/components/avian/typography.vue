@@ -16,7 +16,7 @@ import Card from '../shared/Card.vue'
           This translates to 0.1rem equals 1px.
         </p>
         <section class="row gap-5">
-          <div class="flex-50">
+          <div class="f-50">
             <table class="table">
               <thead>
                 <tr>
@@ -102,7 +102,7 @@ import Card from '../shared/Card.vue'
             <hr />
           </header>
           <section class="row">
-            <table class="table flex-50">
+            <table class="table f-50">
               <thead>
                 <tr>
                   <th>Tag</th>

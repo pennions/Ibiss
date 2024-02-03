@@ -78,8 +78,8 @@ import Card from '../shared/Card.vue'
             </thead>
             <tbody>
               <tr>
-                <td><code>flex-100</code></td>
-                <td>Sets flex to 1 and width:100%</td>
+                <td><code>f-100</code></td>
+                <td>Sets flex grow to 1, flex shrink to 1 and flex-basis to 100%</td>
                 <td>X</td>
                 <td>X</td>
                 <td>X</td>
@@ -88,7 +88,17 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-80</code></td>
+                <td><code>f-90</code></td>
+                <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 90%</td>
+                <td>X</td>
+                <td>X</td>
+                <td>X</td>
+                <td>X</td>
+                <td>X</td>
+                <td>X</td>
+              </tr>
+              <tr>
+                <td><code>f-80</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 80%</td>
                 <td>X</td>
                 <td>X</td>
@@ -98,7 +108,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-75</code></td>
+                <td><code>f-75</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 75%</td>
                 <td>X</td>
                 <td>X</td>
@@ -108,7 +118,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-70</code></td>
+                <td><code>f-70</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 70%</td>
                 <td>X</td>
                 <td>X</td>
@@ -118,7 +128,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-60</code></td>
+                <td><code>f-60</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 60%</td>
                 <td>X</td>
                 <td>X</td>
@@ -128,7 +138,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-50</code></td>
+                <td><code>f-50</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 50%</td>
                 <td>X</td>
                 <td>X</td>
@@ -138,7 +148,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-33</code></td>
+                <td><code>f-33</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 33.33%</td>
                 <td>X</td>
                 <td>X</td>
@@ -148,7 +158,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-30</code></td>
+                <td><code>f-30</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 30%</td>
                 <td>X</td>
                 <td>X</td>
@@ -158,7 +168,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-25</code></td>
+                <td><code>f-25</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 25%</td>
                 <td>X</td>
                 <td>X</td>
@@ -168,7 +178,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-20</code></td>
+                <td><code>f-20</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 20%</td>
                 <td>X</td>
                 <td>X</td>
@@ -178,7 +188,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-16</code></td>
+                <td><code>f-16</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 16.67%</td>
                 <td>X</td>
                 <td>X</td>
@@ -188,7 +198,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-10</code></td>
+                <td><code>f-10</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 10%</td>
                 <td>X</td>
                 <td>X</td>
@@ -198,7 +208,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-8</code></td>
+                <td><code>f-8</code></td>
                 <td>Sets flex grow to 0, flex shrink to 0 and flex-basis to 8.33%</td>
                 <td>X</td>
                 <td>X</td>
@@ -209,7 +219,7 @@ import Card from '../shared/Card.vue'
               </tr>
 
               <tr>
-                <td><code>flex-auto</code></td>
+                <td><code>f-auto</code></td>
                 <td>
                   Sets flex grow to 1, flex shrink to 1, flex-basis to auto, min-width to auto and
                   max-width to fit-content
@@ -222,7 +232,7 @@ import Card from '../shared/Card.vue'
                 <td>X</td>
               </tr>
               <tr>
-                <td><code>flex-fill</code></td>
+                <td><code>f-fill</code></td>
                 <td>
                   Sets flex to 1 and width 100% [use this one to let an element take the remaining
                   space]
@@ -236,12 +246,12 @@ import Card from '../shared/Card.vue'
               </tr>
               <tr>
                 <td colspan="8">
-                  <b>Responsive prefixes like:</b> .mobile-flex-100, .mobile-row-reverse,
-                  .mobile-column-reverse
+                  <b>Responsive prefixes like:</b> .mf-100, .mrow-reverse,
+                  .mcolumn-reverse
                 </td>
               </tr>
               <tr>
-                <td>.mobile-*</td>
+                <td>.m*</td>
                 <td>-</td>
                 <td>X</td>
                 <td>X</td>
@@ -251,7 +261,7 @@ import Card from '../shared/Card.vue'
                 <td>-</td>
               </tr>
               <tr>
-                <td>.tablet-*</td>
+                <td>.t*</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
@@ -261,7 +271,7 @@ import Card from '../shared/Card.vue'
                 <td>-</td>
               </tr>
               <tr>
-                <td>desktop-*</td>
+                <td>.d*</td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
@@ -281,28 +291,28 @@ import Card from '../shared/Card.vue'
         </div>
 
         <div class="row">
-          <div class="bg-primary p-2 flex-25 tablet-flex-50 mobile-flex-100">
+          <div class="bg-primary p-2 f-25 tf-50 mf-100">
             Default flex 25, tablet flex 50, mobile flex 100
           </div>
-          <div class="bg-accent p-2 flex-25 tablet-flex-50 mobile-flex-100">
+          <div class="bg-accent p-2 f-25 tf-50 mf-100">
             Default flex 25, tablet flex 50, mobile flex 100
           </div>
-          <div class="bg-danger p-2 flex-25 tablet-flex-50 mobile-flex-100">
+          <div class="bg-danger p-2 f-25 tf-50 mf-100">
             Default flex 25, tablet flex 50, mobile flex 100
           </div>
-          <div class="bg-success p-2 flex-25 tablet-flex-50 mobile-flex-100">
+          <div class="bg-success p-2 f-25 tf-50 mf-100">
             Default flex 25, tablet flex 50, mobile flex 100
           </div>
-          <div class="bg-warning p-2 flex-100 tablet-flex-50 mobile-flex-100">
+          <div class="bg-warning p-2 f-100 tf-50 mf-100">
             Default flex 100, tablet flex 50, mobile flex 100
           </div>
-          <div class="bg-error p-2 flex-100 tablet-flex-50 mobile-flex-100">
+          <div class="bg-error p-2 f-100 tf-50 mf-100">
             Default flex 100, tablet flex 50, mobile flex 100
           </div>
         </div>
-        <div class="row tablet-row-reverse mobile-row-reverse">
-          <div class="bg-primary p-2 flex-50">First on desktop</div>
-          <div class="bg-success p-2 flex-50">First on tablet and mobile</div>
+        <div class="row trow-reverse mrow-reverse">
+          <div class="bg-primary p-2 f-50">First on desktop</div>
+          <div class="bg-success p-2 f-50">First on tablet and mobile</div>
         </div>
       </section>
     </article>

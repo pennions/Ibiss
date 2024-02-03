@@ -5,7 +5,7 @@ import AvianNavigation from '../components/AvianNavigation.vue'
 
 <template>
   <main class="row gap-3">
-    <AvianNavigation class="navigation flex-10 shadow py-1 px-2" />
+    <AvianNavigation class="navigation f-10 shadow py-1 px-2" />
     <RouterView />
   </main>
 </template>

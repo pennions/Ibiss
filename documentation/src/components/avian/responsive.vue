@@ -6,7 +6,7 @@ import Card from '../shared/Card.vue'
   <Card class="column gap-5">
     <article>
       <header>
-        <h1 class="mb-2">Responsive classes</h1>
+        <h1 class="mb-2">Responsive hide / show</h1>
         <hr />
       </header>
       <section class="column overflow-horizontal mt-5">
