@@ -3,7 +3,7 @@ import Card from '../shared/Card.vue'
 </script>
 
 <template>
-  <Card class="flex-100 column gap-5">
+  <Card class="column gap-5">
     <article>
       <header>
         <h1 class="mb-2">Icons</h1>

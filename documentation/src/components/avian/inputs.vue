@@ -26,7 +26,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card class="flex-100 column gap-5">
+  <Card class="column gap-5">
     <article>
       <header>
         <h1 class="mb-2">Inputs</h1>

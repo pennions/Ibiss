@@ -15,3 +15,37 @@
 .wrap-reverse {
     flex-wrap: wrap-reverse;
 }
+
+.row-reverse {
+    flex-direction: row-reverse;
+}
+.column-reverse {
+    flex-direction: column-reverse;
+}
+
+@media (min-width: (@lg + 1px)) {
+    .desktop-row-reverse {
+        flex-direction: row-reverse;
+    }
+    .desktop-column-reverse {
+        flex-direction: column-reverse;
+    }
+}
+
+@media (min-width: @md) and (max-width: @lg) {
+    .tablet-row-reverse {
+        flex-direction: row-reverse;
+    }
+    .tablet-column-reverse {
+        flex-direction: column-reverse;
+    }
+}
+
+@media (max-width: (@md - 1px)) {
+    .mobile-row-reverse {
+        flex-direction: row-reverse;
+    }
+    .mobile-column-reverse {
+        flex-direction: column-reverse;
+    }
+}

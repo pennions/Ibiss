@@ -3,7 +3,7 @@ import Card from '../../shared/Card.vue'
 </script>
 
 <template>
-  <Card class="flex-100 column gap-5">
+  <Card class="column gap-5">
     <article>
       <header>
         <h1 class="mb-2">Colors</h1>
@@ -63,13 +63,13 @@ import Card from '../../shared/Card.vue'
             <tr>
               <td><code class="language-html">bg-error </code></td>
               <td>
-                <div class="bg-warning p-1 px-3">warning background with auto color adjustment</div>
+                <div class="bg-error p-1 px-3">error background with auto color adjustment</div>
               </td>
             </tr>
             <tr>
               <td><code class="language-html">bg-warning </code></td>
               <td>
-                <div class="bg-error p-1 px-3">error background with auto color adjustment</div>
+                <div class="bg-warning p-1 px-3">warning background with auto color adjustment</div>
               </td>
             </tr>
             <tr>

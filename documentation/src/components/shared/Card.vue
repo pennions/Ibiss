@@ -1,5 +1,5 @@
 <template>
-  <article class="card shadow py-1 px-2 bg-white flex-100">
+  <article class="card shadow py-1 px-2 flex-fill bg-white">
     <slot />
   </article>
 </template>

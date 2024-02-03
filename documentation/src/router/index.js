@@ -53,6 +53,11 @@ const router = createRouter({
           component: () => import('../components/avian/display-utilities.vue'),
         },
         {
+          path: '/flex',
+          name: 'avian-flex',
+          component: () => import('../components/avian/flex.vue'),
+        },
+        {
           path: '/table',
           name: 'avian-table',
           component: () => import('../components/avian/table.vue'),
