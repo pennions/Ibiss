@@ -64,7 +64,43 @@ import Card from '../shared/Card.vue'
           </tfoot>
         </table>
 
-        <table class="table">
+        <p>
+          Responsive prefixes that you can use to apply a padding / margin only on a certain
+          screensize:
+        </p>
+        <table class="table fit-content">
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>415px</th>
+              <th>576px</th>
+              <th>768px</th>
+              <th>992px</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>.m*</td>
+              <td>X</td>
+              <td>X</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>.t*</td>
+              <td>-</td>
+              <td>-</td>
+              <td>X</td>
+              <td>X</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            Example: .mp-1, .mm-2, tp-3 etc.
+          </tfoot>
+        </table>
+
+        <h4>Example:</h4>
+        <table class="table fit-content">
           <thead>
             <tr>
               <th>Padding class</th>
@@ -238,6 +274,24 @@ import Card from '../shared/Card.vue'
             </tr>
           </tbody>
         </table>
+
+        <h4 class="my-3">Responsive paddings and margins in action:</h4>
+
+        <div class="column mb-5">
+          <span class="mb-3">Resize the screen to see it in action:</span>
+          <div class="mobile bg-danger p-3">Currently the screen is: Mobile</div>
+          <div class="tablet bg-accent p-3">Currently the screen is: Tablet</div>
+          <div class="desktop bg-primary p-3">Currently the screen is: Desktop</div>
+        </div>
+
+        <div class="row align-start">
+          <div class="bg-primary p-1 tp-3 mp-5 f-25">
+            normal padding 1 tablet padding 3 mobile padding 5
+          </div>
+          <div class="bg-accent p-2 f-25 ml-5 tml-3 mm-1">
+            normal left margin 5, tablet left margin 3, mobile margin 1
+          </div>
+        </div>
       </section>
     </article>
   </Card>
