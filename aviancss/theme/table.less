@@ -1,0 +1,76 @@
+table {
+    border-collapse: collapse;
+
+    th,
+    td {
+        text-align: left;
+        vertical-align: top;
+        padding: 0.5rem 2.5rem 0.6rem 0.5rem;
+    }
+
+    th {
+        padding-left: 0.3rem;
+    }
+
+    &:not(.no-hover) tbody tr {
+        &:hover {
+            background-color: var(--table-hover);
+        }
+    }
+
+    &.table {
+        & thead {
+            .border-bottom();
+        }
+
+        & tbody tr {
+            .border-bottom();
+            border-color: var(--light);
+        }
+
+        & tfoot {
+            font-size: small;
+            font-style: italic;
+        }
+    }
+
+    &.sticky-header {
+        & > thead {
+            top: 0;
+            position: sticky;
+            position: -webkit-sticky;
+            z-index: 2;
+            white-space: nowrap;
+            background-color: var(--background);
+            -webkit-box-shadow: 0 1px 4px 0 rgba(var(--shadow-color), 0.16),
+                0 1px 4px 0 rgba(var(--shadow-color), 0.12);
+            box-shadow: 0 1px 4px 0 rgba(var(--shadow-color), 0.16),
+                0 1px 4px 0 rgba(var(--shadow-color), 0.12);
+            border-bottom: 0;
+        }
+    }
+
+    &.striped {
+        tbody tr:nth-child(odd) {
+            background-color: var(--table-stripe);
+        }
+
+        & tbody tr:hover {
+            background-color: var(--table-striped-hover);
+        }
+    }
+}
+
+.table-container {
+    .border();
+    .border-light();
+
+    /** only target mozilla, so edge won't break */
+    @-moz-document url-prefix() {
+        padding-right: 1.7rem;
+    }
+    display: inline-block;
+    width: fit-content;
+    overflow-x: hidden;
+    overflow-y: auto;
+}

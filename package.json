@@ -8,12 +8,11 @@
   "main": "./dist/rocket.js",
   "module": "./dist/rocket.es.js",
   "scripts": {
-    "build": "rollup --config rollup.config.js",
-    "minify": "uglifyjs --compress --mangle --output dist/rocket.min.js dist/rocket.js",
+    "build": "node ./build-ibiss.js",
+    "dev": "npm run dev --prefix documentation",
     "test": "jest --collectCoverage",
     "lint": "npx prettier -w rocketjs/**",
-    "deploy": "npm run build && npm run minify",
-    "publish": "npm run deploy && npm publish --access public"
+    "publish": "npm run build && npm publish --access public"
   },
   "author": "Jelmer Veen <https://github.com/pennions>",
   "license": "GPL-3.0",
@@ -25,6 +24,10 @@
     "jest-environment-jsdom": "^27.4.7",
     "prettier": "2.5.1",
     "rollup": "^2.67.0",
-    "uglify-js": "^3.15.0"
+    "uglify-js": "^3.15.0",
+    "cssnano": "^5.1.8",
+    "less": "^4.1.2",
+    "postcss": "^8.4.13",
+    "postcss-cli": "^9.1.0"
   }
 }

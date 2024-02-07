@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Example Builder</title>
+    <style>
+      body {
+        margin-top: 10%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #contents {
+        width: 50%;
+        margin-bottom: 2rem;
+      }
+
+      button {
+        width: 49%;
+        display: inline-block;
+        margin-bottom: 2rem;
+        background-color: lightblue;
+      }
+
+      button:first-child {
+        margin-right: 1.3%;
+        background-color: lightgreen;
+      }
+
+      .button-bar {
+        width: 50%;
+      }
+
+      textarea {
+        height: 40vh;
+      }
+
+      #result,
+      #hint {
+        width: 98vw;
+      }
+
+      #hint {
+        margin-top: 1rem;
+        font-size: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea
+      id="contents"
+      placeholder="Write or paste your code example here"></textarea>
+    <div class="button-bar">
+      <button onclick="create()">Create</button>
+      <button onclick="revert()">Convert back</button>
+    </div>
+
+    <input type="text" id="result" />
+    <small id="hint"
+      >When you want to parse back an example and you have a string that is inside single quotes (') add double quotes
+      around it. e.g. '...' becomes "'...'"
+    </small>
+
+    <script>
+      const textarea = document.getElementById('contents');
+
+      textarea.onkeydown = function (e) {
+        if (e.keyCode == 9 || e.which == 9) {
+          e.preventDefault();
+          const s = this.selectionStart;
+          this.value =
+            this.value.substring(0, this.selectionStart) +
+            '  ' +
+            this.value.substring(this.selectionEnd);
+          this.selectionEnd = s + 2;
+        }
+      };
+
+      function create() {
+        let contents = document.getElementById('contents').value;
+        document.getElementById('result').value = JSON.stringify(contents);
+      }
+
+      function revert() {
+        let result = document.getElementById('result').value;
+        document.getElementById('contents').value = JSON.parse(result);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,304 @@
+select {
+    border: 0.5px solid var(--input-border-color);
+    padding: 0.5rem;
+    outline: var(--primary) none 0px;
+    background-color: var(--background);
+
+    &:focus {
+        border-color: var(--primary);
+        box-shadow: inset 1px 1px 0 var(--primary),
+            inset -1px -1px 0 var(--primary);
+    }
+
+    &:disabled {
+        color: var(--disabled-button-colour);
+        background-color: var(--disabled-button-background);
+        border-color: var(--disabled-button-background);
+        box-shadow: none;
+        cursor: initial;
+    }
+}
+
+input,
+textarea {
+    border: 0.5px solid var(--input-border-color);
+    border-radius: 2px;
+    padding: 0 0.4rem;
+    min-height: 3rem;
+    outline: currentcolor none 0px;
+    accent-color: var(--primary); /** for checkboxes, radiobuttons etc */
+
+    &:focus {
+        border-color: var(--primary);
+        box-shadow: inset 1px 1px 0 var(--primary),
+            inset -1px -1px 0 var(--primary);
+    }
+
+    &:invalid:not([invalid='false']):not([required]),
+    &[invalid]:not([invalid='false']) {
+        border-color: var(--danger);
+        &:hover,
+        &:focus {
+            box-shadow: inset 1px 1px 0 var(--danger),
+                inset -1px -1px 0 var(--danger);
+        }
+    }
+
+    &:disabled {
+        color: var(--disabled-button-color);
+        background-color: var(--disabled-button-background);
+        border-color: var(--disabled-button-background);
+        box-shadow: none;
+        cursor: initial;
+    }
+
+    &[type='color'],
+    &[type='file'],
+    &[type='image'],
+    &[type='range'],
+    &[type='checkbox'],
+    &[type='radio'] {
+        border: none;
+        min-height: unset;
+        padding-left: 0;
+    }
+
+    &[type='radio'],
+    &[type='checkbox'] {
+        &:focus-visible {
+            outline-offset: 0.1rem;
+            outline: var(--button-outline-color) dashed 0.1rem;
+        }
+    }
+
+    &[type='submit'],
+    &[type='button'],
+    &[type='reset'] {
+        border: 0;
+        padding: 0.5rem 1.5rem 0.9rem 1.5rem;
+
+        &:hover {
+            cursor: pointer;
+            background-color: var(--button-hover);
+        }
+
+        &:focus,
+        &:active {
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 0 0 2px var(--button-outline-color);
+        }
+
+        &:disabled,
+        &:hover:disabled {
+            color: var(--disabled-button-color);
+            background-color: var(--disabled-button-background);
+            border-color: var(--disabled-button-background);
+            box-shadow: none;
+            cursor: initial;
+        }
+    }
+
+    &[type='reset'] {
+        background-color: var(--background);
+        .border();
+
+        &:focus,
+        &:active {
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 0 0 1px var(--button-outline-color);
+        }
+    }
+
+    &[type='button'],
+    &[type='submit'] {
+        color: var(--color-on-primary);
+        background-color: var(--primary);
+
+        &:hover {
+            background-color: var(--primary-hover);
+        }
+    }
+
+    &[type='color'],
+    &[type='file'],
+    &[type='range'] {
+        border: none;
+
+        &:focus {
+            outline: var(--primary) solid 2px;
+            outline-offset: 2px;
+            box-shadow: none;
+        }
+    }
+
+    &[type='file'] {
+        &::file-selector-button,
+        &::-webkit-file-upload-button {
+            background-color: var(--primary);
+            color: var(--color-on-primary);
+            border-radius: 2px;
+            padding: 0.6rem 1.5rem;
+            border: 0;
+        }
+
+        &:active {
+            &::file-selector-button,
+            &::-webkit-file-upload-button {
+                box-shadow: inset 0 0 0 2px var(--button-outline-color);
+            }
+        }
+
+        &:hover {
+            &::file-selector-button,
+            &::-webkit-file-upload-button {
+                cursor: pointer;
+                background-color: var(--primary-hover);
+            }
+        }
+
+        &:focus {
+            outline-offset: 0.1rem;
+            outline: var(--button-outline-color) solid 0.2rem;
+        }
+    }
+
+    &[type='color'] {
+        background-color: transparent;
+        width: 8rem;
+        padding: 0;
+    }
+
+    &[type='range'] {
+        appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+        padding: 0;
+
+        &::-moz-range-thumb {
+            width: 1.2rem;
+            height: 1.2rem;
+            background: var(--background);
+            border: 2px solid var(--range-filled-track-color);
+            border-radius: 100px;
+        }
+
+        &::-moz-range-track {
+            height: 0.3rem;
+            background-color: var(--range-track-color);
+        }
+
+        &::-moz-range-progress {
+            height: 0.3rem;
+            background-color: var(--range-filled-track-color);
+        }
+
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 1.6rem;
+            height: 1.6rem;
+            background: var(--background);
+            border: 2px solid var(--range-filled-track-color);
+            border-radius: 100px;
+            margin-top: -6px;
+        }
+
+        &::-webkit-slider-runnable-track {
+            height: 3px;
+            background: var(--range-track-color);
+            border: none;
+            border-radius: 3px;
+        }
+
+        &:hover,
+        &:focus {
+            background: transparent;
+            outline: none;
+
+            &::-moz-range-progress {
+                background-color: var(--primary);
+            }
+            &::-moz-range-thumb {
+                border: 2px solid var(--primary);
+            }
+
+            &::-webkit-slider-runnable-track {
+                background-color: var(--primary);
+            }
+
+            &::-webkit-slider-thumb {
+                border: 2px solid var(--primary);
+            }
+        }
+
+        &:disabled {
+            &:hover,
+            &:focus {
+                background: transparent;
+                outline: none;
+
+                &::-moz-range-progress {
+                    background-color: var(--range-filled-track-color);
+                }
+                &::-moz-range-thumb {
+                    border: 2px solid var(--range-filled-track-color);
+                }
+
+                &::-webkit-slider-runnable-track {
+                    background-color: var(--range-filled-track-color);
+                }
+
+                &::-webkit-slider-thumb {
+                    border: 2px solid var(--range-filled-track-color);
+                }
+            }
+        }
+    }
+
+    &.underline {
+        padding: 0;
+        border-left: 0;
+        border-right: 0;
+        border-top: 0;
+        border-radius: 0;
+        background-color: transparent;
+
+        &:focus {
+            box-shadow: none;
+        }
+        &:hover,
+        &:focus {
+            border-color: var(--primary);
+            box-shadow: inset 0 -1px 0 var(--primary);
+        }
+
+        &:disabled,
+        &:invalid:not([invalid='false']):not([required]) {
+            &:hover,
+            &:focus {
+                box-shadow: none;
+                border-left: 0;
+                border-right: 0;
+                border-top: 0;
+            }
+        }
+
+        &:invalid:not([invalid='false']):not([required]),
+        &[invalid]:not([invalid='false']) {
+            &:hover,
+            &:focus {
+                border-color: var(--danger);
+                box-shadow: inset 0 -1px 0 var(--danger);
+            }
+        }
+
+        &:disabled {
+            &:hover,
+            &:focus {
+                border-color: var(--disabled-button-background);
+            }
+        }
+    }
+}
