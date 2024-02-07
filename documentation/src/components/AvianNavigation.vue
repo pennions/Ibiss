@@ -16,6 +16,7 @@ import { RouterLink } from 'vue-router'
       <hr />
       <ul class="ml-0 mt-3 list-style-none">
         <li class="ml-1"><router-link to="/typography">Typography</router-link></li>
+        <li class="ml-1"><router-link to="/variables">Variables</router-link></li>
       </ul>
       <h3 class="mt-3">Layout</h3>
       <hr />

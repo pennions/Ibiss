@@ -28,6 +28,11 @@ const router = createRouter({
           component: () => import('../components/avian/typography.vue'),
         },
         {
+          path: '/variables',
+          name: 'avian-variables',
+          component: () => import('../components/avian/variables.vue'),
+        },
+        {
           path: '/buttons',
           name: 'avian-buttons',
           component: () => import('../components/avian/buttons.vue'),
