@@ -23,12 +23,12 @@ import Card from '../../shared/Card.vue'
               <td colspan="2"><b>Background</b></td>
             </tr>
             <tr>
-              <td><code class="language-html">bg-grey </code></td>
-              <td><div class="bg-grey p-1 px-3">grey background</div></td>
+              <td><code class="language-html">bg-gray </code></td>
+              <td><div class="bg-gray p-1 px-3">grey background</div></td>
             </tr>
             <tr>
-              <td><code class="language-html">bg-grey-dark </code></td>
-              <td><div class="bg-grey-dark p-1 px-3">dark grey background</div></td>
+              <td><code class="language-html">bg-gray-dark </code></td>
+              <td><div class="bg-gray-dark p-1 px-3">dark grey background</div></td>
             </tr>
             <tr>
               <td><code class="language-html">bg-black </code></td>
@@ -107,8 +107,8 @@ import Card from '../../shared/Card.vue'
               <td><div class="text-success p-1 px-3">success text</div></td>
             </tr>
             <tr>
-              <td><code class="language-html">text-grey </code></td>
-              <td><div class="text-grey p-1 px-3">grey text</div></td>
+              <td><code class="language-html">text-gray </code></td>
+              <td><div class="text-gray p-1 px-3">grey text</div></td>
             </tr>
           </tbody>
         </table>

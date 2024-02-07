@@ -9,11 +9,11 @@
   --shadow-color: 0, 0, 0;
   --hr-color: #d2d0ce;
   --border-color: #8a8886;
-  --grey: #a19f9d;
-  --color-on-grey: #000;
-  --grey-dark: #605e5c;
-  --color-on-grey-dark: #faf9f8;
-  --grey-darker: #8a8886;
+  --gray: #a19f9d;
+  --color-on-gray: #000;
+  --gray-dark: #605e5c;
+  --color-on-gray-dark: #faf9f8;
+  --gray-darker: #8a8886;
   --light: #d2d0ce;
   --black: #000;
   --white: #fff;
@@ -2321,13 +2321,13 @@ table.striped tbody tr:hover {
 html {
   background-color: var(--html-background);
 }
-.bg-grey {
-  background-color: var(--grey);
-  color: var(--color-on-grey);
+.bg-gray {
+  background-color: var(--gray);
+  color: var(--color-on-gray);
 }
-.bg-grey-dark {
-  background-color: var(--grey-dark);
-  color: var(--color-on-grey-dark);
+.bg-gray-dark {
+  background-color: var(--gray-dark);
+  color: var(--color-on-gray-dark);
 }
 .bg-black {
   background-color: var(--black);
@@ -2367,8 +2367,8 @@ html {
 .text-white {
   color: var(--white);
 }
-.text-grey {
-  color: var(--grey-darker);
+.text-gray {
+  color: var(--gray-darker);
 }
 .text-primary {
   color: var(--primary);
@@ -2382,11 +2382,11 @@ html {
 .text-success {
   color: var(--icon-success);
 }
-.icon-grey {
-  color: var(--grey);
+.icon-gray {
+  color: var(--gray);
 }
-.icon-grey-dark {
-  color: var(--grey-dark);
+.icon-gray-dark {
+  color: var(--gray-dark);
 }
 .icon-success {
   color: var(--icon-success);

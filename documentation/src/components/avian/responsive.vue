@@ -78,8 +78,8 @@ import Card from '../shared/Card.vue'
           <div class="mobile bg-danger p-3">Mobile</div>
           <div class="tablet bg-accent p-3">Tablet</div>
           <div class="desktop bg-primary p-3">desktop</div>
-          <div class="small-screen bg-grey p-3">small-screen</div>
-          <div class="large-screen bg-grey-dark p-3">large-screen</div>
+          <div class="small-screen bg-gray p-3">small-screen</div>
+          <div class="large-screen bg-gray-dark p-3">large-screen</div>
         </div>
       </section>
     </article>

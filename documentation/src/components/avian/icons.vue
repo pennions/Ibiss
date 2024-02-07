@@ -31,7 +31,7 @@ import Card from '../shared/Card.vue'
             </tr>
 
             <tr>
-              <td><code class="language-html">icon-grey</code></td>
+              <td><code class="language-html">icon-gray</code></td>
               <td>
                 <div class="pt-1 px-1 fit-content">
                   <svg
@@ -44,7 +44,7 @@ import Card from '../shared/Card.vue'
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="lucide lucide-coffee icon-grey"
+                    class="lucide lucide-coffee icon-gray"
                   >
                     <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
                     <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
@@ -56,7 +56,7 @@ import Card from '../shared/Card.vue'
               </td>
             </tr>
             <tr>
-              <td><code class="language-html">icon-grey-dark</code></td>
+              <td><code class="language-html">icon-gray-dark</code></td>
               <td>
                 <div class="pt-1 px-1 fit-content">
                   <svg
@@ -69,7 +69,7 @@ import Card from '../shared/Card.vue'
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="lucide lucide-coffee icon-grey-dark"
+                    class="lucide lucide-coffee icon-gray-dark"
                   >
                     <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
                     <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
