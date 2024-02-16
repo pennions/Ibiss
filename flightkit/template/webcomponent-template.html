@@ -8,7 +8,7 @@
             /* Define global component styles */
             :root {
                 /* Define CSS variables */
-                --your-component-text-color: black;
+                --your-component-text-color: red;
                 --your-component-background-color: white;
             }
 
@@ -21,6 +21,7 @@
         </style>
     </head>
     <body>
+        <your-component></your-component>
         <script>
             // Define your web component class
             class YourComponent extends HTMLElement {
@@ -43,7 +44,7 @@
                     </style>
                     <div class="your-component">
                         <!-- Content and elements of your component -->
-                        <span id="content"></span>
+                        <span id="content">hi</span>
                     </div>
                 `;
                     // Append the template content to shadow DOM

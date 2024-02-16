@@ -24,7 +24,8 @@ function build() {
         const avianCssCommands = [
             `node ./node_modules/less/bin/lessc aviancss/aviancss.less dist/aviancss-v${version}/avian.css`,
             `npx postcss ./dist/aviancss-v${version}/avian.css > ./dist/aviancss-v${version}/avian.min.css`,
-            `npx postcss ./dist/aviancss-v${version}/avian.css > ./documentation/src/assets/css/avian.min.css`
+            `npx postcss ./dist/aviancss-v${version}/avian.css > ./documentation/src/assets/css/avian.min.css`,
+            `npx postcss ./dist/aviancss-v${version}/avian.css > ./flightkit/public/css/avian.min.css`
         ];
 
         const buildDocumentation = 'npm run build --prefix documentation'

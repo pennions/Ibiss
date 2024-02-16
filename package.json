@@ -10,6 +10,7 @@
   "scripts": {
     "build": "node ./build-ibiss.js",
     "dev": "npm run dev --prefix documentation",
+    "flightkit": "npm run dev --prefix flightkit",
     "test": "jest --collectCoverage",
     "lint": "npx prettier -w rocketjs/**",
     "publish": "npm run build && npm publish --access public"
