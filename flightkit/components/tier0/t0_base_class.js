@@ -1,16 +1,21 @@
+import { uuidv4 } from '../../htmlbuilder/uuid_v4';
+
 export class t0_base_class extends HTMLElement {
     _id;
     _events = [];
     _observedAttributes = [];
+    _customEvents = ["@edit", "@cancel", "@save", "@delete"];
 
-    static get observedAttributes() {
+    _topLevelClasses = [];
+
+    get observedAttributes() {
         return this._observedAttributes;
     };
 
     /**
      * Single attribute / property as a string or an array of strings
      */
-    static set observedAttributes(attribute) {
+    set observedAttributes(attribute) {
         let attributesToAdd = Array.isArray(attribute) ? attribute : [attribute];
 
         for (const newAttribute of attributesToAdd) {
@@ -22,8 +27,18 @@ export class t0_base_class extends HTMLElement {
 
     constructor() {
         super();
-        this.id = this.id ? this.id : 'ft-' + this._uuidv4(); /** prefixing with ft- because it can not start with a number */
+        this.id = this.id ? this.id : `ft-${uuidv4()}`; /** prefixing with ft- because it can not start with a number */
         this._innerHTML = this.innerHTML;
+
+        const numberOfClasses = (Object.keys(this.classList)).length;
+
+        if (numberOfClasses) {
+            for (let clen = 0; clen < numberOfClasses; clen++) {
+                this._topLevelClasses.push(this.classList[0]);
+                this.classList.remove(this.classList[0]);
+            }
+            this.removeAttribute('class');
+        }
     }
 
     connectedCallback() {
@@ -46,58 +61,49 @@ export class t0_base_class extends HTMLElement {
             const selector = `#${this.id}`;
 
             for (const event of eventsToAdd) {
-                this.addEvent(selector, event, this.getAttribute(`@${event}`));
+                const eventAttribute = `@${event}`;
+                const notCustomEvent = !this._customEvents.includes(eventAttribute);
+
+                if (notCustomEvent) {
+                    this.addEvent(selector, event, this.getAttribute(eventAttribute));
+                }
+                else {
+                    /** custom events are click only for now. */
+                    this.addEvent(selector, 'click', this.getAttribute(eventAttribute));
+                }
             }
         }
         this.afterRender();
     }
 
-    // attributeChangedCallback(name, oldValue, newValue) {
-
-    // }
-
     _getAllEventAttributes() {
         const attributes = this.attributes;
         const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('@'));
+        /** remove custom events, because these need to be bound specifically */
         return eventAttributes.map(attr => attr.name.slice(1));
     }
 
-    _uuidv4() {
-        const guid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-        );
-        /** This will be unique enough */
-        const newGuid = guid.split('-')[0];
-
-        if (!window._flightkitStore) {
-            window._flightkitStore = [];
-        }
-
-        /** verify to be absolutely sure ;) */
-        if (window._flightkitStore.some(guid => guid === newGuid)) {
-            return _uuidv4();
-        }
-        else {
-            window._flightkitStore.push(newGuid);
-            return newGuid;
-        }
+    _isFlightkitElement(tagName) {
+        return tagName.toUpperCase().includes('FT-');
     }
 
+    /**
+     * @returns top level flightkit element
+     */
     _returnTopLevelElement(event) {
         let { timeStamp, type, view, x, y } = event;
 
         let target = event.target;
 
         do {
-            if (target.tagName.toUpperCase().includes('FT-')) {
+            if (this._isFlightkitElement(target.tagName)) {
                 break;
             }
             else {
                 target = target.parentNode;
             }
         }
-        while (!target.tagName.toUpperCase().includes('FT-'));
-
+        while (!this._isFlightkitElement(target.tagName)); /** check until we get the flightkit element */
 
         return {
             target,

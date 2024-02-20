@@ -11,6 +11,15 @@
         <ft-button id="test" class="primary hello foo" @click="console.log">
             <div>Hello</div>
         </ft-button>
+
+        <ft-table id="ft-test" class="table"></ft-table>
+
+        <script src="js/irisset.js"></script>
         <script type="module" src="/main.js"></script>
+        <script>
+            window.onload = () => {
+                document.getElementById('ft-test').setContents(window.irisSet);
+            };
+        </script>
     </body>
 </html>
