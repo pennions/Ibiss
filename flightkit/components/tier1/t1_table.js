@@ -2,21 +2,19 @@ import JOQ from '@pennions/joq';
 import { t0_base_class } from '../tier0/t0_base_class';
 
 export class FtTable extends t0_base_class {
-    _contents;
-    /**
-     * metadata:
-     * columnOrder, array of names as string.
-     * orderBy: object or array of objects with    { propertyName: string, direction: 'asc' | 'desc' }
-     * filters
-     */
-    _metadata;
+    _contents = [];
+    _orderBy = [];
     properties = new Set();
-    _columnOrder;
+    _columnOrder = [];
     uniqueEntriesByProperties = {};
     propertyLabelDictionary = {};
 
+    static get observedAttributes() {
+        return ['contents', 'column-order', 'order', 'direction'];
+    };
+
     get columnOrder() {
-        return this._columnOrder && this._columnOrder.length ? this._columnOrder : this.properties;
+        return this._columnOrder.length ? this._columnOrder : this.properties;
     }
 
     set columnOrder(newValue) {
@@ -39,19 +37,35 @@ export class FtTable extends t0_base_class {
         return this._contents;
     }
 
-    set contents(value) {
-        this.analyzeData(value);
-        this._contents = new JOQ(value);
+    set contents(newValue) {
+        this.analyzeData(newValue);
+        this._contents = new JOQ(newValue);
+        this.render();
+    }
+
+    get orderBy() {
+        return this._orderBy;
+    }
+    set orderBy(newValue) {
+        this._orderBy = newValue;
         this.render();
     }
 
     constructor() {
         super();
-        this.observedAttributes = ['contents', 'columnOrder', 'column-order'];
 
         const presetColumnOrder = this.getAttribute('column-order');
         if (presetColumnOrder) {
             this._columnOrder = presetColumnOrder.split(',');
+        }
+
+        const presetOrder = this.getAttribute('order');
+        const presetDirection = this.getAttribute('direction');
+        if (presetOrder) {
+            this._orderBy.push({
+                propertyName: presetOrder,
+                direction: presetDirection
+            });
         }
 
         this._innerHTML = /*html*/`<table class="${this._topLevelClasses.join(' ')}">${this.innerHTML}</table>`;
@@ -99,14 +113,22 @@ export class FtTable extends t0_base_class {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-
         switch (name) {
             case "contents": {
                 this.setContents(newValue);
                 break;
             }
-            default: {
-                super.attributeChangedCallback(name, oldValue, newValue);
+            case "order": {
+                this.orderBy = [{
+                    propertyName: newValue,
+                    direction: this.getAttribute('direction')
+                }];
+            }
+            case "direction": {
+                this.orderBy = [{
+                    propertyName: this.getAttribute('order'),
+                    direction: newValue
+                }];
             }
         }
     }
@@ -166,6 +188,13 @@ export class FtTable extends t0_base_class {
                 tableElement.classList.add(...this._topLevelClasses);
             }
             /** because of JOQ */
+            if (this.orderBy.length) {
+                this.contents.sort(this.orderBy);
+            }
+            else {
+                /** reset if no order */
+                this.contents.sort([]);
+            }
             const data = this.contents.execute();
 
             const tableHead = this.createHead();

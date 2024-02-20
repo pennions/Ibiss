@@ -1,35 +1,16 @@
 import { uuidv4 } from '../../htmlbuilder/uuid_v4';
 
 export class t0_base_class extends HTMLElement {
+    _renderTimer;
     _id;
     _events = [];
     _observedAttributes = [];
     _customEvents = ["@edit", "@cancel", "@save", "@delete"];
-
     _topLevelClasses = [];
-
-    get observedAttributes() {
-        return this._observedAttributes;
-    };
-
-    /**
-     * Single attribute / property as a string or an array of strings
-     */
-    set observedAttributes(attribute) {
-        let attributesToAdd = Array.isArray(attribute) ? attribute : [attribute];
-
-        for (const newAttribute of attributesToAdd) {
-            if (!this._observedAttributes.includes(newAttribute)) {
-                this._observedAttributes.push(newAttribute);
-            }
-        }
-    }
 
     constructor() {
         super();
         this.id = this.id ? this.id : `ft-${uuidv4()}`; /** prefixing with ft- because it can not start with a number */
-        this._innerHTML = this.innerHTML;
-
         const numberOfClasses = (Object.keys(this.classList)).length;
 
         if (numberOfClasses) {
@@ -50,30 +31,35 @@ export class t0_base_class extends HTMLElement {
         this.removeEvents();
     }
 
-    render() {
-        this.beforeRender();
-        this.innerHTML = this._innerHTML;
+    render(element) {
+        this._renderTimer = setTimeout(() => {
+            clearTimeout(this._renderTimer);
 
-        /** now it works with vue style events */
-        const eventsToAdd = this._getAllEventAttributes();
+            this.beforeRender();
+            this.innerHTML = "";
+            this.append(element);
 
-        if (eventsToAdd) {
-            const selector = `#${this.id}`;
+            /** now it works with vue style events */
+            const eventsToAdd = this._getAllEventAttributes();
 
-            for (const event of eventsToAdd) {
-                const eventAttribute = `@${event}`;
-                const notCustomEvent = !this._customEvents.includes(eventAttribute);
+            if (eventsToAdd) {
+                const selector = `#${this.id}`;
 
-                if (notCustomEvent) {
-                    this.addEvent(selector, event, this.getAttribute(eventAttribute));
-                }
-                else {
-                    /** custom events are click only for now. */
-                    this.addEvent(selector, 'click', this.getAttribute(eventAttribute));
+                for (const event of eventsToAdd) {
+                    const eventAttribute = `@${event}`;
+                    const notCustomEvent = !this._customEvents.includes(eventAttribute);
+
+                    if (notCustomEvent) {
+                        this.addEvent(selector, event, this.getAttribute(eventAttribute));
+                    }
+                    else {
+                        /** custom events are click only for now. */
+                        this.addEvent(selector, 'click', this.getAttribute(eventAttribute));
+                    }
                 }
             }
-        }
-        this.afterRender();
+            this.afterRender();
+        }, 10);
     }
 
     _getAllEventAttributes() {
@@ -90,7 +76,7 @@ export class t0_base_class extends HTMLElement {
     /**
      * @returns top level flightkit element
      */
-    _returnTopLevelElement(event) {
+    _returnEventWithTopLevelElement(event) {
         let { timeStamp, type, view, x, y } = event;
 
         let target = event.target;
@@ -120,14 +106,16 @@ export class t0_base_class extends HTMLElement {
     }
 
     _innerEventHander(event) {
-        const callback = this._currentCallback;
+        const ftEvent = this._returnEventWithTopLevelElement(event);
+        const callback = ftEvent.target.getAttribute(`@${ftEvent.type}`)
         event.preventDefault();
         event.stopPropagation();
-        return this[callback](this._returnTopLevelElement(event));
+        return this[callback](ftEvent);
     }
 
     _outerEventHandler(event) {
-        const callback = this._currentCallback;
+        const ftEvent = this._returnEventWithTopLevelElement(event);
+        const callback = ftEvent.target.getAttribute(`@${ftEvent.type}`)
         const callbackParts = callback.split('.');
 
         let actualCallback = undefined;
@@ -142,7 +130,7 @@ export class t0_base_class extends HTMLElement {
         }
         event.preventDefault();
         event.stopPropagation();
-        return actualCallback(this._returnTopLevelElement(event));
+        return actualCallback(ftEvent);
     }
 
     _addEvents() {
@@ -153,7 +141,6 @@ export class t0_base_class extends HTMLElement {
 
                 /** check if it is on the object */
                 const innerEvent = this[eventToAdd.callback];
-                this._currentCallback = eventToAdd.callback;
 
                 if (innerEvent) {
                     element.addEventListener(eventToAdd.eventType, this._innerEventHander);
@@ -184,11 +171,9 @@ export class t0_base_class extends HTMLElement {
 
     beforeRender() {
         this._removeEvents();
-        this._currentCallback = '';
     }
 
     afterRender() {
         this._addEvents();
-        this._currentCallback = '';
     }
 }

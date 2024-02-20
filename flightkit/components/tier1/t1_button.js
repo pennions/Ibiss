@@ -4,6 +4,10 @@ export class FtButton extends t0_base_class {
     constructor() {
         super();
 
-        this._innerHTML = /*html*/`<button class="${this._topLevelClasses.join(' ')}">${this.innerHTML}</button>`;
+        const btnElement = document.createElement('button');
+        btnElement.classList.add(...this._topLevelClasses);
+        btnElement.innerHTML = this.innerHTML;
+
+        this.render(btnElement);
     }
 }

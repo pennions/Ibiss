@@ -8,7 +8,7 @@
         <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
     </head>
     <body>
-        <ft-button id="test" class="primary hello foo" @click="console.log">
+        <ft-button id="test" class="primary hello foo" @click="test">
             <div>Hello</div>
         </ft-button>
 
@@ -16,11 +16,17 @@
             id="ft-test"
             class="table"
             column-order="species,sepalLength,sepalWidth,petalLength,petalWidth"
+            order="species"
+            direction="asc"
         ></ft-table>
 
         <script src="js/irisset.js"></script>
         <script type="module" src="/main.js"></script>
         <script>
+           function test(e) {
+                alert(JSON.stringify(e.target))
+            }
+
             window.onload = () => {
                 let ftTesttable = document.getElementById('ft-test');
                 ftTesttable.setContents(window.irisSet);
@@ -32,6 +38,20 @@
                 //     'petalLength',
                 //     'petalWidth'
                 // ];
+                ftTesttable.orderBy = [
+                    {
+                        propertyName: 'species',
+                        direction: 'asc'
+                    },
+                    {
+                        propertyName: 'sepalLength',
+                        direction: 'desc'
+                    },
+                ];
+
+                // setTimeout(() => {
+                //     ftTesttable.setAttribute('direction', 'desc');
+                // }, 2000)
             };
         </script>
     </body>
