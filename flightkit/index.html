@@ -12,13 +12,26 @@
             <div>Hello</div>
         </ft-button>
 
-        <ft-table id="ft-test" class="table"></ft-table>
+        <ft-table
+            id="ft-test"
+            class="table"
+            column-order="species,sepalLength,sepalWidth,petalLength,petalWidth"
+        ></ft-table>
 
         <script src="js/irisset.js"></script>
         <script type="module" src="/main.js"></script>
         <script>
             window.onload = () => {
-                document.getElementById('ft-test').setContents(window.irisSet);
+                let ftTesttable = document.getElementById('ft-test');
+                ftTesttable.setContents(window.irisSet);
+
+                // ftTesttable.columnOrder = [
+                //     'sepalLength',
+                //     'sepalWidth',
+                //     'species',
+                //     'petalLength',
+                //     'petalWidth'
+                // ];
             };
         </script>
     </body>

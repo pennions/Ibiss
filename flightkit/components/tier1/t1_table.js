@@ -3,6 +3,13 @@ import { t0_base_class } from '../tier0/t0_base_class';
 
 export class FtTable extends t0_base_class {
     _contents;
+    /**
+     * metadata:
+     * columnOrder, array of names as string.
+     * orderBy: object or array of objects with    { propertyName: string, direction: 'asc' | 'desc' }
+     * filters
+     */
+    _metadata;
     properties = new Set();
     _columnOrder;
     uniqueEntriesByProperties = {};
@@ -10,6 +17,22 @@ export class FtTable extends t0_base_class {
 
     get columnOrder() {
         return this._columnOrder && this._columnOrder.length ? this._columnOrder : this.properties;
+    }
+
+    set columnOrder(newValue) {
+        let processedValue;
+
+        switch (typeof newValue) {
+            case 'string': {
+                processedValue = newValue.split(',');
+            }
+            default: {
+                processedValue = newValue;
+            }
+
+        }
+        this._columnOrder = processedValue;
+        this.render();
     }
 
     get contents() {
@@ -24,7 +47,13 @@ export class FtTable extends t0_base_class {
 
     constructor() {
         super();
-        this.observedAttributes = 'contents';
+        this.observedAttributes = ['contents', 'columnOrder', 'column-order'];
+
+        const presetColumnOrder = this.getAttribute('column-order');
+        if (presetColumnOrder) {
+            this._columnOrder = presetColumnOrder.split(',');
+        }
+
         this._innerHTML = /*html*/`<table class="${this._topLevelClasses.join(' ')}">${this.innerHTML}</table>`;
     }
 
@@ -96,7 +125,6 @@ export class FtTable extends t0_base_class {
     }
 
     createRow(rowContent) {
-
         const tableRow = document.createElement('tr');
 
         for (const property of this.columnOrder) {
@@ -116,7 +144,6 @@ export class FtTable extends t0_base_class {
         return tableBody;
     };
 
-
     createHead() {
         const tableHead = document.createElement('thead');
         const headerRow = document.createElement('tr');
@@ -130,9 +157,9 @@ export class FtTable extends t0_base_class {
         return tableHead;
     };
 
-
     render() {
         if (this.contents && this.contents.model) {
+            this.beforeRender();
             const tableElement = document.createElement('table');
 
             if (this._topLevelClasses.length) {
@@ -146,8 +173,9 @@ export class FtTable extends t0_base_class {
 
             const tableBody = this.createBody(data);
             tableElement.append(tableBody);
-
+            this.innerHTML = "";
             this.append(tableElement);
+            this.afterRender();
         }
     }
 }
