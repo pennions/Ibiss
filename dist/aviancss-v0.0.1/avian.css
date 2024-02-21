@@ -1565,6 +1565,30 @@ hr {
   border-color: var(--hr-color);
   margin-bottom: var(--default-distance);
 }
+.cursor-not-allowed:hover {
+  cursor: not-allowed;
+}
+.cursor-pointer:hover {
+  cursor: pointer;
+}
+.cursor-grab:hover {
+  cursor: grab;
+}
+.cursor-grabbing:hover {
+  cursor: grabbing;
+}
+.cursor-zoom-in:hover {
+  cursor: zoom-in;
+}
+.cursor-zoom-out:hover {
+  cursor: zoom-out;
+}
+.cursor-wait:hover {
+  cursor: wait;
+}
+.cursor-help:hover {
+  cursor: help;
+}
 summary.button,
 button {
   border-radius: 2px;

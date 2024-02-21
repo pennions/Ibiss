@@ -1,5 +1,8 @@
 import JOQ from '@pennions/joq';
 import { t0_base_class } from '../tier0/t0_base_class';
+import { uuidv4 } from '../../htmlbuilder/uuid_v4';
+import { sortAscendingIcon } from '../../htmlbuilder/icons';
+import { sortDescendingIcon } from '../../htmlbuilder/icons';
 
 export class FtTable extends t0_base_class {
     _contents = [];
@@ -50,7 +53,6 @@ export class FtTable extends t0_base_class {
         this._orderBy = newValue;
         this.render();
     }
-
     constructor() {
         super();
 
@@ -69,6 +71,31 @@ export class FtTable extends t0_base_class {
         }
 
         this._innerHTML = /*html*/`<table class="${this._topLevelClasses.join(' ')}">${this.innerHTML}</table>`;
+    }
+
+    sortData(event, ftElement) {
+        const column = event.target.dataset.column;
+
+        if (!column) return;
+
+        const columnPresentIndex = ftElement._orderBy.findIndex(order => order.propertyName === column);
+
+        /** it is present */
+        if (columnPresentIndex > -1) {
+            const presentOrder = ftElement._orderBy[columnPresentIndex];
+
+            if (presentOrder.direction === 'asc') {
+                ftElement._orderBy[columnPresentIndex].direction = 'desc';
+            }
+            else {
+                ftElement._orderBy.splice(columnPresentIndex, 1);
+            }
+        }
+        else {
+            /** add it */
+            ftElement._orderBy.push({ propertyName: column, direction: 'asc' });
+        }
+        this.render();
     }
 
     analyzeData(value) {
@@ -170,9 +197,27 @@ export class FtTable extends t0_base_class {
         const tableHead = document.createElement('thead');
         const headerRow = document.createElement('tr');
 
+        headerRow.classList.add('cursor-pointer');
+
         for (const header of this.columnOrder) {
+
+            const thId = `ft-${uuidv4()}`; /** to add the sort event */
             const thCell = document.createElement('th');
-            thCell.innerText = this.convertJsonKeyToTitle(header);
+            thCell.id = thId;
+            thCell.dataset.column = header;
+            thCell.dataset.action = 'sortData';
+
+            const headerText = document.createElement('span');
+            headerText.innerText = this.convertJsonKeyToTitle(header);
+            thCell.append(headerText);
+            this.addEvent(`#${thId}`, 'click', 'sortData');
+
+            const orderProperties = this.orderBy.find(obp => obp.propertyName === header);
+            if (orderProperties) {
+                const iconElement = document.createElement('span');
+                iconElement.innerHTML = orderProperties.direction === 'asc' ? sortAscendingIcon : sortDescendingIcon;
+                thCell.append(iconElement);
+            }
             headerRow.append(thCell);
         }
         tableHead.append(headerRow);

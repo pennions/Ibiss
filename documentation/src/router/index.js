@@ -92,6 +92,11 @@ const router = createRouter({
           name: 'avian-shadows',
           component: () => import('../components/avian/utilities/shadows.vue'),
         },
+        {
+          path: '/cursors',
+          name: 'avian-cursors',
+          component: () => import('../components/avian/utilities/cursors.vue'),
+        },
       ]
     }
   ]

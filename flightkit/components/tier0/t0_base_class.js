@@ -106,16 +106,49 @@ export class t0_base_class extends HTMLElement {
     }
 
     _innerEventHander(event) {
-        const ftEvent = this._returnEventWithTopLevelElement(event);
-        const callback = ftEvent.target.getAttribute(`@${ftEvent.type}`)
-        event.preventDefault();
-        event.stopPropagation();
-        return this[callback](ftEvent);
+        let ftEvent, callback;
+
+        /** when using svg or inner elements it can be no longer the actual target */
+        let correctTarget = event.target;
+
+        /** if it is the outside element this will work. but if you have a nested item, like a th, with event then this is undefined */
+        if (this._returnEventWithTopLevelElement) {
+            ftEvent = this._returnEventWithTopLevelElement(event);
+            callback = ftEvent.target.getAttribute(`@${ftEvent.type}`);
+            event.preventDefault();
+            event.stopPropagation();
+            return this[callback](ftEvent);
+        }
+        else {
+            let ftTarget = event.target;
+            let callback = ftTarget.dataset.action;
+
+            do {
+                if (ftTarget.tagName.toUpperCase().includes('FT-')) {
+                    break;
+                }
+                else {
+                    ftTarget = ftTarget.parentNode;
+                }
+
+                if (callback === undefined) {
+                    callback = ftTarget.dataset.action;
+
+                    /** now we know this is the correct element */
+                    if (callback) {
+                        correctTarget = ftTarget;
+                    }
+                }
+            }
+            while (!ftTarget.tagName.toUpperCase().includes('FT-'));
+
+            return ftTarget[callback]({ target: correctTarget }, ftTarget);
+        }
     }
 
     _outerEventHandler(event) {
         const ftEvent = this._returnEventWithTopLevelElement(event);
-        const callback = ftEvent.target.getAttribute(`@${ftEvent.type}`)
+        const callback = ftEvent.target.getAttribute(`@${ftEvent.type}`);
         const callbackParts = callback.split('.');
 
         let actualCallback = undefined;
@@ -167,6 +200,7 @@ export class t0_base_class extends HTMLElement {
                 element.removeEventListener(eventToRemove.eventType, this._outerEventHandler);
             }
         }
+        this._events = [];
     }
 
     beforeRender() {
