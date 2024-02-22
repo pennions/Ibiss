@@ -17,6 +17,11 @@ function build() {
             `npx uglifyjs --compress --mangle --output documentation/src/assets/js/rocket.min.js dist/rocketjs-v${version}/rocket.min.js`
         ];
 
+        const flightkitJsCommands = [
+            `npx uglifyjs --compress --mangle --output dist/flightkit-v${version}/flightkit.min.js dist/flightkit-v${version}/flightkit.js`,
+            `npx uglifyjs --compress --mangle --output documentation/src/assets/js/flightkit.min.js dist/flightkit-v${version}/flightkit.min.js`
+        ];
+
         const htmxCommands = [
             `npx uglifyjs --compress --mangle --output dist/htmx-ibiss-ui-v${version}/htmx-ibiss-ui.min.js dist/htmx-ibiss-ui-v${version}/htmx-ibiss-ui.js`
         ];
@@ -29,7 +34,7 @@ function build() {
         ];
 
         const buildDocumentation = 'npm run build --prefix documentation'
-        const buildCommands = [...rollupCommands, ...rocketJsCommands, ...avianCssCommands, ...htmxCommands, buildDocumentation];
+        const buildCommands = [...rollupCommands, ...rocketJsCommands, ...avianCssCommands, ...htmxCommands, ...flightkitJsCommands, buildDocumentation];
 
         for (const command of buildCommands) {
             execSync(command, (error) => {

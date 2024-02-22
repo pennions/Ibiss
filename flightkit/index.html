@@ -15,9 +15,10 @@
         <ft-table
             id="ft-test"
             class="table"
-            column-order="species,sepalLength,sepalWidth,petalLength,petalWidth"
-            order="species"
+            columns="species,sepalLength,sepalWidth,petalLength,petalWidth"
+            sort="species"
             direction="asc"
+            filter="aca"
         ></ft-table>
 
         <script src="js/irisset.js"></script>
@@ -49,9 +50,10 @@
                     },
                 ];
 
-                // setTimeout(() => {
-                //     ftTesttable.setAttribute('direction', 'desc');
-                // }, 2000)
+                setTimeout(() => {
+                    ftTesttable.removeAttribute('filter')
+                }, 2000)
+
             };
         </script>
     </body>

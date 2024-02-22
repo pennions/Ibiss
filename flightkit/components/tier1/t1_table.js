@@ -9,11 +9,12 @@ export class FtTable extends t0_base_class {
     _orderBy = [];
     properties = new Set();
     _columnOrder = [];
+    _filter = '';
     uniqueEntriesByProperties = {};
     propertyLabelDictionary = {};
 
     static get observedAttributes() {
-        return ['contents', 'column-order', 'order', 'direction'];
+        return ['contents', 'columns', 'sort', 'direction', 'filter'];
     };
 
     get columnOrder() {
@@ -53,14 +54,22 @@ export class FtTable extends t0_base_class {
         this._orderBy = newValue;
         this.render();
     }
+
+    get filter() {
+        return this._filter;
+    }
+
+    set filter(newValue) {
+        this._filter = newValue.toString();
+        this.render();
+    }
+
     constructor() {
         super();
 
-        const presetColumnOrder = this.getAttribute('column-order');
-        if (presetColumnOrder) {
-            this._columnOrder = presetColumnOrder.split(',');
-        }
-
+        this.setContents(this.getAttribute('contents'));
+        this.setColumnOrder(this.getAttribute('columns'));
+        this.filter = this.getAttribute('filter');
         const presetOrder = this.getAttribute('order');
         const presetDirection = this.getAttribute('direction');
         if (presetOrder) {
@@ -69,8 +78,16 @@ export class FtTable extends t0_base_class {
                 direction: presetDirection
             });
         }
-
         this._innerHTML = /*html*/`<table class="${this._topLevelClasses.join(' ')}">${this.innerHTML}</table>`;
+    }
+
+    setColumnOrder(newOrder) {
+        if (newOrder) {
+            this._columnOrder = Array.isArray(newOrder) ? newOrder : newOrder.split(',');
+        }
+        else {
+            this._columnOrder = [];
+        }
     }
 
     sortData(event, ftElement) {
@@ -139,23 +156,35 @@ export class FtTable extends t0_base_class {
         }
     }
 
+    /** we only need this if we dont use get/set */
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "contents": {
                 this.setContents(newValue);
                 break;
             }
-            case "order": {
+            case "sort": {
                 this.orderBy = [{
                     propertyName: newValue,
                     direction: this.getAttribute('direction')
                 }];
+                break;
+            }
+            case 'filter': {
+                this.filter = newValue || '';
+                break;
+            }
+            case "columns": {
+                this.setColumnOrder(newValue);
+                this.render();
+                break;
             }
             case "direction": {
                 this.orderBy = [{
                     propertyName: this.getAttribute('order'),
                     direction: newValue
                 }];
+                break;
             }
         }
     }
@@ -240,6 +269,26 @@ export class FtTable extends t0_base_class {
                 /** reset if no order */
                 this.contents.sort([]);
             }
+
+
+            if (this.filter.length) {
+                const filters = [];
+
+                for (const property of this.columnOrder) {
+                    filters.push({
+                        propertyName: property,
+                        value: this.filter,
+                        operator: 'like',
+                        type: 'or', /** optional, defaults to "and" **/
+                        ignoreCase: true /** optional, defaults to "false" **/
+                    });
+                }
+                this.contents.filter(filters);
+            }
+            else {
+                this.contents.filter([]);
+            }
+
             const data = this.contents.execute();
 
             const tableHead = this.createHead();

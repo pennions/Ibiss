@@ -5,7 +5,9 @@ export class FtButton extends t0_base_class {
         super();
 
         const btnElement = document.createElement('button');
-        btnElement.classList.add(...this._topLevelClasses);
+        if (this._topLevelClasses.length) {
+            btnElement.classList.add(...this._topLevelClasses);
+        }
         btnElement.innerHTML = this.innerHTML;
 
         this.render(btnElement);
