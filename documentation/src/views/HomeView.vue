@@ -9,11 +9,17 @@ import { RouterLink } from 'vue-router'
       <h1>Ibiss UI Documentation</h1>
     </header>
 
-    <section class="card-row row justify-center align-center">
+    <section class="card-row row justify-center align-center gap-5">
       <div class="card shadow">
         <router-link to="/aviancss" class="link-card column align-center justify-around">
           <img src="/aviancss.svg" class="avian-logo" />
           <span class="normal">Go to Avian CSS</span>
+        </router-link>
+      </div>
+      <div class="card shadow">
+        <router-link to="/flightkit" class="link-card column align-center justify-around p-2">
+          <img src="/flightkit.svg" class="flightkit-logo" />
+          <span class="normal">Go to Flightkit Components</span>
         </router-link>
       </div>
     </section>
@@ -24,14 +30,20 @@ import { RouterLink } from 'vue-router'
 .ibiss-logo {
   width: 8%;
 }
-.avian-logo {
+.avian-logo, .flightkit-logo {
   height: 80%;
+}
+
+.image-container {
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
 }
 
 .card {
   height: 35dvh;
-  width: auto;
-  max-width: fit-content;
+  width: 28rem;
+  /* width: auto; */
+  /* max-width: fit-content; */
   border-radius: 2rem;
   background: linear-gradient(to bottom right, rgba(0, 120, 212, 0.3), rgba(0, 120, 212, 0.15));
   transition: transform 1s ease;

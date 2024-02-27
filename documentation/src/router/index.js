@@ -9,6 +9,7 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
+    /** Avian CSS routes */
     {
       path: '/aviancss',
       name: 'aviancss',
@@ -98,8 +99,25 @@ const router = createRouter({
           component: () => import('../components/avian/utilities/cursors.vue'),
         },
       ]
-    }
-  ]
+    },
+    /** Flightkit routes */
+    {
+      path: '/flightkit',
+      name: 'flightkit',
+      component: () => import('../views/Flightkit.vue'),
+      children: [
+        {
+          path: '',
+          name: 'flightkit-index',
+          component: () => import('../components/flightkit/index.vue'),
+        },
+        {
+          path: '/flightkit-table',
+          name: 'flightkit-table',
+          component: () => import('../components/flightkit/flightkit-table.vue'),
+        },
+      ]
+    }]
 });
 
 export default router;

@@ -8,53 +8,58 @@
         <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
     </head>
     <body>
-        <ft-button id="test" class="primary hello foo" @click="test">
+        <flk-button id="test" class="primary hello foo" @click="test">
             <div>Hello</div>
-        </ft-button>
+        </flk-button>
 
-        <ft-table
+        <script type="module" src="/main.js"></script>
+
+        <flk-table
             id="ft-test"
             class="table"
             columns="species,sepalLength,sepalWidth,petalLength,petalWidth"
             sort="species"
             direction="asc"
             filter="aca"
-        ></ft-table>
+        ></flk-table>
 
         <script src="js/irisset.js"></script>
-        <script type="module" src="/main.js"></script>
+
         <script>
-           function test(e) {
-                alert(JSON.stringify(e.target))
+            function test(e) {
+                alert(JSON.stringify(e.target));
             }
 
             window.onload = () => {
                 let ftTesttable = document.getElementById('ft-test');
                 ftTesttable.setContents(window.irisSet);
-
-                // ftTesttable.columnOrder = [
-                //     'sepalLength',
-                //     'sepalWidth',
-                //     'species',
-                //     'petalLength',
-                //     'petalWidth'
-                // ];
-                ftTesttable.orderBy = [
-                    {
-                        propertyName: 'species',
-                        direction: 'asc'
-                    },
-                    {
-                        propertyName: 'sepalLength',
-                        direction: 'desc'
-                    },
-                ];
-
-                setTimeout(() => {
-                    ftTesttable.removeAttribute('filter')
-                }, 2000)
-
             };
+            // window.onload = () => {
+            //     let ftTesttable = document.getElementById('ft-test');
+            //     ftTesttable.setContents(window.irisSet);
+
+            //     // ftTesttable.columnOrder = [
+            //     //     'sepalLength',
+            //     //     'sepalWidth',
+            //     //     'species',
+            //     //     'petalLength',
+            //     //     'petalWidth'
+            //     // ];
+            //     ftTesttable.orderBy = [
+            //         {
+            //             propertyName: 'species',
+            //             direction: 'asc'
+            //         },
+            //         {
+            //             propertyName: 'sepalLength',
+            //             direction: 'desc'
+            //         }
+            //     ];
+
+            //     setTimeout(() => {
+            //         ftTesttable.removeAttribute('filter');
+            //     }, 2000);
+            // };
         </script>
     </body>
 </html>

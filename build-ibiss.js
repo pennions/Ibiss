@@ -18,8 +18,7 @@ function build() {
         ];
 
         const flightkitJsCommands = [
-            `npx uglifyjs --compress --mangle --output dist/flightkit-v${version}/flightkit.min.js dist/flightkit-v${version}/flightkit.js`,
-            `npx uglifyjs --compress --mangle --output documentation/src/assets/js/flightkit.min.js dist/flightkit-v${version}/flightkit.min.js`
+            `npx uglifyjs --compress --mangle --output dist/flightkit-v${version}/flightkit.min.js dist/flightkit-v${version}/flightkit.js`
         ];
 
         const htmxCommands = [
@@ -33,7 +32,7 @@ function build() {
             `npx postcss ./dist/aviancss-v${version}/avian.css > ./flightkit/public/css/avian.min.css`
         ];
 
-        const buildDocumentation = 'npm run build --prefix documentation'
+        const buildDocumentation = 'npm run build --prefix documentation';
         const buildCommands = [...rollupCommands, ...rocketJsCommands, ...avianCssCommands, ...htmxCommands, ...flightkitJsCommands, buildDocumentation];
 
         for (const command of buildCommands) {

@@ -1,10 +1,9 @@
 import JOQ from '@pennions/joq';
 import { t0_base_class } from '../tier0/t0_base_class';
 import { uuidv4 } from '../../htmlbuilder/uuid_v4';
-import { sortAscendingIcon } from '../../htmlbuilder/icons';
-import { sortDescendingIcon } from '../../htmlbuilder/icons';
+import { sortAscendingIcon, sortDescendingIcon } from '../../htmlbuilder/icons';
 
-export class FtTable extends t0_base_class {
+export class FlightkitTable extends t0_base_class {
     _contents = [];
     _orderBy = [];
     properties = new Set();
@@ -51,6 +50,7 @@ export class FtTable extends t0_base_class {
         return this._orderBy;
     }
     set orderBy(newValue) {
+        console.trace(newValue);
         this._orderBy = newValue;
         this.render();
     }
@@ -69,8 +69,8 @@ export class FtTable extends t0_base_class {
 
         this.setContents(this.getAttribute('contents'));
         this.setColumnOrder(this.getAttribute('columns'));
-        this.filter = this.getAttribute('filter');
-        const presetOrder = this.getAttribute('order');
+        this.filter = this.getAttribute('filter') || '';
+        const presetOrder = this.getAttribute('sort');
         const presetDirection = this.getAttribute('direction');
         if (presetOrder) {
             this._orderBy.push({
@@ -92,7 +92,6 @@ export class FtTable extends t0_base_class {
 
     sortData(event, ftElement) {
         const column = event.target.dataset.column;
-
         if (!column) return;
 
         const columnPresentIndex = ftElement._orderBy.findIndex(order => order.propertyName === column);
@@ -134,7 +133,7 @@ export class FtTable extends t0_base_class {
 
     setContents(newValue) {
         /** check if it came from an attibute callback, or directly set as property */
-        const valueToSet = newValue || this.contents;
+        const valueToSet = newValue || this.contents || [];
         try {
 
             switch (typeof valueToSet) {
@@ -181,7 +180,7 @@ export class FtTable extends t0_base_class {
             }
             case "direction": {
                 this.orderBy = [{
-                    propertyName: this.getAttribute('order'),
+                    propertyName: this.getAttribute('sort'),
                     direction: newValue
                 }];
                 break;
@@ -230,7 +229,7 @@ export class FtTable extends t0_base_class {
 
         for (const header of this.columnOrder) {
 
-            const thId = `ft-${uuidv4()}`; /** to add the sort event */
+            const thId = `flk-${uuidv4()}`; /** to add the sort event */
             const thCell = document.createElement('th');
             thCell.id = thId;
             thCell.dataset.column = header;

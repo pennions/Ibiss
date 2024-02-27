@@ -10,7 +10,7 @@ export class t0_base_class extends HTMLElement {
 
     constructor() {
         super();
-        this.id = this.id ? this.id : `ft-${uuidv4()}`; /** prefixing with ft- because it can not start with a number */
+        this.id = this.id ? this.id : `flk-${uuidv4()}`; /** prefixing with flk- because it can not start with a number */
         const numberOfClasses = (Object.keys(this.classList)).length;
 
         if (numberOfClasses) {
@@ -70,7 +70,7 @@ export class t0_base_class extends HTMLElement {
     }
 
     _isFlightkitElement(tagName) {
-        return tagName.toUpperCase().includes('FT-');
+        return tagName.toUpperCase().includes('FLK-');
     }
 
     /**
@@ -124,7 +124,7 @@ export class t0_base_class extends HTMLElement {
             let callback = ftTarget.dataset.action;
 
             do {
-                if (ftTarget.tagName.toUpperCase().includes('FT-')) {
+                if (ftTarget.tagName.toUpperCase().includes('FLK-')) {
                     break;
                 }
                 else {
@@ -140,7 +140,7 @@ export class t0_base_class extends HTMLElement {
                     }
                 }
             }
-            while (!ftTarget.tagName.toUpperCase().includes('FT-'));
+            while (!ftTarget.tagName.toUpperCase().includes('FLK-'));
 
             return ftTarget[callback]({ target: correctTarget }, ftTarget);
         }

@@ -32,7 +32,7 @@
 
         constructor() {
             super();
-            this.id = this.id ? this.id : `ft-${uuidv4()}`; /** prefixing with ft- because it can not start with a number */
+            this.id = this.id ? this.id : `flk-${uuidv4()}`; /** prefixing with flk- because it can not start with a number */
             const numberOfClasses = (Object.keys(this.classList)).length;
 
             if (numberOfClasses) {
@@ -92,7 +92,7 @@
         }
 
         _isFlightkitElement(tagName) {
-            return tagName.toUpperCase().includes('FT-');
+            return tagName.toUpperCase().includes('FLK-');
         }
 
         /**
@@ -146,7 +146,7 @@
                 let callback = ftTarget.dataset.action;
 
                 do {
-                    if (ftTarget.tagName.toUpperCase().includes('FT-')) {
+                    if (ftTarget.tagName.toUpperCase().includes('FLK-')) {
                         break;
                     }
                     else {
@@ -162,7 +162,7 @@
                         }
                     }
                 }
-                while (!ftTarget.tagName.toUpperCase().includes('FT-'));
+                while (!ftTarget.tagName.toUpperCase().includes('FLK-'));
 
                 return ftTarget[callback]({ target: correctTarget }, ftTarget);
             }
@@ -234,11 +234,11 @@
         }
     }
 
-    class FtButton extends t0_base_class {
+    class FlightkitButton extends t0_base_class {
         constructor() {
             super();
-
             const btnElement = document.createElement('button');
+
             if (this._topLevelClasses.length) {
                 btnElement.classList.add(...this._topLevelClasses);
             }
@@ -940,7 +940,7 @@
     const sortAscendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: 3px; left: 2px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-narrow-wide"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="M11 12h4"/><path d="M11 16h7"/><path d="M11 20h10"/></svg>';
     const sortDescendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: 3px; left: 2px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-wide-narrow"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>';
 
-    class FtTable extends t0_base_class {
+    class FlightkitTable extends t0_base_class {
         _contents = [];
         _orderBy = [];
         properties = new Set();
@@ -987,6 +987,7 @@
             return this._orderBy;
         }
         set orderBy(newValue) {
+            console.trace(newValue);
             this._orderBy = newValue;
             this.render();
         }
@@ -1005,8 +1006,8 @@
 
             this.setContents(this.getAttribute('contents'));
             this.setColumnOrder(this.getAttribute('columns'));
-            this.filter = this.getAttribute('filter');
-            const presetOrder = this.getAttribute('order');
+            this.filter = this.getAttribute('filter') || '';
+            const presetOrder = this.getAttribute('sort');
             const presetDirection = this.getAttribute('direction');
             if (presetOrder) {
                 this._orderBy.push({
@@ -1028,7 +1029,6 @@
 
         sortData(event, ftElement) {
             const column = event.target.dataset.column;
-
             if (!column) return;
 
             const columnPresentIndex = ftElement._orderBy.findIndex(order => order.propertyName === column);
@@ -1070,7 +1070,7 @@
 
         setContents(newValue) {
             /** check if it came from an attibute callback, or directly set as property */
-            const valueToSet = newValue || this.contents;
+            const valueToSet = newValue || this.contents || [];
             try {
 
                 switch (typeof valueToSet) {
@@ -1117,7 +1117,7 @@
                 }
                 case "direction": {
                     this.orderBy = [{
-                        propertyName: this.getAttribute('order'),
+                        propertyName: this.getAttribute('sort'),
                         direction: newValue
                     }];
                     break;
@@ -1166,7 +1166,7 @@
 
             for (const header of this.columnOrder) {
 
-                const thId = `ft-${uuidv4()}`; /** to add the sort event */
+                const thId = `flk-${uuidv4()}`; /** to add the sort event */
                 const thCell = document.createElement('th');
                 thCell.id = thId;
                 thCell.dataset.column = header;
@@ -1239,7 +1239,7 @@
         }
     }
 
-    customElements.define('ft-button', FtButton);
-    customElements.define('ft-table', FtTable);
+    customElements.define('flk-button', FlightkitButton);
+    customElements.define('flk-table', FlightkitTable);
 
 })();
