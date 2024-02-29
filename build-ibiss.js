@@ -14,11 +14,12 @@ function build() {
 
         const rocketJsCommands = [
             `npx uglifyjs --compress --mangle --output dist/rocketjs-v${version}/rocket.min.js dist/rocketjs-v${version}/rocket.js`,
-            `npx uglifyjs --compress --mangle --output documentation/src/assets/js/rocket.min.js dist/rocketjs-v${version}/rocket.min.js`
+            `npx uglifyjs --compress --mangle --output documentation/src/assets/js/rocket.min.js dist/rocketjs-v${version}/rocket.js`
         ];
 
         const flightkitJsCommands = [
-            `npx uglifyjs --compress --mangle --output dist/flightkit-v${version}/flightkit.min.js dist/flightkit-v${version}/flightkit.js`
+            `npx uglifyjs --compress --mangle --output dist/flightkit-v${version}/flightkit.min.js dist/flightkit-v${version}/flightkit.js`,
+            `npx uglifyjs --compress --mangle --output documentation/public/js/flightkit.min.js dist/flightkit-v${version}/flightkit.js`
         ];
 
         const htmxCommands = [

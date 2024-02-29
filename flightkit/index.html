@@ -5,10 +5,12 @@
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Flightkit dev</title>
+        <script src="js/irisset.js"></script>
+        <script src="js/ardeaset.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
     </head>
     <body>
-        <flk-button id="test" class="primary hello foo" @click="test">
+        <flk-button class="primary hello foo" >
             <div>Hello</div>
         </flk-button>
 
@@ -23,16 +25,17 @@
             filter="aca"
         ></flk-table>
 
-        <script src="js/irisset.js"></script>
 
         <script>
             function test(e) {
-                alert(JSON.stringify(e.target));
+                alert(JSON.stringify(e));
             }
+
 
             window.onload = () => {
                 let ftTesttable = document.getElementById('ft-test');
                 ftTesttable.setContents(window.irisSet);
+                ftTesttable.init();
             };
             // window.onload = () => {
             //     let ftTesttable = document.getElementById('ft-test');

@@ -9,7 +9,14 @@ export default defineConfig({
     outDir: '../docs'
   },
   plugins: [
-    vue()
+    vue({
+      template: {
+        compilerOptions: {
+          // treat all tags with a dash as custom elements
+          isCustomElement: (tag) => tag.includes('my-') || tag.includes('flk-')
+        }
+      }
+    })
   ],
   resolve: {
     alias: {

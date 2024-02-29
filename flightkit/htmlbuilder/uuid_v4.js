@@ -5,16 +5,16 @@ export function uuidv4() {
     /** This will be unique enough */
     const newGuid = guid.split('-')[0];
 
-    if (!window._flightkitUUIDStore) {
-        window._flightkitUUIDStore = [];
+    if (!window.$flightkitUUIDStore) {
+        window.$flightkitUUIDStore = [];
     }
 
     /** verify to be absolutely sure ;) */
-    if (window._flightkitUUIDStore.some(guid => guid === newGuid)) {
+    if (window.$flightkitUUIDStore.some(guid => guid === newGuid)) {
         return uuidv4();
     }
     else {
-        window._flightkitUUIDStore.push(newGuid);
+        window.$flightkitUUIDStore.push(newGuid);
         return newGuid;
     }
 };

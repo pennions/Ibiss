@@ -1,6 +1,53 @@
 (function () {
     'use strict';
 
+    function isFlightkitElement(tagName) {
+        return tagName.toUpperCase().includes('FLK-');
+    }
+
+    /**
+     * @returns top level flightkit element
+     */
+    function returnEventWithTopLevelElement(event) {
+        let { timeStamp, type, x, y } = event;
+
+        let target = event.target;
+
+        do {
+            if (isFlightkitElement(target.tagName)) {
+                break;
+            }
+            else {
+                target = target.parentNode;
+            }
+        }
+        while (!isFlightkitElement(target.tagName)); /** check until we get the flightkit element */
+
+        return {
+            target,
+            timeStamp,
+            type,
+            x,
+            y
+        };
+    }
+
+    function returnDataSetValue(event, datasetName) {
+        let target = event.target;
+        let datasetValue = '';
+        do {
+            if (target.dataset[datasetName]) {
+                datasetValue = target.dataset[datasetName];
+            }
+            else {
+                target = target.parentNode;
+            }
+        }
+        while (!datasetValue);
+
+        return datasetValue;
+    }
+
     function uuidv4() {
         const guid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
             (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
@@ -8,168 +55,98 @@
         /** This will be unique enough */
         const newGuid = guid.split('-')[0];
 
-        if (!window._flightkitUUIDStore) {
-            window._flightkitUUIDStore = [];
+        if (!window.$flightkitUUIDStore) {
+            window.$flightkitUUIDStore = [];
         }
 
         /** verify to be absolutely sure ;) */
-        if (window._flightkitUUIDStore.some(guid => guid === newGuid)) {
+        if (window.$flightkitUUIDStore.some(guid => guid === newGuid)) {
             return uuidv4();
         }
         else {
-            window._flightkitUUIDStore.push(newGuid);
+            window.$flightkitUUIDStore.push(newGuid);
             return newGuid;
         }
     }
 
-    class t0_base_class extends HTMLElement {
-        _renderTimer;
-        _id;
-        _events = [];
-        _observedAttributes = [];
-        _customEvents = ["@edit", "@cancel", "@save", "@delete"];
-        _topLevelClasses = [];
+    const baseComponent = {
 
-        constructor() {
-            super();
-            this.id = this.id ? this.id : `flk-${uuidv4()}`; /** prefixing with flk- because it can not start with a number */
-            const numberOfClasses = (Object.keys(this.classList)).length;
+        /** This is the 'custom component' */
+        renderTimeout: null,
+        _topLevelClasses: [],
+        _events: [],
+
+        render(parentElement) {
+            if (!parentElement.component) throw new Error("Component is not assigned! Can't render");
+            parentElement.id = parentElement.id ? parentElement.id : `flk-${uuidv4()}`; /** prefixing with flk- because it can not start with a number */
+
+            /** now it works with vue style events */
+            const eventsToAdd = this._getAllEventAttributes(parentElement);
+
+            if (eventsToAdd) {
+                const selector = `#${parentElement.id}`;
+
+                for (const event of eventsToAdd) {
+                    const eventAttribute = `@${event}`;
+                    this.addEvent(selector, 'click', parentElement.getAttribute(eventAttribute));
+                }
+            }
+
+            const numberOfClasses = (Object.keys(parentElement.classList)).length;
 
             if (numberOfClasses) {
                 for (let clen = 0; clen < numberOfClasses; clen++) {
-                    this._topLevelClasses.push(this.classList[0]);
-                    this.classList.remove(this.classList[0]);
+                    this._topLevelClasses.push(parentElement.classList[0]);
+                    parentElement.classList.remove(parentElement.classList[0]);
                 }
-                this.removeAttribute('class');
+                parentElement.removeAttribute('class');
             }
-        }
 
-        connectedCallback() {
-            this.render();
-        }
-
-        /** called when component is removed */
-        disconnectedCallback() {
-            this.removeEvents();
-        }
-
-        render(element) {
-            this._renderTimer = setTimeout(() => {
+            /** always passthrough top level classes */
+            if (this._topLevelClasses.length) {
+                parentElement.component.classList.add(...this._topLevelClasses);
+            }
+            clearTimeout(this._renderTimer);
+            /** try to limit the amount of rendering */
+            this.renderTimeout = setTimeout(() => {
                 clearTimeout(this._renderTimer);
-
-                this.beforeRender();
-                this.innerHTML = "";
-                this.append(element);
-
-                /** now it works with vue style events */
-                const eventsToAdd = this._getAllEventAttributes();
-
-                if (eventsToAdd) {
-                    const selector = `#${this.id}`;
-
-                    for (const event of eventsToAdd) {
-                        const eventAttribute = `@${event}`;
-                        const notCustomEvent = !this._customEvents.includes(eventAttribute);
-
-                        if (notCustomEvent) {
-                            this.addEvent(selector, event, this.getAttribute(eventAttribute));
-                        }
-                        else {
-                            /** custom events are click only for now. */
-                            this.addEvent(selector, 'click', this.getAttribute(eventAttribute));
-                        }
-                    }
-                }
-                this.afterRender();
+                this._assignToDom(parentElement, parentElement.component);
             }, 10);
-        }
-
-        _getAllEventAttributes() {
-            const attributes = this.attributes;
-            const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('@'));
-            /** remove custom events, because these need to be bound specifically */
-            return eventAttributes.map(attr => attr.name.slice(1));
-        }
-
-        _isFlightkitElement(tagName) {
-            return tagName.toUpperCase().includes('FLK-');
-        }
-
-        /**
-         * @returns top level flightkit element
-         */
-        _returnEventWithTopLevelElement(event) {
-            let { timeStamp, type, view, x, y } = event;
-
-            let target = event.target;
-
-            do {
-                if (this._isFlightkitElement(target.tagName)) {
-                    break;
-                }
-                else {
-                    target = target.parentNode;
-                }
-            }
-            while (!this._isFlightkitElement(target.tagName)); /** check until we get the flightkit element */
-
-            return {
-                target,
-                timeStamp,
-                type,
-                view,
-                x,
-                y
-            };
-        }
+        },
 
         addEvent(selector, eventType, callback) {
             this._events.push({ selector, eventType, callback });
-        }
+        },
 
-        _innerEventHander(event) {
-            let ftEvent, callback;
+        _getExternalCallback(fn) {
+            const callbackParts = fn.split('.');
 
-            /** when using svg or inner elements it can be no longer the actual target */
-            let correctTarget = event.target;
+            let actualCallback = undefined;
 
-            /** if it is the outside element this will work. but if you have a nested item, like a th, with event then this is undefined */
-            if (this._returnEventWithTopLevelElement) {
-                ftEvent = this._returnEventWithTopLevelElement(event);
-                callback = ftEvent.target.getAttribute(`@${ftEvent.type}`);
-                event.preventDefault();
-                event.stopPropagation();
-                return this[callback](ftEvent);
-            }
-            else {
-                let ftTarget = event.target;
-                let callback = ftTarget.dataset.action;
-
-                do {
-                    if (ftTarget.tagName.toUpperCase().includes('FLK-')) {
-                        break;
-                    }
-                    else {
-                        ftTarget = ftTarget.parentNode;
-                    }
-
-                    if (callback === undefined) {
-                        callback = ftTarget.dataset.action;
-
-                        /** now we know this is the correct element */
-                        if (callback) {
-                            correctTarget = ftTarget;
-                        }
-                    }
+            for (const cbPart of callbackParts) {
+                if (!actualCallback) {
+                    actualCallback = window[cbPart];
                 }
-                while (!ftTarget.tagName.toUpperCase().includes('FLK-'));
-
-                return ftTarget[callback]({ target: correctTarget }, ftTarget);
+                else {
+                    actualCallback = actualCallback[cbPart];
+                }
             }
-        }
+            return actualCallback;
+        },
+
+        _getAllEventAttributes(parentElement) {
+            const attributes = parentElement.attributes;
+            const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('@'));
+            /** remove custom events, because these need to be bound specifically */
+            return eventAttributes.map(attr => attr.name.slice(1));
+        },
+
+        _isFlightkitElement(tagName) {
+            return tagName.toUpperCase().includes('FLK-');
+        },
 
         _outerEventHandler(event) {
-            const ftEvent = this._returnEventWithTopLevelElement(event);
+            const ftEvent = returnEventWithTopLevelElement(event);
             const callback = ftEvent.target.getAttribute(`@${ftEvent.type}`);
             const callbackParts = callback.split('.');
 
@@ -186,65 +163,78 @@
             event.preventDefault();
             event.stopPropagation();
             return actualCallback(ftEvent);
-        }
+        },
 
-        _addEvents() {
-            if (this.isConnected) {
+        _addEvents(parentElement) {
+            if (parentElement.isConnected) {
                 for (const eventToAdd of this._events) {
 
                     let element = document.querySelector(eventToAdd.selector);
-
-                    /** check if it is on the object */
-                    const innerEvent = this[eventToAdd.callback];
-
-                    if (innerEvent) {
-                        element.addEventListener(eventToAdd.eventType, this._innerEventHander);
+                    if (!element) {
+                        continue;
+                    }
+                    /** check if it is a function (inner call) */
+                    if (typeof eventToAdd.callback == 'function') {
+                        element.removeEventListener(eventToAdd.eventType, eventToAdd.callback);
+                        element.addEventListener(eventToAdd.eventType, eventToAdd.callback);
                     }
                     else {
+                        element.removeEventListener(eventToAdd.eventType, this._outerEventHandler);
                         element.addEventListener(eventToAdd.eventType, this._outerEventHandler);
                     }
                 }
             }
-        }
+        },
 
-        _removeEvents() {
+        removeEvents() {
             for (const eventToRemove of this._events) {
                 let element = document.querySelector(eventToRemove.selector);
 
-                /** check if it is on the object */
-                const innerEvent = this[eventToRemove.callback];
-                this._currentCallback = eventToRemove.callback;
+                if (!element) {
+                    continue;
+                }
 
-                if (innerEvent) {
-                    element.removeEventListener(eventToRemove.eventType, this._innerEventHander);
+                if (typeof eventToRemove.callback == 'function') {
+                    element.removeEventListener(eventToRemove.eventType, eventToRemove.callback);
                 }
                 else {
                     element.removeEventListener(eventToRemove.eventType, this._outerEventHandler);
                 }
             }
             this._events = [];
-        }
+        },
 
-        beforeRender() {
-            this._removeEvents();
-        }
+        _assignToDom(parentElement, element) {
+            parentElement.innerHTML = "";
+            parentElement.append(element);
+            this._addEvents(parentElement);
+        },
+    };
 
-        afterRender() {
-            this._addEvents();
-        }
-    }
+    /** example component */
 
-    class FlightkitButton extends t0_base_class {
+    class FlightkitButton extends HTMLElement {
         constructor() {
             super();
+            baseComponent.addEvent('#megafoo', 'click', this.test2);
+        }
+
+        test2() {
+            alert("inner!");
+        }
+
+        /** grab inner HTML from here */
+        connectedCallback() {
             const btnElement = document.createElement('button');
-
-            if (this._topLevelClasses.length) {
-                btnElement.classList.add(...this._topLevelClasses);
-            }
             btnElement.innerHTML = this.innerHTML;
-
-            this.render(btnElement);
+            btnElement.id = "megafoo";
+            /** set it to be rendered */
+            this.component = btnElement;
+            
+            baseComponent.render(this);
+        };
+        disconnectedCallback() {
+            baseComponent.removeEvents(this);
         }
     }
 
@@ -940,7 +930,9 @@
     const sortAscendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: 3px; left: 2px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-narrow-wide"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="M11 12h4"/><path d="M11 16h7"/><path d="M11 20h10"/></svg>';
     const sortDescendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: 3px; left: 2px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-wide-narrow"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>';
 
-    class FlightkitTable extends t0_base_class {
+    class FlightkitTable extends HTMLElement {
+        /** to render */
+        component = null;
         _contents = [];
         _orderBy = [];
         properties = new Set();
@@ -970,7 +962,6 @@
 
             }
             this._columnOrder = processedValue;
-            this.render();
         }
 
         get contents() {
@@ -980,16 +971,13 @@
         set contents(newValue) {
             this.analyzeData(newValue);
             this._contents = new JOQ(newValue);
-            this.render();
         }
 
         get orderBy() {
             return this._orderBy;
         }
         set orderBy(newValue) {
-            console.trace(newValue);
             this._orderBy = newValue;
-            this.render();
         }
 
         get filter() {
@@ -998,12 +986,10 @@
 
         set filter(newValue) {
             this._filter = newValue.toString();
-            this.render();
         }
 
         constructor() {
             super();
-
             this.setContents(this.getAttribute('contents'));
             this.setColumnOrder(this.getAttribute('columns'));
             this.filter = this.getAttribute('filter') || '';
@@ -1015,20 +1001,94 @@
                     direction: presetDirection
                 });
             }
-            this._innerHTML = /*html*/`<table class="${this._topLevelClasses.join(' ')}">${this.innerHTML}</table>`;
+        }
+        /** we only need this if we dont use get/set */
+        attributeChangedCallback(name, oldValue, newValue) {
+            switch (name) {
+                case "contents": {
+                    this.setContents(newValue);
+                    break;
+                }
+                case "sort": {
+                    this.orderBy = [{
+                        propertyName: newValue,
+                        direction: this.getAttribute('direction')
+                    }];
+                    break;
+                }
+                case 'filter': {
+                    this.filter = newValue || '';
+                    break;
+                }
+                case "columns": {
+                    this.setColumnOrder(newValue);
+                    break;
+                }
+                case "direction": {
+                    this.orderBy = [{
+                        propertyName: this.getAttribute('sort'),
+                        direction: newValue
+                    }];
+                    break;
+                }
+            }
         }
 
-        setColumnOrder(newOrder) {
-            if (newOrder) {
-                this._columnOrder = Array.isArray(newOrder) ? newOrder : newOrder.split(',');
+        createHtml() {
+            const tableElement = document.createElement('table');
+
+            /** because of JOQ */
+            if (this.orderBy.length) {
+                this.contents.sort(this.orderBy);
             }
             else {
-                this._columnOrder = [];
+                /** reset if no order */
+                this.contents.sort([]);
             }
+
+
+            if (this.filter.length) {
+                const filters = [];
+
+                for (const property of this.columnOrder) {
+                    filters.push({
+                        propertyName: property,
+                        value: this.filter,
+                        operator: 'like',
+                        type: 'or', /** optional, defaults to "and" **/
+                        ignoreCase: true /** optional, defaults to "false" **/
+                    });
+                }
+                this.contents.filter(filters);
+            }
+            else {
+                this.contents.filter([]);
+            }
+
+            const tableHead = this.createHead();
+            tableElement.append(tableHead);
+
+
+            const data = this.contents.execute();
+            const tableBody = this.createBody(data);
+            tableElement.append(tableBody);
+
+            this.component = tableElement;
         }
 
-        sortData(event, ftElement) {
-            const column = event.target.dataset.column;
+        connectedCallback() {
+            this.createHtml();
+            baseComponent.render(this);
+        };
+        disconnectedCallback() {
+            baseComponent.removeEvents(this);
+        }
+
+        sortData(event) {
+            console.log(event);
+            const flightkitEvent = returnEventWithTopLevelElement(event);
+            const ftElement = flightkitEvent.target;
+            const column = returnDataSetValue(event, 'column');
             if (!column) return;
 
             const columnPresentIndex = ftElement._orderBy.findIndex(order => order.propertyName === column);
@@ -1048,10 +1108,22 @@
                 /** add it */
                 ftElement._orderBy.push({ propertyName: column, direction: 'asc' });
             }
-            this.render();
+            ftElement.createHtml();
+            baseComponent.render(ftElement);
+        }
+
+        setColumnOrder(newOrder) {
+            if (newOrder) {
+                this._columnOrder = Array.isArray(newOrder) ? newOrder : newOrder.split(',');
+            }
+            else {
+                this._columnOrder = [];
+            }
         }
 
         analyzeData(value) {
+            /** reset */
+            this.properties = new Set();
             const contentLength = value.length;
 
             for (let index = 0; index < contentLength; index++) {
@@ -1092,39 +1164,7 @@
             }
         }
 
-        /** we only need this if we dont use get/set */
-        attributeChangedCallback(name, oldValue, newValue) {
-            switch (name) {
-                case "contents": {
-                    this.setContents(newValue);
-                    break;
-                }
-                case "sort": {
-                    this.orderBy = [{
-                        propertyName: newValue,
-                        direction: this.getAttribute('direction')
-                    }];
-                    break;
-                }
-                case 'filter': {
-                    this.filter = newValue || '';
-                    break;
-                }
-                case "columns": {
-                    this.setColumnOrder(newValue);
-                    this.render();
-                    break;
-                }
-                case "direction": {
-                    this.orderBy = [{
-                        propertyName: this.getAttribute('sort'),
-                        direction: newValue
-                    }];
-                    break;
-                }
-            }
-        }
-
+        /** function to create HTML */
         convertJsonKeyToTitle(jsonKey) {
             if (typeof jsonKey !== 'string') jsonKey = jsonKey.toString();
             if (this.propertyLabelDictionary[jsonKey]) return this.propertyLabelDictionary[jsonKey];
@@ -1170,12 +1210,11 @@
                 const thCell = document.createElement('th');
                 thCell.id = thId;
                 thCell.dataset.column = header;
-                thCell.dataset.action = 'sortData';
 
                 const headerText = document.createElement('span');
                 headerText.innerText = this.convertJsonKeyToTitle(header);
                 thCell.append(headerText);
-                this.addEvent(`#${thId}`, 'click', 'sortData');
+                baseComponent.addEvent(`#${thId}`, 'click', this.sortData);
 
                 const orderProperties = this.orderBy.find(obp => obp.propertyName === header);
                 if (orderProperties) {
@@ -1189,53 +1228,9 @@
             return tableHead;
         };
 
-        render() {
-            if (this.contents && this.contents.model) {
-                this.beforeRender();
-                const tableElement = document.createElement('table');
-
-                if (this._topLevelClasses.length) {
-                    tableElement.classList.add(...this._topLevelClasses);
-                }
-                /** because of JOQ */
-                if (this.orderBy.length) {
-                    this.contents.sort(this.orderBy);
-                }
-                else {
-                    /** reset if no order */
-                    this.contents.sort([]);
-                }
-
-
-                if (this.filter.length) {
-                    const filters = [];
-
-                    for (const property of this.columnOrder) {
-                        filters.push({
-                            propertyName: property,
-                            value: this.filter,
-                            operator: 'like',
-                            type: 'or', /** optional, defaults to "and" **/
-                            ignoreCase: true /** optional, defaults to "false" **/
-                        });
-                    }
-                    this.contents.filter(filters);
-                }
-                else {
-                    this.contents.filter([]);
-                }
-
-                const data = this.contents.execute();
-
-                const tableHead = this.createHead();
-                tableElement.append(tableHead);
-
-                const tableBody = this.createBody(data);
-                tableElement.append(tableBody);
-                this.innerHTML = "";
-                this.append(tableElement);
-                this.afterRender();
-            }
+        init() {
+            this.createHtml();
+            baseComponent.render(this);
         }
     }
 

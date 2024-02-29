@@ -1,5 +1,6 @@
-import { FlightkitButton } from './components/tier1/t1_button';
-import { FlightkitTable } from './components/tier1/t1_table';
+import { FlightkitButton } from './components/button';
+import { FlightkitTable } from './components/table';
 
 customElements.define('flk-button', FlightkitButton);
 customElements.define('flk-table', FlightkitTable);
+
