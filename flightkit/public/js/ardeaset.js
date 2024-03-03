@@ -1,4 +1,4 @@
-window.ardeaset = [
+window.ardeaSet = [
 	{
 		"scientific_name": "Ardea cinerea",
 		"common_name": "Grey heron"

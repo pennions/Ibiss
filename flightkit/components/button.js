@@ -1,10 +1,12 @@
 /** example component */
-import { baseComponent } from './extensions/base_component';
+import { BaseComponent } from './extensions/base_component';
 
 export class FlightkitButton extends HTMLElement {
+    base;
+
     constructor() {
         super();
-        baseComponent.addEvent('#megafoo', 'click', this.test2);
+        this.base = new BaseComponent();
     }
 
     test2() {
@@ -18,10 +20,10 @@ export class FlightkitButton extends HTMLElement {
         btnElement.id = "megafoo";
         /** set it to be rendered */
         this.component = btnElement;
-        
-        baseComponent.render(this);
+
+        this.base.render(this);
     };
     disconnectedCallback() {
-        baseComponent.removeEvents(this);
+        this.base.removeEvents(this);
     }
 }

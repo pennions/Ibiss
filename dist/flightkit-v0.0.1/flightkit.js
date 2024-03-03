@@ -69,16 +69,21 @@
         }
     }
 
-    const baseComponent = {
+    class BaseComponent {
+
+        constructor() { };
 
         /** This is the 'custom component' */
-        renderTimeout: null,
-        _topLevelClasses: [],
-        _events: [],
+        _topLevelClasses = [];
+        _events = [];
+
+        generateId() {
+            return `flk-${uuidv4()}`;
+        }
 
         render(parentElement) {
             if (!parentElement.component) throw new Error("Component is not assigned! Can't render");
-            parentElement.id = parentElement.id ? parentElement.id : `flk-${uuidv4()}`; /** prefixing with flk- because it can not start with a number */
+            parentElement.id = parentElement.id ? parentElement.id : this.generateId(); /** prefixing with flk- because it can not start with a number */
 
             /** now it works with vue style events */
             const eventsToAdd = this._getAllEventAttributes(parentElement);
@@ -87,8 +92,8 @@
                 const selector = `#${parentElement.id}`;
 
                 for (const event of eventsToAdd) {
-                    const eventAttribute = `@${event}`;
-                    this.addEvent(selector, 'click', parentElement.getAttribute(eventAttribute));
+                    const eventAttribute = `i-${event}`;
+                    this.addEvent(selector, event, parentElement.getAttribute(eventAttribute));
                 }
             }
 
@@ -112,11 +117,11 @@
                 clearTimeout(this._renderTimer);
                 this._assignToDom(parentElement, parentElement.component);
             }, 10);
-        },
+        }
 
         addEvent(selector, eventType, callback) {
             this._events.push({ selector, eventType, callback });
-        },
+        }
 
         _getExternalCallback(fn) {
             const callbackParts = fn.split('.');
@@ -132,22 +137,23 @@
                 }
             }
             return actualCallback;
-        },
+        }
 
         _getAllEventAttributes(parentElement) {
             const attributes = parentElement.attributes;
-            const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('@'));
+            const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('i-'));
             /** remove custom events, because these need to be bound specifically */
-            return eventAttributes.map(attr => attr.name.slice(1));
-        },
+            return eventAttributes.map(attr => attr.name.slice(2));
+        }
 
         _isFlightkitElement(tagName) {
             return tagName.toUpperCase().includes('FLK-');
-        },
+        }
 
         _outerEventHandler(event) {
             const ftEvent = returnEventWithTopLevelElement(event);
-            const callback = ftEvent.target.getAttribute(`@${ftEvent.type}`);
+            ftEvent.contents = event.detail;
+            const callback = ftEvent.target.getAttribute(`i-${ftEvent.type}`);
             const callbackParts = callback.split('.');
 
             let actualCallback = undefined;
@@ -163,7 +169,7 @@
             event.preventDefault();
             event.stopPropagation();
             return actualCallback(ftEvent);
-        },
+        }
 
         _addEvents(parentElement) {
             if (parentElement.isConnected) {
@@ -184,7 +190,7 @@
                     }
                 }
             }
-        },
+        }
 
         removeEvents() {
             for (const eventToRemove of this._events) {
@@ -202,21 +208,23 @@
                 }
             }
             this._events = [];
-        },
+        }
 
         _assignToDom(parentElement, element) {
             parentElement.innerHTML = "";
             parentElement.append(element);
             this._addEvents(parentElement);
-        },
-    };
+        }
+    }
 
     /** example component */
 
     class FlightkitButton extends HTMLElement {
+        base;
+
         constructor() {
             super();
-            baseComponent.addEvent('#megafoo', 'click', this.test2);
+            this.base = new BaseComponent();
         }
 
         test2() {
@@ -230,11 +238,11 @@
             btnElement.id = "megafoo";
             /** set it to be rendered */
             this.component = btnElement;
-            
-            baseComponent.render(this);
+
+            this.base.render(this);
         };
         disconnectedCallback() {
-            baseComponent.removeEvents(this);
+            this.base.removeEvents(this);
         }
     }
 
@@ -931,6 +939,7 @@
     const sortDescendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: 3px; left: 2px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-wide-narrow"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>';
 
     class FlightkitTable extends HTMLElement {
+        base;
         /** to render */
         component = null;
         _contents = [];
@@ -938,11 +947,13 @@
         properties = new Set();
         _columnOrder = [];
         _filter = '';
+        _selectionProperty = ''; /** must be an unique property on the element to select on. */
+        _selectedIds = new Set(); /** used to sync selections */
         uniqueEntriesByProperties = {};
         propertyLabelDictionary = {};
 
         static get observedAttributes() {
-            return ['contents', 'columns', 'sort', 'direction', 'filter'];
+            return ['contents', 'columns', 'order', 'filter', 'selection-property'];
         };
 
         get columnOrder() {
@@ -977,7 +988,27 @@
             return this._orderBy;
         }
         set orderBy(newValue) {
-            this._orderBy = newValue;
+            /** if you add this from JavaScript, use correct syntax */
+            if (Array.isArray(newValue)) {
+                this._orderBy = newValue;
+            }
+            else {
+                /** we have the following signature: "column|direction,column2|direction" */
+                const orderToSet = newValue.split(',');
+
+                const newOrder = [];
+                for (const order of orderToSet) {
+                    const orderParts = order.split("|");
+                    const propertyName = orderParts[0];
+                    const direction = orderParts.length > 1 ? orderParts[1] : 'asc';
+
+                    newOrder.push({
+                        propertyName,
+                        direction
+                    });
+                }
+                this._orderBy = newOrder;
+            }
         }
 
         get filter() {
@@ -990,16 +1021,20 @@
 
         constructor() {
             super();
+            /** We can not inherit from this using extends, because of vue3  */
+            this.base = new BaseComponent();
             this.setContents(this.getAttribute('contents'));
             this.setColumnOrder(this.getAttribute('columns'));
             this.filter = this.getAttribute('filter') || '';
-            const presetOrder = this.getAttribute('sort');
-            const presetDirection = this.getAttribute('direction');
+
+            const presetOrder = this.getAttribute('order');
             if (presetOrder) {
-                this._orderBy.push({
-                    propertyName: presetOrder,
-                    direction: presetDirection
-                });
+                this.orderBy = presetOrder;
+            }
+
+            const selectionProperty = this.getAttribute('selection-property');
+            if (selectionProperty) {
+                this._selectionProperty = selectionProperty;
             }
         }
         /** we only need this if we dont use get/set */
@@ -1009,29 +1044,26 @@
                     this.setContents(newValue);
                     break;
                 }
-                case "sort": {
-                    this.orderBy = [{
-                        propertyName: newValue,
-                        direction: this.getAttribute('direction')
-                    }];
+                case "order": {
+                    this.orderBy = newValue;
                     break;
                 }
-                case 'filter': {
+                case "filter": {
                     this.filter = newValue || '';
+                    break;
+                }
+                case "selection-property": {
+                    this._selectionProperty = newValue;
                     break;
                 }
                 case "columns": {
                     this.setColumnOrder(newValue);
                     break;
                 }
-                case "direction": {
-                    this.orderBy = [{
-                        propertyName: this.getAttribute('sort'),
-                        direction: newValue
-                    }];
-                    break;
-                }
             }
+            /** in Vue3 this is not triggered. You need to set a :key property and handle that */
+            this.createHtml();
+            this.base.render(this);
         }
 
         createHtml() {
@@ -1045,7 +1077,6 @@
                 /** reset if no order */
                 this.contents.sort([]);
             }
-
 
             if (this.filter.length) {
                 const filters = [];
@@ -1068,7 +1099,6 @@
             const tableHead = this.createHead();
             tableElement.append(tableHead);
 
-
             const data = this.contents.execute();
             const tableBody = this.createBody(data);
             tableElement.append(tableBody);
@@ -1078,14 +1108,93 @@
 
         connectedCallback() {
             this.createHtml();
-            baseComponent.render(this);
+            this.base.render(this);
         };
         disconnectedCallback() {
-            baseComponent.removeEvents(this);
+            this.base.removeEvents(this);
+        }
+
+        _updateCheckboxes(ftElement) {
+            const allSelectionCheckboxes = ftElement.querySelectorAll('.flk-selection-checkbox');
+            const currentSelection = ftElement._selectedIds.size;
+            const maxSelection = ftElement.contents.execute().length;
+            const notAllSelected = currentSelection !== maxSelection;
+            const allSelected = currentSelection === maxSelection;
+            const hasSelection = currentSelection !== 0;
+
+            for (const selectionCheckbox of allSelectionCheckboxes) {
+                /** we have the 'select all' in the header */
+                if (!selectionCheckbox.dataset.objectId) {
+                    if (hasSelection && notAllSelected) {
+                        selectionCheckbox.indeterminate = true;
+                    }
+                    else if (hasSelection && allSelected) {
+                        selectionCheckbox.indeterminate = false;
+                        selectionCheckbox.setAttribute('checked', true);
+                    }
+                    else {
+                        selectionCheckbox.indeterminate = false;
+                    }
+                }
+                else {
+                    const objectId = selectionCheckbox.dataset.objectId;
+                    if (ftElement._selectedIds.has(objectId)) {
+                        selectionCheckbox.checked = true;
+                    }
+                    else {
+                        selectionCheckbox.checked = false;
+                    }
+                }
+            }
+        }
+
+        _emit(event, ftElement, detail) {
+            let selectEvent = new CustomEvent(event, {
+                detail,
+                bubbles: true,
+                cancelable: true
+            });
+            ftElement.dispatchEvent(selectEvent);
+        }
+
+        emitSelectAll(event) {
+
+            /** check if the checkbox is checked or not */
+            const isChecked = event.target.checked;
+            const flightkitEvent = returnEventWithTopLevelElement(event);
+            const ftElement = flightkitEvent.target;
+            ftElement._selectedIds = isChecked ? new Set(
+                ftElement.contents.select(ftElement._selectionProperty)
+                    .execute()
+                    .map(obj => obj[ftElement._selectionProperty])) : new Set();
+
+            const selection = isChecked ? ftElement.contents.execute() : [];
+            ftElement._emit('select', ftElement, { selection });
+            ftElement._updateCheckboxes(ftElement);
+        }
+
+        emitSelect(event) {
+            /** check if the checkbox is checked or not */
+            const isChecked = event.target.checked;
+            const objectId = event.target.dataset.objectId;
+            const flightkitEvent = returnEventWithTopLevelElement(event);
+            const ftElement = flightkitEvent.target;
+
+            if (isChecked) {
+                ftElement._selectedIds.add(objectId);
+            }
+            else {
+                ftElement._selectedIds.delete(objectId);
+            }
+
+            const selectionProperty = ftElement._selectionProperty;
+
+            const selection = ftElement.contents.execute().filter(obj => ftElement._selectedIds.has(obj[selectionProperty]));
+            ftElement._emit('select', ftElement, { selection });
+            ftElement._updateCheckboxes(ftElement);
         }
 
         sortData(event) {
-            console.log(event);
             const flightkitEvent = returnEventWithTopLevelElement(event);
             const ftElement = flightkitEvent.target;
             const column = returnDataSetValue(event, 'column');
@@ -1109,7 +1218,7 @@
                 ftElement._orderBy.push({ propertyName: column, direction: 'asc' });
             }
             ftElement.createHtml();
-            baseComponent.render(ftElement);
+            ftElement.base.render(ftElement);
         }
 
         setColumnOrder(newOrder) {
@@ -1178,8 +1287,30 @@
             return convertedKey;
         }
 
+        createSelectionCheckbox(data) {
+            const checkboxElement = document.createElement('input');
+            checkboxElement.setAttribute('type', 'checkbox');
+            checkboxElement.classList.add('flk-selection-checkbox');
+
+            if (data) {
+                checkboxElement.dataset.selected = data[this._selectionProperty];
+            }
+            return checkboxElement;
+        }
+
         createRow(rowContent) {
             const tableRow = document.createElement('tr');
+
+            if (this._selectionProperty.length) {
+                const tdSelector = document.createElement('td');
+                const tdSelectorId = this.base.generateId(); /** to add the sort event */
+                const selectCheckbox = this.createSelectionCheckbox(rowContent);
+                selectCheckbox.id = tdSelectorId;
+                selectCheckbox.dataset.objectId = rowContent[this._selectionProperty];
+                this.base.addEvent(`#${tdSelectorId}`, 'change', this.emitSelect);
+                tdSelector.append(selectCheckbox);
+                tableRow.append(tdSelector);
+            }
 
             for (const property of this.columnOrder) {
                 const tableCell = document.createElement('td');
@@ -1204,9 +1335,19 @@
 
             headerRow.classList.add('cursor-pointer');
 
-            for (const header of this.columnOrder) {
+            if (this._selectionProperty.length) {
+                const thSelectAll = document.createElement('th');
+                const thSelectAllId = this.base.generateId(); /** to add the sort event */
 
-                const thId = `flk-${uuidv4()}`; /** to add the sort event */
+                const selectAllCheckbox = this.createSelectionCheckbox();
+                selectAllCheckbox.id = thSelectAllId;
+                this.base.addEvent(`#${thSelectAllId}`, 'change', this.emitSelectAll);
+                thSelectAll.append(selectAllCheckbox);
+                headerRow.append(thSelectAll);
+            }
+
+            for (const header of this.columnOrder) {
+                const thId = this.base.generateId(); /** to add the sort event */
                 const thCell = document.createElement('th');
                 thCell.id = thId;
                 thCell.dataset.column = header;
@@ -1214,7 +1355,7 @@
                 const headerText = document.createElement('span');
                 headerText.innerText = this.convertJsonKeyToTitle(header);
                 thCell.append(headerText);
-                baseComponent.addEvent(`#${thId}`, 'click', this.sortData);
+                this.base.addEvent(`#${thId}`, 'click', this.sortData);
 
                 const orderProperties = this.orderBy.find(obp => obp.propertyName === header);
                 if (orderProperties) {
@@ -1228,9 +1369,12 @@
             return tableHead;
         };
 
+        /** Needed for vanilla webcomponent and compatibility with Vue3
+         * If I try to render this on setContents, Vue3 gives illegal operation.
+         */
         init() {
             this.createHtml();
-            baseComponent.render(this);
+            this.base.render(this);
         }
     }
 

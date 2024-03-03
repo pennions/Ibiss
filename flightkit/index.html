@@ -10,32 +10,49 @@
         <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
     </head>
     <body>
-        <flk-button class="primary hello foo" >
+        <flk-button class="primary hello foo" i-click="test">
             <div>Hello</div>
         </flk-button>
 
         <script type="module" src="/main.js"></script>
 
+        <input id="filter-ardea" type="text" placeholder="filter ardea table" />
+        <flk-table
+            id="ft-test2"
+            class="table bg-white"
+            selection-property="scientific_name"
+            i-select="handleSelect"
+        ></flk-table>
+
         <flk-table
             id="ft-test"
             class="table"
             columns="species,sepalLength,sepalWidth,petalLength,petalWidth"
-            sort="species"
-            direction="asc"
-            filter="aca"
+            order="species|asc,sepalLength|desc"
+            filter="1.6"
         ></flk-table>
-
 
         <script>
             function test(e) {
                 alert(JSON.stringify(e));
             }
 
+            function handleSelect(event) {
+                console.log(event);
+            }
 
             window.onload = () => {
                 let ftTesttable = document.getElementById('ft-test');
                 ftTesttable.setContents(window.irisSet);
                 ftTesttable.init();
+
+                let ftTesttable2 = document.getElementById('ft-test2');
+                ftTesttable2.setContents(window.ardeaSet);
+                ftTesttable2.init();
+
+                document.getElementById('filter-ardea').addEventListener('keyup', (e) => {
+                    ftTesttable2.setAttribute('filter', e.target.value)
+                })
             };
             // window.onload = () => {
             //     let ftTesttable = document.getElementById('ft-test');

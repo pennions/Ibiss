@@ -2258,9 +2258,6 @@ table td {
   vertical-align: top;
   padding: 0.5rem 2.5rem 0.6rem 0.5rem;
 }
-table th {
-  padding-left: 0.3rem;
-}
 table:not(.no-hover) tbody tr:hover {
   background-color: var(--table-hover);
 }
