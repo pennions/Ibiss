@@ -1164,8 +1164,7 @@
             const flightkitEvent = returnEventWithTopLevelElement(event);
             const ftElement = flightkitEvent.target;
             ftElement._selectedIds = isChecked ? new Set(
-                ftElement.contents.select(ftElement._selectionProperty)
-                    .execute()
+                ftElement.contents.execute()
                     .map(obj => obj[ftElement._selectionProperty])) : new Set();
 
             const selection = isChecked ? ftElement.contents.execute() : [];
@@ -1307,6 +1306,15 @@
                 const selectCheckbox = this.createSelectionCheckbox(rowContent);
                 selectCheckbox.id = tdSelectorId;
                 selectCheckbox.dataset.objectId = rowContent[this._selectionProperty];
+
+                const objectId = rowContent[this._selectionProperty];
+                if (this._selectedIds.has(objectId)) {
+                    selectCheckbox.checked = true;
+                }
+                else {
+                    selectCheckbox.checked = false;
+                }
+
                 this.base.addEvent(`#${tdSelectorId}`, 'change', this.emitSelect);
                 tdSelector.append(selectCheckbox);
                 tableRow.append(tdSelector);
@@ -1334,13 +1342,22 @@
             const headerRow = document.createElement('tr');
 
             headerRow.classList.add('cursor-pointer');
-
             if (this._selectionProperty.length) {
                 const thSelectAll = document.createElement('th');
                 const thSelectAllId = this.base.generateId(); /** to add the sort event */
-
                 const selectAllCheckbox = this.createSelectionCheckbox();
                 selectAllCheckbox.id = thSelectAllId;
+
+                /** handle a rerender of the table on thigs like sort or filter. */
+                const maxSelection = this.contents.execute().length;
+
+                if (this._selectedIds.size > 0 && this._selectedIds.size < maxSelection) {
+                    selectAllCheckbox.indeterminate = true;
+                }
+                else if (this._selectedIds.size === maxSelection) {
+                    selectAllCheckbox.checked = true;
+                }
+
                 this.base.addEvent(`#${thSelectAllId}`, 'change', this.emitSelectAll);
                 thSelectAll.append(selectAllCheckbox);
                 headerRow.append(thSelectAll);
