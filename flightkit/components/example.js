@@ -1,7 +1,7 @@
 /** example component */
 import { BaseComponent } from './extensions/base_component';
 
-export class FlightkitButton extends HTMLElement {
+export class FlightkitExample extends HTMLElement {
     base;
 
     constructor() {

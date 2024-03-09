@@ -8,78 +8,56 @@
         <script src="js/irisset.js"></script>
         <script src="js/ardeaset.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
+        <script type="module" src="/main.js" defer></script>
     </head>
     <body>
-        <flk-button class="primary hello foo" i-click="test">
-            <div>Hello</div>
-        </flk-button>
+        <button id="hide">hide modal</button>
 
-        <script type="module" src="/main.js"></script>
+        <flk-window>
+            <div>
+                <h1>MyTitle</h1>
+                <hr />
+                <section>Some content</section>
+            </div>
+        </flk-window>
+        <flk-window>
+            <div>
+                <h1>MyTitle2</h1>
+                <hr />
+                <section>Some content</section>
+            </div>
+        </flk-window>
+        <flk-window>
+            <div>
+                <h1>MyTitle3</h1>
+                <hr />
+                <section>Some content</section>
+            </div>
+        </flk-window>
+        <!-- <flk-modal id="foo">
+            <div>
+                <h1>MyTitle</h1>
+                <hr />
+                <section>Some content</section>
+            </div>
+        </flk-modal> -->
 
-        <input id="filter-ardea" type="text" placeholder="filter ardea table" />
-        <flk-table
-            id="ft-test2"
-            class="table bg-white"
-            selection-property="scientific_name"
-            i-select="handleSelect"
-        ></flk-table>
+        <!-- <script>
+            window.onload = function () {
+                let x = document.getElementById('foo');
+                x.show();
 
-        <flk-table
-            id="ft-test"
-            class="table"
-            columns="species,sepalLength,sepalWidth,petalLength,petalWidth"
-            order="species|asc,sepalLength|desc"
-            filter="1.6"
-        ></flk-table>
-
-        <script>
-            function test(e) {
-                alert(JSON.stringify(e));
-            }
-
-            function handleSelect(event) {
-                console.log(event);
-            }
-
-            window.onload = () => {
-                let ftTesttable = document.getElementById('ft-test');
-                ftTesttable.setContents(window.irisSet);
-                ftTesttable.init();
-
-                let ftTesttable2 = document.getElementById('ft-test2');
-                ftTesttable2.setContents(window.ardeaSet);
-                ftTesttable2.init();
-
-                document.getElementById('filter-ardea').addEventListener('keyup', (e) => {
-                    ftTesttable2.setAttribute('filter', e.target.value)
-                })
+                document
+                    .getElementById('hide')
+                    .addEventListener('click', () => {
+                        console.log(x)
+                        if (x.dialogOpen) {
+                            x.hide();
+                        } else {
+                            x.show();
+                        }
+                    });
             };
-            // window.onload = () => {
-            //     let ftTesttable = document.getElementById('ft-test');
-            //     ftTesttable.setContents(window.irisSet);
-
-            //     // ftTesttable.columnOrder = [
-            //     //     'sepalLength',
-            //     //     'sepalWidth',
-            //     //     'species',
-            //     //     'petalLength',
-            //     //     'petalWidth'
-            //     // ];
-            //     ftTesttable.orderBy = [
-            //         {
-            //             propertyName: 'species',
-            //             direction: 'asc'
-            //         },
-            //         {
-            //             propertyName: 'sepalLength',
-            //             direction: 'desc'
-            //         }
-            //     ];
-
-            //     setTimeout(() => {
-            //         ftTesttable.removeAttribute('filter');
-            //     }, 2000);
-            // };
-        </script>
+        </script> -->
     </body>
 </html>

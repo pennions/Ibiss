@@ -1,6 +1,6 @@
-import { FlightkitButton } from './components/button';
 import { FlightkitTable } from './components/table';
+import { FlightkitWindow } from './components/window';
 
-customElements.define('flk-button', FlightkitButton);
 customElements.define('flk-table', FlightkitTable);
+customElements.define('flk-window', FlightkitWindow);
 
