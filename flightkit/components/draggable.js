@@ -1,7 +1,7 @@
 
 import { BaseComponent } from './extensions/base_component';
 
-export class FlightkitWindow extends HTMLElement {
+export class FlightkitDraggable extends HTMLElement {
     base;
     componentId;
 
@@ -10,22 +10,30 @@ export class FlightkitWindow extends HTMLElement {
         this.base = new BaseComponent();
     }
 
-
     /** grab inner HTML from here */
     connectedCallback() {
-        this.style = 'display: block; position: fixed;';
-        this.componentId = this.base.generateId();
+        let top = this.getAttribute('top');
+        let left = this.getAttribute('left');
+        let center = this.getAttribute('center');
+
+        this.style.display = "block";
+        this.style.position = "fixed";
+        /** if center is available, it is an empty string */
+        if (typeof center === 'string') {
+            this.style.top = top || "50%";
+            this.style.left = "50%";
+            this.style.transform = "translate(-50%, -50%)";
+        }
+        else {
+            this.style.top = top || this.clientTop + "px";
+            this.style.left = left || this.clientLeft + "px";
+        }
+
+        /** id for the handle */
+        this.componentId = this.getAttribute('handle');
 
         const draggableElement = document.createElement('div');
-
-        const handlebar = document.createElement('div');
-        handlebar.style = "height:5rem;width:100%;";
-        handlebar.id = this.componentId;
-
-        draggableElement.appendChild(handlebar);
-        const container = document.createElement('div');
-        container.innerHTML = this.innerHTML;
-        draggableElement.append(container);
+        draggableElement.innerHTML = this.innerHTML;
         this.component = draggableElement;
         this.base.render(this);
 
@@ -40,14 +48,14 @@ export class FlightkitWindow extends HTMLElement {
     }
 
     _dragElement(element) {
-
-        var pos1 = 0,
+        let pos1 = 0,
             pos2 = 0,
             pos3 = 0,
             pos4 = 0;
         if (document.getElementById(element.componentId)) {
             // if present, the header is where you move the DIV from:
-            document.getElementById(element.componentId).onmousedown = dragMouseDown;
+            const handleElement = document.getElementById(element.componentId);
+            handleElement.onmousedown = dragMouseDown;
         } else {
             // otherwise, move the DIV from anywhere inside the DIV:
             element.onmousedown = dragMouseDown;

@@ -9,31 +9,41 @@
         <script src="js/ardeaset.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
         <script type="module" src="/main.js" defer></script>
+        <style>
+            .handle {
+                background-color: lightgrey;
+                height: 2.5rem;
+                width: 100%;
+            }
+
+ 
+        </style>
     </head>
-    <body>
+    <body class="ro">
         <button id="hide">hide modal</button>
 
-        <flk-window>
+        <flk-draggable top="40%" center>
             <div>
                 <h1>MyTitle</h1>
                 <hr />
                 <section>Some content</section>
             </div>
-        </flk-window>
-        <flk-window>
+        </flk-draggable>
+        <flk-draggable handle="myHandle">
+            <div class="handle" id="myHandle"></div>
             <div>
                 <h1>MyTitle2</h1>
                 <hr />
                 <section>Some content</section>
             </div>
-        </flk-window>
-        <flk-window>
+        </flk-draggable>
+        <flk-draggable>
             <div>
                 <h1>MyTitle3</h1>
                 <hr />
                 <section>Some content</section>
             </div>
-        </flk-window>
+        </flk-draggable>
         <!-- <flk-modal id="foo">
             <div>
                 <h1>MyTitle</h1>

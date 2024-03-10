@@ -6,7 +6,6 @@ export class FlightkitModal extends HTMLElement {
     /** property to check the state so you can easily switch */
     dialogOpen;
 
-
     newX;
     newY;
     startX;

@@ -1,6 +1,6 @@
 import { FlightkitTable } from './components/table';
-import { FlightkitWindow } from './components/window';
+import { FlightkitDraggable } from './components/draggable';
 
 customElements.define('flk-table', FlightkitTable);
-customElements.define('flk-window', FlightkitWindow);
+customElements.define('flk-draggable', FlightkitDraggable);
 
