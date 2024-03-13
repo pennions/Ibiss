@@ -1,251 +1,6 @@
 (function () {
     'use strict';
 
-    function isFlightkitElement(tagName) {
-        return tagName.toUpperCase().includes('FLK-');
-    }
-
-    /**
-     * @returns top level flightkit element
-     */
-    function returnEventWithTopLevelElement(event) {
-        let { timeStamp, type, x, y } = event;
-
-        let target = event.target;
-
-        do {
-            if (isFlightkitElement(target.tagName)) {
-                break;
-            }
-            else {
-                target = target.parentNode;
-            }
-        }
-        while (!isFlightkitElement(target.tagName)); /** check until we get the flightkit element */
-
-        return {
-            target,
-            timeStamp,
-            type,
-            x,
-            y
-        };
-    }
-
-    function returnDataSetValue(event, datasetName) {
-        let target = event.target;
-        let datasetValue = '';
-        do {
-            if (target.dataset[datasetName]) {
-                datasetValue = target.dataset[datasetName];
-            }
-            else {
-                target = target.parentNode;
-            }
-        }
-        while (!datasetValue);
-
-        return datasetValue;
-    }
-
-    function uuidv4() {
-        const guid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-        );
-        /** This will be unique enough */
-        const newGuid = guid.split('-')[0];
-
-        if (!window.$flightkitUUIDStore) {
-            window.$flightkitUUIDStore = [];
-        }
-
-        /** verify to be absolutely sure ;) */
-        if (window.$flightkitUUIDStore.some(guid => guid === newGuid)) {
-            return uuidv4();
-        }
-        else {
-            window.$flightkitUUIDStore.push(newGuid);
-            return newGuid;
-        }
-    }
-
-    class BaseComponent {
-
-        constructor() { };
-
-        /** This is the 'custom component' */
-        _topLevelClasses = [];
-        _events = [];
-
-        generateId() {
-            return `flk-${uuidv4()}`;
-        }
-
-        render(parentElement) {
-            if (!parentElement.component) throw new Error("Component is not assigned! Can't render");
-            parentElement.id = parentElement.id ? parentElement.id : this.generateId(); /** prefixing with flk- because it can not start with a number */
-
-            /** now it works with vue style events */
-            const eventsToAdd = this._getAllEventAttributes(parentElement);
-
-            if (eventsToAdd) {
-                const selector = `#${parentElement.id}`;
-
-                for (const event of eventsToAdd) {
-                    const eventAttribute = `i-${event}`;
-                    this.addEvent(selector, event, parentElement.getAttribute(eventAttribute));
-                }
-            }
-
-            const numberOfClasses = (Object.keys(parentElement.classList)).length;
-
-            if (numberOfClasses) {
-                for (let clen = 0; clen < numberOfClasses; clen++) {
-                    this._topLevelClasses.push(parentElement.classList[0]);
-                    parentElement.classList.remove(parentElement.classList[0]);
-                }
-                parentElement.removeAttribute('class');
-            }
-
-            /** always passthrough top level classes */
-            if (this._topLevelClasses.length) {
-                parentElement.component.classList.add(...this._topLevelClasses);
-            }
-            clearTimeout(this._renderTimer);
-            /** try to limit the amount of rendering */
-            this.renderTimeout = setTimeout(() => {
-                clearTimeout(this._renderTimer);
-                this._assignToDom(parentElement, parentElement.component);
-            }, 10);
-        }
-
-        addEvent(selector, eventType, callback) {
-            this._events.push({ selector, eventType, callback });
-        }
-
-        _getExternalCallback(fn) {
-            const callbackParts = fn.split('.');
-
-            let actualCallback = undefined;
-
-            for (const cbPart of callbackParts) {
-                if (!actualCallback) {
-                    actualCallback = window[cbPart];
-                }
-                else {
-                    actualCallback = actualCallback[cbPart];
-                }
-            }
-            return actualCallback;
-        }
-
-        _getAllEventAttributes(parentElement) {
-            const attributes = parentElement.attributes;
-            const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('i-'));
-            /** remove custom events, because these need to be bound specifically */
-            return eventAttributes.map(attr => attr.name.slice(2));
-        }
-
-        _isFlightkitElement(tagName) {
-            return tagName.toUpperCase().includes('FLK-');
-        }
-
-        _outerEventHandler(event) {
-            const ftEvent = returnEventWithTopLevelElement(event);
-            ftEvent.contents = event.detail;
-            const callback = ftEvent.target.getAttribute(`i-${ftEvent.type}`);
-            const callbackParts = callback.split('.');
-
-            let actualCallback = undefined;
-
-            for (const cbPart of callbackParts) {
-                if (!actualCallback) {
-                    actualCallback = window[cbPart];
-                }
-                else {
-                    actualCallback = actualCallback[cbPart];
-                }
-            }
-            event.preventDefault();
-            event.stopPropagation();
-            return actualCallback(ftEvent);
-        }
-
-        _addEvents(parentElement) {
-            if (parentElement.isConnected) {
-                for (const eventToAdd of this._events) {
-
-                    let element = document.querySelector(eventToAdd.selector);
-                    if (!element) {
-                        continue;
-                    }
-                    /** check if it is a function (inner call) */
-                    if (typeof eventToAdd.callback == 'function') {
-                        element.removeEventListener(eventToAdd.eventType, eventToAdd.callback);
-                        element.addEventListener(eventToAdd.eventType, eventToAdd.callback);
-                    }
-                    else {
-                        element.removeEventListener(eventToAdd.eventType, this._outerEventHandler);
-                        element.addEventListener(eventToAdd.eventType, this._outerEventHandler);
-                    }
-                }
-            }
-        }
-
-        removeEvents() {
-            for (const eventToRemove of this._events) {
-                let element = document.querySelector(eventToRemove.selector);
-
-                if (!element) {
-                    continue;
-                }
-
-                if (typeof eventToRemove.callback == 'function') {
-                    element.removeEventListener(eventToRemove.eventType, eventToRemove.callback);
-                }
-                else {
-                    element.removeEventListener(eventToRemove.eventType, this._outerEventHandler);
-                }
-            }
-            this._events = [];
-        }
-
-        _assignToDom(parentElement, element) {
-            parentElement.innerHTML = "";
-            parentElement.append(element);
-            this._addEvents(parentElement);
-        }
-    }
-
-    /** example component */
-
-    class FlightkitButton extends HTMLElement {
-        base;
-
-        constructor() {
-            super();
-            this.base = new BaseComponent();
-        }
-
-        test2() {
-            alert("inner!");
-        }
-
-        /** grab inner HTML from here */
-        connectedCallback() {
-            const btnElement = document.createElement('button');
-            btnElement.innerHTML = this.innerHTML;
-            btnElement.id = "megafoo";
-            /** set it to be rendered */
-            this.component = btnElement;
-
-            this.base.render(this);
-        };
-        disconnectedCallback() {
-            this.base.removeEvents(this);
-        }
-    }
-
     var DataType;
     (function (DataType) {
         DataType["Date"] = "date";
@@ -935,6 +690,226 @@
         ;
     }
 
+    function isFlightkitElement(tagName) {
+        return tagName.toUpperCase().includes('FLK-');
+    }
+
+    /**
+     * @returns top level flightkit element
+     */
+    function returnEventWithTopLevelElement(event) {
+        let { timeStamp, type, x, y } = event;
+
+        let target = event.target;
+
+        do {
+            if (isFlightkitElement(target.tagName)) {
+                break;
+            }
+            else {
+                target = target.parentNode;
+            }
+        }
+        while (!isFlightkitElement(target.tagName)); /** check until we get the flightkit element */
+
+        return {
+            target,
+            timeStamp,
+            type,
+            x,
+            y
+        };
+    }
+
+    function returnDataSetValue(event, datasetName) {
+        let target = event.target;
+        let datasetValue = '';
+        do {
+            if (target.dataset[datasetName]) {
+                datasetValue = target.dataset[datasetName];
+            }
+            else {
+                target = target.parentNode;
+            }
+        }
+        while (!datasetValue);
+
+        return datasetValue;
+    }
+
+    function uuidv4() {
+        const guid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+        /** This will be unique enough */
+        const newGuid = guid.split('-')[0];
+
+        if (!window.$flightkitUUIDStore) {
+            window.$flightkitUUIDStore = [];
+        }
+
+        /** verify to be absolutely sure ;) */
+        if (window.$flightkitUUIDStore.some(guid => guid === newGuid)) {
+            return uuidv4();
+        }
+        else {
+            window.$flightkitUUIDStore.push(newGuid);
+            return newGuid;
+        }
+    }
+
+    class BaseComponent {
+
+        constructor() { };
+
+        /** This is the 'custom component' */
+        _topLevelClasses = [];
+        _events = [];
+
+        generateId() {
+            return `flk-${uuidv4()}`;
+        }
+
+        render(parentElement) {
+            if (!parentElement.component) throw new Error("Component is not assigned! Can't render");
+            parentElement.id = parentElement.id ? parentElement.id : this.generateId(); /** prefixing with flk- because it can not start with a number */
+
+            /** now it works with vue style events */
+            const eventsToAdd = this._getAllEventAttributes(parentElement);
+
+            if (eventsToAdd) {
+                const selector = `#${parentElement.id}`;
+
+                for (const event of eventsToAdd) {
+                    const eventAttribute = `i-${event}`;
+                    this.addEvent(selector, event, parentElement.getAttribute(eventAttribute));
+                }
+            }
+
+            const numberOfClasses = (Object.keys(parentElement.classList)).length;
+
+            if (numberOfClasses) {
+                for (let clen = 0; clen < numberOfClasses; clen++) {
+                    this._topLevelClasses.push(parentElement.classList[0]);
+                    parentElement.classList.remove(parentElement.classList[0]);
+                }
+                parentElement.removeAttribute('class');
+            }
+
+            /** always passthrough top level classes */
+            if (this._topLevelClasses.length) {
+                parentElement.component.classList.add(...this._topLevelClasses);
+            }
+            clearTimeout(this._renderTimer);
+            /** try to limit the amount of rendering */
+            this.renderTimeout = setTimeout(() => {
+                clearTimeout(this._renderTimer);
+                this._assignToDom(parentElement, parentElement.component);
+            }, 10);
+        }
+
+        addEvent(selector, eventType, callback) {
+            this._events.push({ selector, eventType, callback });
+        }
+
+        _getExternalCallback(fn) {
+            const callbackParts = fn.split('.');
+
+            let actualCallback = undefined;
+
+            for (const cbPart of callbackParts) {
+                if (!actualCallback) {
+                    actualCallback = window[cbPart];
+                }
+                else {
+                    actualCallback = actualCallback[cbPart];
+                }
+            }
+            return actualCallback;
+        }
+
+        _getAllEventAttributes(parentElement) {
+            const attributes = parentElement.attributes;
+            const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('i-'));
+            /** remove custom events, because these need to be bound specifically */
+            return eventAttributes.map(attr => attr.name.slice(2));
+        }
+
+        _isFlightkitElement(tagName) {
+            return tagName.toUpperCase().includes('FLK-');
+        }
+
+        _outerEventHandler(event) {
+            const ftEvent = returnEventWithTopLevelElement(event);
+            ftEvent.contents = event.detail;
+            const callback = ftEvent.target.getAttribute(`i-${ftEvent.type}`);
+            const callbackParts = callback.split('.');
+
+            let actualCallback = undefined;
+
+            for (const cbPart of callbackParts) {
+                if (!actualCallback) {
+                    actualCallback = window[cbPart];
+                }
+                else {
+                    actualCallback = actualCallback[cbPart];
+                }
+            }
+            event.preventDefault();
+            event.stopPropagation();
+            return actualCallback(ftEvent);
+        }
+
+        _addEvents(parentElement) {
+            if (parentElement.isConnected) {
+                for (const eventToAdd of this._events) {
+
+                    let element = document.querySelector(eventToAdd.selector);
+                    if (!element) {
+                        continue;
+                    }
+                    /** check if it is a function (inner call) */
+                    if (typeof eventToAdd.callback == 'function') {
+                        element.removeEventListener(eventToAdd.eventType, eventToAdd.callback);
+                        element.addEventListener(eventToAdd.eventType, eventToAdd.callback);
+                    }
+                    else {
+                        element.removeEventListener(eventToAdd.eventType, this._outerEventHandler);
+                        element.addEventListener(eventToAdd.eventType, this._outerEventHandler);
+                    }
+                }
+            }
+        }
+
+        removeEvents() {
+            for (const eventToRemove of this._events) {
+                let element = document.querySelector(eventToRemove.selector);
+
+                if (!element) {
+                    continue;
+                }
+
+                if (typeof eventToRemove.callback == 'function') {
+                    element.removeEventListener(eventToRemove.eventType, eventToRemove.callback);
+                }
+                else {
+                    element.removeEventListener(eventToRemove.eventType, this._outerEventHandler);
+                }
+            }
+            this._events = [];
+        }
+
+        _assignToDom(parentElement, element) {
+            parentElement.innerHTML = "";
+            parentElement.append(element);
+            /** need to add timeout so it can be applied properly */
+            const eventTimer = setTimeout(() => {
+                this._addEvents(parentElement);
+                clearTimeout(eventTimer);
+            }, 10);
+        }
+    }
+
     const sortAscendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: 3px; left: 2px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-narrow-wide"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="M11 12h4"/><path d="M11 16h7"/><path d="M11 20h10"/></svg>';
     const sortDescendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: 3px; left: 2px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-wide-narrow"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>';
 
@@ -1395,7 +1370,162 @@
         }
     }
 
-    customElements.define('flk-button', FlightkitButton);
+    class FlightkitDraggable extends HTMLElement {
+        base;
+        componentId;
+
+        constructor() {
+            super();
+            this.base = new BaseComponent();
+        }
+
+        /** grab inner HTML from here */
+        connectedCallback() {
+            let top = this.getAttribute('top');
+            let left = this.getAttribute('left');
+            let center = this.getAttribute('center');
+
+            this.style.display = "block";
+            this.style.position = "fixed";
+            /** if center is available, it is an empty string */
+            if (typeof center === 'string') {
+                this.style.top = top || "50%";
+                this.style.left = "50%";
+                this.style.transform = "translate(-50%, -50%)";
+            }
+            else {
+                this.style.top = top || this.clientTop + "px";
+                this.style.left = left || this.clientLeft + "px";
+            }
+
+            /** id for the handle */
+            this.componentId = this.getAttribute('handle');
+
+            const draggableElement = document.createElement('div');
+            draggableElement.innerHTML = this.innerHTML;
+            this.component = draggableElement;
+            this.base.render(this);
+
+            let renderTimer = setTimeout(() => {
+                clearTimeout(renderTimer);
+                this._dragElement(this);
+
+            }, 10);
+        };
+        disconnectedCallback() {
+            this.base.removeEvents(this);
+        }
+
+        _dragElement(element) {
+            let pos1 = 0,
+                pos2 = 0,
+                pos3 = 0,
+                pos4 = 0;
+            if (document.getElementById(element.componentId)) {
+                // if present, the header is where you move the DIV from:
+                const handleElement = document.getElementById(element.componentId);
+                handleElement.onmousedown = dragMouseDown;
+            } else {
+                // otherwise, move the DIV from anywhere inside the DIV:
+                element.onmousedown = dragMouseDown;
+            }
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // set the element's new position:
+                element.style.top = element.offsetTop - pos2 + "px";
+                element.style.left = element.offsetLeft - pos1 + "px";
+            }
+
+            function closeDragElement() {
+                // stop moving when mouse button is released:
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+    }
+
+    class FlightkitModal extends HTMLElement {
+        _id;
+        base;
+        constructor() {
+            super();
+            this.base = new BaseComponent();
+        }
+
+        closeModal(event) {
+            /** have to do it twice, because of the use of flk-draggable. */
+            const modalElement = returnEventWithTopLevelElement({ target: returnEventWithTopLevelElement(event).target.parentNode });
+            const parentElement = modalElement.target.parentNode;
+            parentElement.removeChild(modalElement.target);
+            console.log(parentElement);
+        }
+
+        connectedCallback() {
+            this._id = this.base.generateId();
+
+            /** set it on the parent */
+            this.id = this._id;
+            const modalContainer = document.createElement('div');
+
+            /** used as handle */
+            let windowHeaderId = this.base.generateId();
+
+            const flkDraggable = document.createElement('flk-draggable');
+            flkDraggable.setAttribute('center', '');
+            flkDraggable.setAttribute('top', '40%');
+            flkDraggable.setAttribute('handle', windowHeaderId);
+            flkDraggable.classList.add('border', 'shadow-lg');
+
+            const windowHeader = document.createElement('div');
+            windowHeader.id = windowHeaderId;
+            windowHeader.classList.add('bg-gray-light', 'border-bottom', 'row', 'justify-end');
+
+            const closeModalId = this.base.generateId();
+            const closeModalButton = document.createElement('button');
+            closeModalButton.classList.add('py-0', 'px-1', 'bg-gray-light', 'no-border');
+            closeModalButton.innerText = 'X';
+            closeModalButton.id = closeModalId;
+
+            windowHeader.append(closeModalButton);
+            flkDraggable.append(windowHeader);
+
+            const userContentElement = document.createElement('div');
+            userContentElement.classList.add('p-2');
+            userContentElement.innerHTML = this.innerHTML;
+            flkDraggable.append(userContentElement);
+
+            modalContainer.append(flkDraggable);
+            this.component = modalContainer;
+
+            this.base.addEvent(`#${closeModalId}`, 'click', this.closeModal);
+            this.base.render(this);
+        };
+
+        disconnectedCallback() {
+            this.base.removeEvents(this);
+        }
+    }
+
     customElements.define('flk-table', FlightkitTable);
+    customElements.define('flk-draggable', FlightkitDraggable);
+    customElements.define('flk-modal', FlightkitModal);
 
 })();

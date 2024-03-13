@@ -9,6 +9,8 @@
   --shadow-color: 0, 0, 0;
   --hr-color: #d2d0ce;
   --border-color: #8a8886;
+  --gray-light: #edebe9;
+  --color-on-gray-light: #000;
   --gray: #a19f9d;
   --color-on-gray: #000;
   --gray-dark: #605e5c;
@@ -564,6 +566,9 @@ th {
 }
 .block {
   display: block;
+}
+.hidden {
+  display: none;
 }
 /* manual device utilities */
 @media (min-width: 768px) {
@@ -2341,6 +2346,10 @@ table.striped tbody tr:hover {
 }
 html {
   background-color: var(--html-background);
+}
+.bg-gray-light {
+  background-color: var(--gray-light);
+  color: var(--color-on-gray-light);
 }
 .bg-gray {
   background-color: var(--gray);

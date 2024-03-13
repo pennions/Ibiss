@@ -1,76 +1,93 @@
+import { returnEventWithTopLevelElement } from '../htmlbuilder/domTraversal';
 import { BaseComponent } from './extensions/base_component';
 
 export class FlightkitModal extends HTMLElement {
+    _id;
     base;
-    dialogId;
-    /** property to check the state so you can easily switch */
-    dialogOpen;
-
-    newX;
-    newY;
-    startX;
-    startY;
-
+    _draggableId;
     constructor() {
         super();
         this.base = new BaseComponent();
     }
 
+    _emit(event, ftElement, detail) {
+        let selectEvent = new CustomEvent(event, {
+            detail,
+            bubbles: true,
+            cancelable: true
+        });
+        ftElement.dispatchEvent(selectEvent);
+    }
+
+    closeModal(event) {
+        /** have to do it twice, because of the use of flk-draggable. */
+        const topLevelEvent = returnEventWithTopLevelElement({ target: returnEventWithTopLevelElement(event).target.parentNode });
+        const modalElement = topLevelEvent.target;
+
+        modalElement.classList.add('hidden');
+        modalElement._emit('hide', modalElement, { hidden: true, id: modalElement.id });
+    }
+
+    openModal(reset = true) {
+        const draggable = document.getElementById(this._draggableId);
+        if (reset) {
+            draggable.style.top = "40%";
+            draggable.style.left = "50%";
+        }
+        this.classList.remove('hidden');
+    }
+
     connectedCallback() {
-        const dialogElement = document.createElement('dialog');
-        dialogElement.innerHTML = '<div id="handle" style="height:5rem;width:100%;"></div>' + this.innerHTML;
 
-        this.dialogId = this.base.generateId();
-        dialogElement.id = this.dialogId;
+        if (!this.id) {
+            this.id = this.base.generateId();
+        }
+        const modalContainer = document.createElement('div');
 
-        this.component = dialogElement;
-        this.base.addEvent("#handle", 'mousedown', this._startDrag);
+        /** used as handle */
+        let windowHeaderId = this.base.generateId();
 
+        const flkDraggable = document.createElement('flk-draggable');
+        this._draggableId = this.base.generateId();
+        flkDraggable.id = this._draggableId;
+        flkDraggable.setAttribute('center', '');
+        flkDraggable.setAttribute('top', '40%');
+        flkDraggable.setAttribute('handle', windowHeaderId);
+        flkDraggable.classList.add('border', 'shadow-lg');
+
+        const windowHeader = document.createElement('div');
+
+        const windowHeaderText = this.getAttribute('title');
+
+        if (windowHeaderText) {
+            const headerTextElement = document.createElement('span');
+            headerTextElement.innerText = windowHeaderText;
+            headerTextElement.classList.add('ml-1', 'mr-auto');
+            windowHeader.append(headerTextElement)
+        }
+
+        windowHeader.id = windowHeaderId;
+        windowHeader.classList.add('bg-gray-light', 'border-bottom', 'row', 'justify-end');
+
+        const closeModalId = this.base.generateId();
+        const closeModalButton = document.createElement('button');
+        closeModalButton.classList.add('py-0', 'px-1', 'bg-gray-light', 'no-border');
+        closeModalButton.innerText = 'X';
+        closeModalButton.id = closeModalId;
+
+        windowHeader.append(closeModalButton);
+        flkDraggable.append(windowHeader);
+
+        const userContentElement = document.createElement('div');
+        userContentElement.innerHTML = this.innerHTML;
+        flkDraggable.append(userContentElement);
+
+        modalContainer.append(flkDraggable);
+        this.component = modalContainer;
+
+        this.base.addEvent(`#${closeModalId}`, 'click', this.closeModal);
         this.base.render(this);
     };
-
-
-    _startDrag(event) {
-        event.preventDefault();
-        this.startX = event.clientX;
-        this.startY = event.clientY;
-        console.log(event)
-        document.addEventListener('mousemove', this._drag);
-        document.addEventListener('mouseup', this._stop);
-    }
-
-    _drag(event) {
-        console.log("foo")
-        event.preventDefault();
-        this.newX = this.startX - event.clientX;
-        this.newY = this.startY - event.clientY;
-        this.startX = event.clientX;
-        this.startY = event.clientY;
-
-        // set the element's new position:
-        this.style.top = this.offsetTop - this.newY;
-        this.style.left = this.offsetLeft - this.newX;
-    }
-    _stop() {
-        // document.onmouseup = null;
-        // document.onmousemove = null;
-
-        /** stop everything when mouse button is released: */
-        document.removeEventListener('mousemove', this._drag);
-        document.removeEventListener('mouseup', this._stop);
-    }
-
-    show() {
-        this.dialogOpen = true;
-        this.component.setAttribute('open', '');
-        this.base.render(this);
-    }
-
-    hide() {
-        this.dialogOpen = false;
-        this.component.removeAttribute('open');
-        this.base.render(this);
-    }
 
     disconnectedCallback() {
         this.base.removeEvents(this);

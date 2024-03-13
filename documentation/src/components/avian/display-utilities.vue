@@ -53,6 +53,10 @@ import Card from '../shared/Card.vue'
             <td><code>list-style-none</code></td>
             <td>Sets the elements list style to none</td>
           </tr>
+          <tr>
+            <td><code>hidden</code></td>
+            <td>Sets the elements display to none</td>
+          </tr>
         </tbody>
       </table>
     </article>

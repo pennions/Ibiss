@@ -145,6 +145,10 @@ export class BaseComponent {
     _assignToDom(parentElement, element) {
         parentElement.innerHTML = "";
         parentElement.append(element);
-        this._addEvents(parentElement);
+        /** need to add timeout so it can be applied properly */
+        const eventTimer = setTimeout(() => {
+            this._addEvents(parentElement);
+            clearTimeout(eventTimer);
+        }, 10);
     }
 };
