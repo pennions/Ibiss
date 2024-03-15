@@ -24,7 +24,7 @@ export class BaseComponent {
             const selector = `#${parentElement.id}`;
 
             for (const event of eventsToAdd) {
-                const eventAttribute = `i-${event}`;
+                const eventAttribute = `e-${event}`;
                 this.addEvent(selector, event, parentElement.getAttribute(eventAttribute));
             }
         }
@@ -73,7 +73,7 @@ export class BaseComponent {
 
     _getAllEventAttributes(parentElement) {
         const attributes = parentElement.attributes;
-        const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('i-'));
+        const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('e-'));
         /** remove custom events, because these need to be bound specifically */
         return eventAttributes.map(attr => attr.name.slice(2));
     }
@@ -85,7 +85,7 @@ export class BaseComponent {
     _outerEventHandler(event) {
         const ftEvent = returnEventWithTopLevelElement(event);
         ftEvent.contents = event.detail;
-        const callback = ftEvent.target.getAttribute(`i-${ftEvent.type}`);
+        const callback = ftEvent.target.getAttribute(`e-${ftEvent.type}`);
         const callbackParts = callback.split('.');
 
         let actualCallback = undefined;

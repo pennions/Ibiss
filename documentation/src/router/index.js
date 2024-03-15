@@ -116,6 +116,16 @@ const router = createRouter({
           name: 'flightkit-table',
           component: () => import('../components/flightkit/flightkit-table.vue'),
         },
+        {
+          path: '/flightkit-draggable',
+          name: 'flightkit-draggable',
+          component: () => import('../components/flightkit/flightkit-draggable.vue'),
+        },
+        {
+          path: '/flightkit-modal',
+          name: 'flightkit-modal',
+          component: () => import('../components/flightkit/flightkit-modal.vue'),
+        },
       ]
     }]
 });

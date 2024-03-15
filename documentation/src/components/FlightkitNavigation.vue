@@ -7,7 +7,7 @@ import { RouterLink } from 'vue-router'
     <div class="column align-center gap-1 mb-3 mt-1">
       <img src="/flightkit.svg" class="flightkit-logo" />
 
-      <h1>Flightkit Components</h1>
+      <h1>Flightkit</h1>
     </div>
 
     <router-link to="/" class="block mb-2">Back to Ibiss </router-link>
@@ -16,6 +16,8 @@ import { RouterLink } from 'vue-router'
       <hr />
       <ul class="ml-0 mt-3 list-style-none">
         <li class="ml-1"><router-link to="/flightkit-table">Table</router-link></li>
+        <li class="ml-1"><router-link to="/flightkit-draggable">Draggable</router-link></li>
+        <li class="ml-1"><router-link to="/flightkit-modal">Modal</router-link></li>
       </ul>
     </nav>
   </section>

@@ -108,10 +108,10 @@ function handleSelect(event) {
                   </td>
                 </tr>
                 <tr>
-                  <td><code>i-{event}</code></td>
+                  <td><code>e-{event}</code></td>
                   <td>builtin event handling.</td>
                   <td>
-                    Will trigger on the event <b>E.G.</b> <code>i-click="myFunction"</code> will
+                    Will trigger on the event <b>E.G.</b> <code>e-click="myFunction"</code> will
                     trigger the global function myEvent when clicked.
                   </td>
                 </tr>
