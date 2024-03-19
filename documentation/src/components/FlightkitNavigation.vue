@@ -18,6 +18,7 @@ import { RouterLink } from 'vue-router'
         <li class="ml-1"><router-link to="/flightkit-table">Table</router-link></li>
         <li class="ml-1"><router-link to="/flightkit-draggable">Draggable</router-link></li>
         <li class="ml-1"><router-link to="/flightkit-modal">Modal</router-link></li>
+        <li class="ml-1"><router-link to="/flightkit-dropdown">Dropdown</router-link></li>
       </ul>
     </nav>
   </section>

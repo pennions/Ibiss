@@ -21,7 +21,7 @@ export class FlightkitModal extends HTMLElement {
 
     closeModal(event) {
         /** have to do it twice, because of the use of flk-draggable. */
-        const topLevelEvent = returnEventWithTopLevelElement({ target: returnEventWithTopLevelElement(event).target.parentNode });
+        const topLevelEvent = returnEventWithTopLevelElement(event, 'flk-modal');
         const modalElement = topLevelEvent.target;
 
         modalElement.classList.add('hidden');
@@ -53,7 +53,8 @@ export class FlightkitModal extends HTMLElement {
         flkDraggable.setAttribute('center', '');
         flkDraggable.setAttribute('top', '40%');
         flkDraggable.setAttribute('handle', windowHeaderId);
-        flkDraggable.classList.add('border', 'shadow-lg');
+        flkDraggable.style.zIndex = '1080';
+        flkDraggable.classList.add('border', 'shadow-lg', 'bg-white');
 
         const windowHeader = document.createElement('div');
 
@@ -63,7 +64,7 @@ export class FlightkitModal extends HTMLElement {
             const headerTextElement = document.createElement('span');
             headerTextElement.innerText = windowHeaderText;
             headerTextElement.classList.add('ml-1', 'mr-auto');
-            windowHeader.append(headerTextElement)
+            windowHeader.append(headerTextElement);
         }
 
         windowHeader.id = windowHeaderId;
@@ -87,6 +88,8 @@ export class FlightkitModal extends HTMLElement {
 
         this.base.addEvent(`#${closeModalId}`, 'click', this.closeModal);
         this.base.render(this);
+        /** start hidden ofcourse. */
+        this.classList.add('hidden');
     };
 
     disconnectedCallback() {

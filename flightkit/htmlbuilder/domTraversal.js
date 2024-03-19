@@ -1,24 +1,27 @@
-function isFlightkitElement(tagName) {
-    return tagName.toUpperCase().includes('FLK-');
+function isFlightkitElement(tagName, flkTag) {
+    const compareTo = flkTag ? flkTag.toUpperCase() : 'FLK-';
+    return tagName.toUpperCase().includes(compareTo);
 }
 
 /**
  * @returns top level flightkit element
  */
-export function returnEventWithTopLevelElement(event) {
+export function returnEventWithTopLevelElement(event, flkTag) {
     let { timeStamp, type, x, y } = event;
 
     let target = event.target;
-
     do {
-        if (isFlightkitElement(target.tagName)) {
+        if (!target || target.tagName === 'HTML' || isFlightkitElement(target.tagName, flkTag)) {
+            if (target.tagName === 'HTML') {
+                target = null;
+            }
             break;
         }
         else {
-            target = target.parentNode;
+            target = target.parentNode || target.parentElement;
         }
     }
-    while (!isFlightkitElement(target.tagName)); /** check until we get the flightkit element */
+    while (!isFlightkitElement(target.tagName, flkTag)); /** check until we get the flightkit element */
 
     return {
         target,

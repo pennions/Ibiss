@@ -9,6 +9,10 @@ onMounted(() => {
   // eslint-disable-next-line no-undef
   Prism.highlightAll()
 })
+
+function showModal() {
+  document.getElementById('foo').openModal()
+}
 </script>
 
 <template>
@@ -58,13 +62,29 @@ onMounted(() => {
                 <tr>
                   <td><code>myModal.closeModal()</code></td>
                   <td>
-                    Emits the event 'hide' with the <code>{ hidden: true, id: {id} }</code> parameters
+                    Emits the event 'hide' with the
+                    <code>{ hidden: true, id: {id} }</code> parameters
                   </td>
                   <td>Closes the modal</td>
                 </tr>
               </tbody>
             </table>
           </div>
+        </section>
+
+        <section>
+          <h3 class="mb-2">Using the modal</h3>
+          <hr />
+
+          <button @click="showModal">Open modal</button>
+
+          <flk-modal id="foo" title="My Modal">
+            <div class="p-1">
+              <h1>Modal title</h1>
+              <hr />
+              <section>Hello Modal!</section>
+            </div>
+          </flk-modal>
         </section>
       </div>
     </article>

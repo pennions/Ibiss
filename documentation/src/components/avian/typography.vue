@@ -10,7 +10,7 @@ import Card from '../shared/Card.vue'
         <hr />
       </header>
 
-      <div class="column ml-1 mb-5 gap-3">
+      <div class="column ml-1 mb-5 gap-5">
         <p>
           Avian uses the following font-size, based on a 62.5% of the default font-size. <br />
           This translates to 0.1rem equals 1px.
@@ -160,6 +160,113 @@ import Card from '../shared/Card.vue'
                 </tr>
               </tbody>
             </table>
+          </section>
+        </section>
+        <section>
+          <header>
+            <h2>Text classes</h2>
+            <hr />
+          </header>
+          <section class="row gap-5">
+            <div class="f-50">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Font weight</th>
+                    <th>CSS Variable</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>font-weight-normal</td>
+                    <td>400</td>
+                    <td>--font-weight-normal</td>
+                  </tr>
+                  <tr>
+                    <td>font-weight-semibold</td>
+                    <td>600</td>
+                    <td>--font-weight-semibold</td>
+                  </tr>
+                  <tr>
+                    <td>font-weight-bold</td>
+                    <td>700</td>
+                    <td>--font-weight-bold</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h1 class="font-weight-normal">Header 1 with normal fontweight</h1>
+              <span class="font-weight-semibold block">Text in semibold</span>
+              <span class="font-weight-bold block">Text in bold</span>
+            </div>
+
+            <div class="f-50">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Font size</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>font-size-68</td>
+                    <td>6.8rem</td>
+                  </tr>
+                  <tr>
+                    <td>font-size-42</td>
+                    <td>4.2rem</td>
+                  </tr>
+                  <tr>
+                    <td>font-size-32</td>
+                    <td>3.2rem</td>
+                  </tr>
+                  <tr>
+                    <td>font-size-28</td>
+                    <td>2.8rem</td>
+                  </tr>
+                  <tr>
+                    <td>font-size-24</td>
+                    <td>2.4rem</td>
+                  </tr>
+                  <tr>
+                    <td>font-size-20</td>
+                    <td>2rem</td>
+                  </tr>
+                  <tr>
+                    <td>font-size-18</td>
+                    <td>1.8rem</td>
+                  </tr>
+                  <tr>
+                    <td>font-size-14</td>
+                    <td>1.4rem</td>
+                  </tr>
+                  <tr>
+                    <td>font-size-12</td>
+                    <td>1.2rem</td>
+                  </tr>
+                  <tr>
+                    <td>font-size-10</td>
+                    <td>1rem</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <span class="font-size-68 block">Size 68</span>
+              <span class="font-size-42 block">Size 42</span>
+              <span class="font-size-32 block">Size 32</span>
+              <span class="font-size-28 block">Size 28</span>
+              <span class="font-size-24 block">Size 24</span>
+              <span class="font-size-20 block">Size 20</span>
+              <span class="font-size-18 block">Size 18</span>
+              <span class="font-size-16 block">Size 16</span>
+              <span class="font-size-14 block">Size 14</span>
+              <span class="font-size-12 block">Size 12</span>
+              <span class="font-size-10 block">Size 10</span>
+            </div>
           </section>
         </section>
       </div>

@@ -690,27 +690,30 @@
         ;
     }
 
-    function isFlightkitElement(tagName) {
-        return tagName.toUpperCase().includes('FLK-');
+    function isFlightkitElement(tagName, flkTag) {
+        const compareTo = flkTag ? flkTag.toUpperCase() : 'FLK-';
+        return tagName.toUpperCase().includes(compareTo);
     }
 
     /**
      * @returns top level flightkit element
      */
-    function returnEventWithTopLevelElement(event) {
+    function returnEventWithTopLevelElement(event, flkTag) {
         let { timeStamp, type, x, y } = event;
 
         let target = event.target;
-
         do {
-            if (isFlightkitElement(target.tagName)) {
+            if (!target || target.tagName === 'HTML' || isFlightkitElement(target.tagName, flkTag)) {
+                if (target.tagName === 'HTML') {
+                    target = null;
+                }
                 break;
             }
             else {
-                target = target.parentNode;
+                target = target.parentNode || target.parentElement;
             }
         }
-        while (!isFlightkitElement(target.tagName)); /** check until we get the flightkit element */
+        while (!isFlightkitElement(target.tagName, flkTag)); /** check until we get the flightkit element */
 
         return {
             target,
@@ -781,7 +784,7 @@
                 const selector = `#${parentElement.id}`;
 
                 for (const event of eventsToAdd) {
-                    const eventAttribute = `i-${event}`;
+                    const eventAttribute = `e-${event}`;
                     this.addEvent(selector, event, parentElement.getAttribute(eventAttribute));
                 }
             }
@@ -798,7 +801,13 @@
 
             /** always passthrough top level classes */
             if (this._topLevelClasses.length) {
-                parentElement.component.classList.add(...this._topLevelClasses);
+                /** if we have multiple components, add the passthrough classes to the first one. */
+                if (Array.isArray(parentElement.component)) {
+                    parentElement.component[0].classList.add(...this._topLevelClasses);
+                }
+                else {
+                    parentElement.component.classList.add(...this._topLevelClasses);
+                }
             }
             clearTimeout(this._renderTimer);
             /** try to limit the amount of rendering */
@@ -830,7 +839,7 @@
 
         _getAllEventAttributes(parentElement) {
             const attributes = parentElement.attributes;
-            const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('i-'));
+            const eventAttributes = Array.from(attributes).filter(attr => attr.name.startsWith('e-'));
             /** remove custom events, because these need to be bound specifically */
             return eventAttributes.map(attr => attr.name.slice(2));
         }
@@ -842,7 +851,7 @@
         _outerEventHandler(event) {
             const ftEvent = returnEventWithTopLevelElement(event);
             ftEvent.contents = event.detail;
-            const callback = ftEvent.target.getAttribute(`i-${ftEvent.type}`);
+            const callback = ftEvent.target.getAttribute(`e-${ftEvent.type}`);
             const callbackParts = callback.split('.');
 
             let actualCallback = undefined;
@@ -901,7 +910,13 @@
 
         _assignToDom(parentElement, element) {
             parentElement.innerHTML = "";
-            parentElement.append(element);
+
+            const elementsToAdd = Array.isArray(element) ? element : [element];
+
+            for(const HTMLElement of elementsToAdd) {
+                parentElement.append(HTMLElement);
+            }
+       
             /** need to add timeout so it can be applied properly */
             const eventTimer = setTimeout(() => {
                 this._addEvents(parentElement);
@@ -910,8 +925,19 @@
         }
     }
 
-    const sortAscendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: 3px; left: 2px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-narrow-wide"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="M11 12h4"/><path d="M11 16h7"/><path d="M11 20h10"/></svg>';
-    const sortDescendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" style="position: relative; top: 3px; left: 2px;" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-wide-narrow"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>';
+    const sortAscendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-narrow-wide"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="M11 12h4"/><path d="M11 16h7"/><path d="M11 20h10"/></svg>';
+    const sortDescendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-wide-narrow"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>';
+
+    const chevronDownIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>';
+    const chevronUpIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up"><path d="m18 15-6-6-6 6"/></svg>';
+    function rehydrateSvg(svgString) {
+        const parser = new DOMParser();
+        // Parse the SVG string
+        const parsedSvg = parser.parseFromString(svgString, "image/svg+xml");
+
+        // Extract the parsed SVG element
+        return parsedSvg.documentElement;
+    }
 
     class FlightkitTable extends HTMLElement {
         base;
@@ -1465,36 +1491,69 @@
     class FlightkitModal extends HTMLElement {
         _id;
         base;
+        _draggableId;
         constructor() {
             super();
             this.base = new BaseComponent();
         }
 
+        _emit(event, ftElement, detail) {
+            let selectEvent = new CustomEvent(event, {
+                detail,
+                bubbles: true,
+                cancelable: true
+            });
+            ftElement.dispatchEvent(selectEvent);
+        }
+
         closeModal(event) {
             /** have to do it twice, because of the use of flk-draggable. */
-            const modalElement = returnEventWithTopLevelElement({ target: returnEventWithTopLevelElement(event).target.parentNode });
-            const parentElement = modalElement.target.parentNode;
-            parentElement.removeChild(modalElement.target);
-            console.log(parentElement);
+            const topLevelEvent = returnEventWithTopLevelElement(event, 'flk-modal');
+            const modalElement = topLevelEvent.target;
+
+            modalElement.classList.add('hidden');
+            modalElement._emit('hide', modalElement, { hidden: true, id: modalElement.id });
+        }
+
+        openModal(reset = true) {
+            const draggable = document.getElementById(this._draggableId);
+            if (reset) {
+                draggable.style.top = "40%";
+                draggable.style.left = "50%";
+            }
+            this.classList.remove('hidden');
         }
 
         connectedCallback() {
-            this._id = this.base.generateId();
 
-            /** set it on the parent */
-            this.id = this._id;
+            if (!this.id) {
+                this.id = this.base.generateId();
+            }
             const modalContainer = document.createElement('div');
 
             /** used as handle */
             let windowHeaderId = this.base.generateId();
 
             const flkDraggable = document.createElement('flk-draggable');
+            this._draggableId = this.base.generateId();
+            flkDraggable.id = this._draggableId;
             flkDraggable.setAttribute('center', '');
             flkDraggable.setAttribute('top', '40%');
             flkDraggable.setAttribute('handle', windowHeaderId);
-            flkDraggable.classList.add('border', 'shadow-lg');
+            flkDraggable.style.zIndex = '1080';
+            flkDraggable.classList.add('border', 'shadow-lg', 'bg-white');
 
             const windowHeader = document.createElement('div');
+
+            const windowHeaderText = this.getAttribute('title');
+
+            if (windowHeaderText) {
+                const headerTextElement = document.createElement('span');
+                headerTextElement.innerText = windowHeaderText;
+                headerTextElement.classList.add('ml-1', 'mr-auto');
+                windowHeader.append(headerTextElement);
+            }
+
             windowHeader.id = windowHeaderId;
             windowHeader.classList.add('bg-gray-light', 'border-bottom', 'row', 'justify-end');
 
@@ -1508,7 +1567,6 @@
             flkDraggable.append(windowHeader);
 
             const userContentElement = document.createElement('div');
-            userContentElement.classList.add('p-2');
             userContentElement.innerHTML = this.innerHTML;
             flkDraggable.append(userContentElement);
 
@@ -1517,6 +1575,8 @@
 
             this.base.addEvent(`#${closeModalId}`, 'click', this.closeModal);
             this.base.render(this);
+            /** start hidden ofcourse. */
+            this.classList.add('hidden');
         };
 
         disconnectedCallback() {
@@ -1524,8 +1584,172 @@
         }
     }
 
+    /** example component */
+
+    class FlightkitDropdown extends HTMLElement {
+        base;
+        _buttonId;
+        _drawerId;
+        _iconId;
+
+        constructor() {
+            super();
+            this.base = new BaseComponent();
+        }
+
+        /** grab inner HTML from here */
+        connectedCallback() {
+            this.style.position = 'relative';
+            this.style.display = 'flex'; /** fixes drawer positioning */
+            this.style.width = 'fit-content'; /** fixes flex taking up 100% */
+            this._buttonId = this.base.generateId();
+
+            const btnElement = document.createElement('button');
+            btnElement.classList.add('row');
+            btnElement.id = this._buttonId;
+
+            const btnTextElement = document.createElement('span');
+            btnTextElement.innerText = this.getAttribute('text');
+
+            this._iconId = this.base.generateId();
+
+            const iconElement = document.createElement('span');
+            const closedIcon = rehydrateSvg(chevronDownIcon);
+
+            const openIcon = rehydrateSvg(chevronUpIcon);
+            openIcon.classList.add('hidden');
+
+            iconElement.append(closedIcon, openIcon);
+            iconElement.id = this._iconId;
+
+            btnElement.append(btnTextElement, iconElement);
+
+            this._drawerId = this.base.generateId();
+            const drawerElement = document.createElement('div');
+            drawerElement.id = this._drawerId;
+            drawerElement.classList.add('shadow', 'inline-block', 'bg-white');
+            drawerElement.style.position = 'absolute';
+            drawerElement.style.zIndex = '1040';
+
+            /** a template tag will not be rendered. It will be nicer this way. */
+            const templateElement = this.querySelector('template');
+
+            /**innerHTML works in vanilla, but firstChild due to Vue3.*/
+            if (templateElement.innerHTML.length) {
+                drawerElement.innerHTML = templateElement.innerHTML;
+            }
+            else {
+                drawerElement.append(templateElement.firstChild);
+            }
+
+            drawerElement.style.display = 'none';
+
+            /** set it to be rendered */
+            this.component = [btnElement, drawerElement];
+
+            this.base.addEvent(`#${this._buttonId}`, 'click', this.toggleMenu);
+
+            const bodyEl = document.querySelector('body');
+
+            if (bodyEl.getAttribute('flk-close-dropdown') !== '') {
+                bodyEl.setAttribute('flk-close-dropdown', '');
+                bodyEl.addEventListener('click', this.closeAllDropdownButtons);
+            }
+
+            this.base.render(this);
+        };
+        disconnectedCallback() {
+            this.base.removeEvents(this);
+            const allDropdownButtons = document.querySelectorAll('flk-dropdown');
+
+            if (!allDropdownButtons || !allDropdownButtons.length) {
+                const bodyEl = document.querySelector('body');
+                bodyEl.removeAttribute('flk-close-dropdown');
+                bodyEl.removeEventListener('click', this.closeAllDropdownButtons);
+            }
+        }
+
+        toggleMenu(event) {
+            const topLevelElement = returnEventWithTopLevelElement(event);
+            const ftElement = topLevelElement.target;
+            const drawerToToggleId = ftElement._drawerId;
+            const drawerToToggle = document.getElementById(drawerToToggleId);
+
+            const drawerOpen = drawerToToggle.style.display !== 'none';
+            drawerToToggle.style.display = drawerOpen ? 'none' : 'block';
+
+            const specifiedWidth = ftElement.getAttribute('drawer-width');
+            const alignRight = typeof ftElement.getAttribute('right') === 'string';
+
+            if (alignRight) {
+                drawerToToggle.style.right = "0px";
+            }
+
+            drawerToToggle.style.top = ftElement.offsetHeight + "px";
+            drawerToToggle.style.width = specifiedWidth || ftElement.offsetWidth + "px";
+
+            const iconToToggleId = ftElement._iconId;
+            const iconToToggle = document.getElementById(iconToToggleId);
+
+            /** because I checked if the previous state was open then we close.
+             * So therefor we need to do the opposite, if it _was_ open, now its closed.
+             */
+
+            if (drawerOpen) {
+                iconToToggle.childNodes[0].classList.remove('hidden');
+                iconToToggle.childNodes[1].classList.add('hidden');
+            }
+            else {
+                iconToToggle.childNodes[0].classList.add('hidden');
+                iconToToggle.childNodes[1].classList.remove('hidden');
+            }    }
+
+        _closeDropdown() {
+            const drawerToToggleId = this._drawerId;
+            const drawerToToggle = document.getElementById(drawerToToggleId);
+            const drawerOpen = drawerToToggle.style.display !== 'none';
+
+            if (drawerOpen) {
+                const iconToToggleId = this._iconId;
+                const iconToToggle = document.getElementById(iconToToggleId);
+
+                drawerToToggle.style.display = 'none';
+                iconToToggle.childNodes[0].classList.remove('hidden');
+                iconToToggle.childNodes[1].classList.add('hidden');
+            }
+        }
+
+        closeAllDropdownButtons(event) {
+            const topLevelElement = returnEventWithTopLevelElement(event, 'flk-dropdown');
+            const ftElement = topLevelElement.target;
+
+            const allDropdownButtons = document.querySelectorAll('flk-dropdown');
+
+            if (ftElement) {
+                for (const dropdownButton of allDropdownButtons) {
+                    /**if you click on a dropdown. close the others */
+                    if (ftElement._buttonId !== dropdownButton._buttonId) {
+                        const drawerToToggleId = dropdownButton._drawerId;
+                        const drawerToToggle = document.getElementById(drawerToToggleId);
+                        const drawerOpen = drawerToToggle.style.display !== 'none';
+
+                        if (drawerOpen) {
+                            dropdownButton._closeDropdown();
+                        }
+                    }
+                }
+            } else {
+                /** close all dropdowns */
+                for (const dropdownButton of allDropdownButtons) {
+                    dropdownButton._closeDropdown();
+                }
+            }
+        }
+    }
+
     customElements.define('flk-table', FlightkitTable);
     customElements.define('flk-draggable', FlightkitDraggable);
     customElements.define('flk-modal', FlightkitModal);
+    customElements.define('flk-dropdown', FlightkitDropdown);
 
 })();

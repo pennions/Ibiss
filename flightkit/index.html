@@ -9,39 +9,11 @@
         <script src="js/ardeaset.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
         <script type="module" src="/main.js" defer></script>
-        <style>
-            .handle {
-                background-color: lightgrey;
-                height: 2.5rem;
-                width: 100%;
-            }
-        </style>
+        <style></style>
     </head>
-    <body class="ro">
+    <body>
         <button id="hide">Open modal</button>
 
-        <!-- <flk-draggable top="40%" center>
-            <div>
-                <h1>MyTitle</h1>
-                <hr />
-                <section>Some content</section>
-            </div>
-        </flk-draggable>
-        <flk-draggable handle="myHandle">
-            <div class="handle" id="myHandle"></div>
-            <div>
-                <h1>MyTitle2</h1>
-                <hr />
-                <section>Some content</section>
-            </div>
-        </flk-draggable>
-        <flk-draggable>
-            <div>
-                <h1>MyTitle3</h1>
-                <hr />
-                <section>Some content</section>
-            </div>
-        </flk-draggable> -->
         <flk-modal id="foo" e-hide="onHide" title="My Modal">
             <div class="p-1">
                 <h1>Modal title</h1>
@@ -50,13 +22,45 @@
             </div>
         </flk-modal>
 
+        <flk-dropdown
+            text="My dropdown and then some more you know"
+            class="primary"
+            drawer-width="70rem"
+            right
+        >
+            <template>
+                <ul class="p-5 test">
+                    <li><a>Link 1</a></li>
+                    <li><a>Link 2</a></li>
+                    <li><a>Link 3</a></li>
+                    <li><a>Link 4</a></li>
+                    <li><a>Link 5</a></li>
+                </ul>
+            </template>
+        </flk-dropdown>
+        <div>something below</div>
+
+        <h1>Hello?</h1>
+
+        <flk-dropdown text="Another dropdown" class="primary">
+            <template>
+                <h1>will I close?</h1>
+                <ul class="p-5 test">
+                    <li><a>Link 1</a></li>
+                    <li><a>Link 2</a></li>
+                    <li><a>Link 3</a></li>
+                    <li><a>Link 4</a></li>
+                    <li><a>Link 5</a></li>
+                </ul>
+            </template>
+        </flk-dropdown>
         <script>
             window.onload = function () {
                 document
                     .getElementById('hide')
                     .addEventListener('click', () => {
                         let x = document.getElementById('foo');
-                        x.openModal(false);
+                        x.openModal(true);
                     });
             };
         </script>

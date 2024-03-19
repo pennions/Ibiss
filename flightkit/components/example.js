@@ -17,7 +17,7 @@ export class FlightkitExample extends HTMLElement {
     connectedCallback() {
         const btnElement = document.createElement('button');
         btnElement.innerHTML = this.innerHTML;
-        btnElement.id = "megafoo";
+        btnElement.id = this.base.generateId();
         /** set it to be rendered */
         this.component = btnElement;
 

@@ -41,7 +41,13 @@ export class BaseComponent {
 
         /** always passthrough top level classes */
         if (this._topLevelClasses.length) {
-            parentElement.component.classList.add(...this._topLevelClasses);
+            /** if we have multiple components, add the passthrough classes to the first one. */
+            if (Array.isArray(parentElement.component)) {
+                parentElement.component[0].classList.add(...this._topLevelClasses);
+            }
+            else {
+                parentElement.component.classList.add(...this._topLevelClasses);
+            }
         }
         clearTimeout(this._renderTimer);
         /** try to limit the amount of rendering */
@@ -144,7 +150,13 @@ export class BaseComponent {
 
     _assignToDom(parentElement, element) {
         parentElement.innerHTML = "";
-        parentElement.append(element);
+
+        const elementsToAdd = Array.isArray(element) ? element : [element]
+
+        for(const HTMLElement of elementsToAdd) {
+            parentElement.append(HTMLElement);
+        }
+   
         /** need to add timeout so it can be applied properly */
         const eventTimer = setTimeout(() => {
             this._addEvents(parentElement);

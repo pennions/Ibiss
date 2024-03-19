@@ -126,6 +126,11 @@ const router = createRouter({
           name: 'flightkit-modal',
           component: () => import('../components/flightkit/flightkit-modal.vue'),
         },
+        {
+          path: '/flightkit-dropdown',
+          name: 'flightkit-dropdown',
+          component: () => import('../components/flightkit/flightkit-dropdown.vue'),
+        },
       ]
     }]
 });
