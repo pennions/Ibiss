@@ -53,7 +53,7 @@ export class FlightkitModal extends HTMLElement {
         flkDraggable.setAttribute('center', '');
         flkDraggable.setAttribute('top', '40%');
         flkDraggable.setAttribute('handle', windowHeaderId);
-        flkDraggable.style.zIndex = '1080';
+        flkDraggable.setAttribute('zIndex', '1080');
         flkDraggable.classList.add('border', 'shadow-lg', 'bg-white');
 
         const windowHeader = document.createElement('div');
@@ -68,11 +68,21 @@ export class FlightkitModal extends HTMLElement {
         }
 
         windowHeader.id = windowHeaderId;
-        windowHeader.classList.add('bg-gray-light', 'border-bottom', 'row', 'justify-end');
+
+        const headerClass = this.getAttribute('header-class');
+        let headerClassesToAdd = [];
+        if (headerClass) {
+            headerClassesToAdd = headerClassesToAdd.concat(headerClass.split(' '));
+        }
+        else {
+            headerClassesToAdd.push('bg-gray-light');
+        }
+
+        windowHeader.classList.add(...headerClassesToAdd, 'border-bottom', 'row', 'justify-end');
 
         const closeModalId = this.base.generateId();
         const closeModalButton = document.createElement('button');
-        closeModalButton.classList.add('py-0', 'px-1', 'bg-gray-light', 'no-border');
+        closeModalButton.classList.add('py-0', 'px-1', 'outline-hover', 'no-border', ...headerClassesToAdd);
         closeModalButton.innerText = 'X';
         closeModalButton.id = closeModalId;
 

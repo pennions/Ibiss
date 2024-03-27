@@ -83,6 +83,16 @@ import Card from '../../shared/Card.vue'
               </td>
             </tr>
             <tr>
+              <td><code class="language-html">bg-transparent </code></td>
+              <td>
+                <div class="bg-success">
+                  <button class="bg-transparent">
+                    A button with a transparent background, making it look green
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
               <td colspan="2"><b>Text</b></td>
             </tr>
 

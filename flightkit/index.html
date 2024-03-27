@@ -14,13 +14,20 @@
     <body>
         <button id="hide">Open modal</button>
 
-        <flk-modal id="foo" e-hide="onHide" title="My Modal">
+        <flk-modal id="foo" e-hide="onHide" title="My Modal" header-class="bg-primary">
             <div class="p-1">
                 <h1>Modal title</h1>
                 <hr />
                 <section>Hello Modal!</section>
             </div>
         </flk-modal>
+        <!-- <flk-draggable id="foo" zIndex="2000">
+            <div class="p-1">
+                <h1>Modal title</h1>
+                <hr />
+                <section>Hello Modal!</section>
+            </div>
+        </flk-draggable> -->
 
         <flk-dropdown
             text="My dropdown and then some more you know"

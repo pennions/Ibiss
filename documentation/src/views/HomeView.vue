@@ -30,7 +30,8 @@ import { RouterLink } from 'vue-router'
 .ibiss-logo {
   width: 8%;
 }
-.avian-logo, .flightkit-logo {
+.avian-logo,
+.flightkit-logo {
   height: 80%;
 }
 
@@ -77,5 +78,13 @@ import { RouterLink } from 'vue-router'
 
 .index {
   height: 100dvh;
+}
+</style>
+
+<style>
+.navigation {
+  min-height: 100dvh;
+  min-width: fit-content;
+  padding-bottom: 2rem;
 }
 </style>

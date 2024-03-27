@@ -35,10 +35,32 @@ function showModal() {
             <h3 class="mb-2">Using the modal</h3>
             <hr />
 
+            <table class="property-table mb-5">
+              <thead>
+                <tr>
+                  <th>Attribute</th>
+                  <th>Function</th>
+                  <th>How to use</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>title=""</code></td>
+                  <td>Sets the title of the modal header</td>
+                  <td><b>E.G.</b> title="my modal"</td>
+                </tr>
+                <tr>
+                  <td><code>header-class=""</code></td>
+                  <td>Adds classes to the header, add multiple with a space</td>
+                  <td><b>E.G.</b> header-class="foo bar baz"</td>
+                </tr>
+              </tbody>
+            </table>
+
             <span class="inline-block mb-3">
               When you have the element selected like
               <code>let myModal = document.getElementById('myModal')</code> you can use the
-              following functions
+              following functions:
             </span>
 
             <table class="property-table">
