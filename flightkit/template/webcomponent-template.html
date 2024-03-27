@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Web Component</title>
+        <style>
+            /* Define global component styles */
+            :root {
+                /* Define CSS variables */
+                --your-component-text-color: red;
+                --your-component-background-color: white;
+            }
+
+            /* Define component-specific styles */
+            .your-component {
+                color: var(--your-component-text-color);
+                background-color: var(--your-component-background-color);
+                /* Your component-specific styles here */
+            }
+        </style>
+    </head>
+    <body>
+        <your-component></your-component>
+        <script>
+            // Define your web component class
+            class YourComponent extends HTMLElement {
+                constructor() {
+                    super();
+                    // Create a shadow DOM
+                    this.attachShadow({ mode: 'open' });
+
+                    // Define your component's template
+                    const template = document.createElement('template');
+                    template.innerHTML = `
+                    <!-- HTML structure for your component -->
+                    <style>
+                        /* Define component-specific styles */
+                        .your-component {
+                            color: var(--your-component-text-color);
+                            background-color: var(--your-component-background-color);
+                            /* Your component-specific styles here */
+                        }
+                    </style>
+                    <div class="your-component">
+                        <!-- Content and elements of your component -->
+                        <span id="content">hi</span>
+                    </div>
+                `;
+                    // Append the template content to shadow DOM
+                    this.shadowRoot.appendChild(
+                        template.content.cloneNode(true)
+                    );
+                }
+
+                // Define lifecycle methods
+                connectedCallback() {
+                    // Add event listeners or any initialization logic
+
+                    // Watch attributes for changes
+                    this.attributeChangedCallback(null, null, null);
+                }
+
+                // Define rendering function
+                render() {
+                    // Manipulate content or add dynamic data here if needed
+                }
+
+                // Define attribute watchers
+                static get observedAttributes() {
+                    return ['your-attribute']; // List of attributes to watch
+                }
+
+                attributeChangedCallback(name, oldValue, newValue) {
+                    if (name === 'your-attribute') {
+                        // Handle attribute change here
+                        this.updateContent(newValue);
+                    }
+                }
+
+                // Custom method to update content based on attribute value
+                updateContent(value) {
+                    const contentElement =
+                        this.shadowRoot.getElementById('content');
+                    contentElement.textContent = value;
+                }
+
+                // Define other custom methods and properties as needed
+            }
+
+            // Define custom element for your component
+            customElements.define('your-component', YourComponent);
+        </script>
+    </body>
+</html>

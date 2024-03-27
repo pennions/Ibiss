@@ -9,6 +9,8 @@
   --shadow-color: 0, 0, 0;
   --hr-color: #d2d0ce;
   --border-color: #8a8886;
+  --gray-light: #edebe9;
+  --color-on-gray-light: #000;
   --gray: #a19f9d;
   --color-on-gray: #000;
   --gray-dark: #605e5c;
@@ -138,6 +140,12 @@ picture {
   max-width: 100%;
   display: block;
 }
+/** for default centering of lucide icons **/
+.lucide {
+  position: relative;
+  top: 3px;
+  left: 2px;
+}
 /** Remove all animations, transitions and smooth scroll for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
@@ -220,46 +228,46 @@ th {
   font-weight: var(--font-weight-semibold);
 }
 .font-size-68 {
-  font-size: 6.8rem;
+  font-size: 6.8rem !important;
 }
 .font-size-42 {
-  font-size: 4.2rem;
+  font-size: 4.2rem !important;
 }
 .font-size-32 {
-  font-size: 3.2rem;
+  font-size: 3.2rem !important;
 }
 .font-size-28 {
-  font-size: 2.8rem;
+  font-size: 2.8rem !important;
 }
 .font-size-24 {
-  font-size: 2.4rem;
+  font-size: 2.4rem !important;
 }
 .font-size-20 {
-  font-size: 2rem;
+  font-size: 2rem !important;
 }
 .font-size-18 {
-  font-size: 1.8rem;
+  font-size: 1.8rem !important;
 }
 .font-size-16 {
-  font-size: 1.6rem;
+  font-size: 1.6rem !important;
 }
 .font-size-14 {
-  font-size: 1.4rem;
+  font-size: 1.4rem !important;
 }
 .font-size-12 {
-  font-size: 1.2rem;
+  font-size: 1.2rem !important;
 }
 .font-size-10 {
-  font-size: 1rem;
+  font-size: 1rem !important;
 }
 .font-weight-normal {
-  font-weight: 400;
+  font-weight: 400 !important;
 }
 .font-weight-semibold {
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 .font-weight-bold {
-  font-weight: 700;
+  font-weight: 700 !important;
 }
 .align-center {
   align-items: center;
@@ -565,6 +573,9 @@ th {
 .block {
   display: block;
 }
+.hidden {
+  display: none;
+}
 /* manual device utilities */
 @media (min-width: 768px) {
   .mobile {
@@ -601,481 +612,481 @@ th {
   list-style: none !important;
 }
 .m-0 {
-  margin: var(--distance-0);
+  margin: var(--distance-0) !important;
 }
 .ml-0 {
-  margin-left: var(--distance-0);
+  margin-left: var(--distance-0) !important;
 }
 .mr-0 {
-  margin-right: var(--distance-0);
+  margin-right: var(--distance-0) !important;
 }
 .mt-0 {
-  margin-top: var(--distance-0);
+  margin-top: var(--distance-0) !important;
 }
 .mb-0 {
-  margin-bottom: var(--distance-0);
+  margin-bottom: var(--distance-0) !important;
 }
 .mx-0 {
-  margin-left: var(--distance-0);
-  margin-right: var(--distance-0);
+  margin-left: var(--distance-0) !important;
+  margin-right: var(--distance-0) !important;
 }
 .m-1 {
-  margin: var(--distance-1);
+  margin: var(--distance-1) !important;
 }
 .m-2 {
-  margin: var(--distance-2);
+  margin: var(--distance-2) !important;
 }
 .m-3 {
-  margin: var(--distance-3);
+  margin: var(--distance-3) !important;
 }
 .m-4 {
-  margin: var(--distance-4);
+  margin: var(--distance-4) !important;
 }
 .m-5 {
-  margin: var(--distance-5);
+  margin: var(--distance-5) !important;
 }
 .mx-auto {
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 .mx-1 {
-  margin-left: var(--distance-1);
-  margin-right: var(--distance-1);
+  margin-left: var(--distance-1) !important;
+  margin-right: var(--distance-1) !important;
 }
 .mx-2 {
-  margin-left: var(--distance-2);
-  margin-right: var(--distance-2);
+  margin-left: var(--distance-2) !important;
+  margin-right: var(--distance-2) !important;
 }
 .mx-3 {
-  margin-left: var(--distance-3);
-  margin-right: var(--distance-3);
+  margin-left: var(--distance-3) !important;
+  margin-right: var(--distance-3) !important;
 }
 .mx-4 {
-  margin-left: var(--distance-4);
-  margin-right: var(--distance-4);
+  margin-left: var(--distance-4) !important;
+  margin-right: var(--distance-4) !important;
 }
 .mx-5 {
-  margin-left: var(--distance-5);
-  margin-right: var(--distance-5);
+  margin-left: var(--distance-5) !important;
+  margin-right: var(--distance-5) !important;
 }
 .my-auto {
-  margin-top: auto;
-  margin-bottom: auto;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
 }
 .my-0 {
-  margin-top: var(--distance-0);
-  margin-bottom: var(--distance-0);
+  margin-top: var(--distance-0) !important;
+  margin-bottom: var(--distance-0) !important;
 }
 .my-1 {
-  margin-top: var(--distance-1);
-  margin-bottom: var(--distance-1);
+  margin-top: var(--distance-1) !important;
+  margin-bottom: var(--distance-1) !important;
 }
 .my-2 {
-  margin-top: var(--distance-2);
-  margin-bottom: var(--distance-2);
+  margin-top: var(--distance-2) !important;
+  margin-bottom: var(--distance-2) !important;
 }
 .my-3 {
-  margin-top: var(--distance-3);
-  margin-bottom: var(--distance-3);
+  margin-top: var(--distance-3) !important;
+  margin-bottom: var(--distance-3) !important;
 }
 .my-4 {
-  margin-top: var(--distance-4);
-  margin-bottom: var(--distance-4);
+  margin-top: var(--distance-4) !important;
+  margin-bottom: var(--distance-4) !important;
 }
 .my-5 {
-  margin-top: var(--distance-5);
-  margin-bottom: var(--distance-5);
+  margin-top: var(--distance-5) !important;
+  margin-bottom: var(--distance-5) !important;
 }
 .mt-auto {
-  margin-top: auto;
+  margin-top: auto !important;
 }
 .mt-1 {
-  margin-top: var(--distance-1);
+  margin-top: var(--distance-1) !important;
 }
 .mt-2 {
-  margin-top: var(--distance-2);
+  margin-top: var(--distance-2) !important;
 }
 .mt-3 {
-  margin-top: var(--distance-3);
+  margin-top: var(--distance-3) !important;
 }
 .mt-4 {
-  margin-top: var(--distance-4);
+  margin-top: var(--distance-4) !important;
 }
 .mt-5 {
-  margin-top: var(--distance-5);
+  margin-top: var(--distance-5) !important;
 }
 .ml-auto {
-  margin-left: auto;
+  margin-left: auto !important;
 }
 .ml-1 {
-  margin-left: var(--distance-1);
+  margin-left: var(--distance-1) !important;
 }
 .ml-2 {
-  margin-left: var(--distance-2);
+  margin-left: var(--distance-2) !important;
 }
 .ml-3 {
-  margin-left: var(--distance-3);
+  margin-left: var(--distance-3) !important;
 }
 .ml-4 {
-  margin-left: var(--distance-4);
+  margin-left: var(--distance-4) !important;
 }
 .ml-5 {
-  margin-left: var(--distance-5);
+  margin-left: var(--distance-5) !important;
 }
 .mr-auto {
-  margin-right: auto;
+  margin-right: auto !important;
 }
 .mr-1 {
-  margin-right: var(--distance-1);
+  margin-right: var(--distance-1) !important;
 }
 .mr-2 {
-  margin-right: var(--distance-2);
+  margin-right: var(--distance-2) !important;
 }
 .mr-3 {
-  margin-right: var(--distance-3);
+  margin-right: var(--distance-3) !important;
 }
 .mr-4 {
-  margin-right: var(--distance-4);
+  margin-right: var(--distance-4) !important;
 }
 .mr-5 {
-  margin-right: var(--distance-5);
+  margin-right: var(--distance-5) !important;
 }
 .mb-auto {
-  margin-bottom: auto;
+  margin-bottom: auto !important;
 }
 .mb-1 {
-  margin-bottom: var(--distance-1);
+  margin-bottom: var(--distance-1) !important;
 }
 .mb-2 {
-  margin-bottom: var(--distance-2);
+  margin-bottom: var(--distance-2) !important;
 }
 .mb-3 {
-  margin-bottom: var(--distance-3);
+  margin-bottom: var(--distance-3) !important;
 }
 .mb-4 {
-  margin-bottom: var(--distance-4);
+  margin-bottom: var(--distance-4) !important;
 }
 .mb-5 {
-  margin-bottom: var(--distance-5);
+  margin-bottom: var(--distance-5) !important;
 }
 @media (min-width: 768px) and (max-width: 992px) {
   .tm-0 {
-    margin: var(--distance-0);
+    margin: var(--distance-0) !important;
   }
   .tml-0 {
-    margin-left: var(--distance-0);
+    margin-left: var(--distance-0) !important;
   }
   .tmr-0 {
-    margin-right: var(--distance-0);
+    margin-right: var(--distance-0) !important;
   }
   .tmt-0 {
-    margin-top: var(--distance-0);
+    margin-top: var(--distance-0) !important;
   }
   .tmb-0 {
-    margin-bottom: var(--distance-0);
+    margin-bottom: var(--distance-0) !important;
   }
   .tmx-0 {
-    margin-left: var(--distance-0);
-    margin-right: var(--distance-0);
+    margin-left: var(--distance-0) !important;
+    margin-right: var(--distance-0) !important;
   }
   .tm-1 {
-    margin: var(--distance-1);
+    margin: var(--distance-1) !important;
   }
   .tm-2 {
-    margin: var(--distance-2);
+    margin: var(--distance-2) !important;
   }
   .tm-3 {
-    margin: var(--distance-3);
+    margin: var(--distance-3) !important;
   }
   .tm-4 {
-    margin: var(--distance-4);
+    margin: var(--distance-4) !important;
   }
   .tm-5 {
-    margin: var(--distance-5);
+    margin: var(--distance-5) !important;
   }
   .tmx-auto {
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
   .tmx-1 {
-    margin-left: var(--distance-1);
-    margin-right: var(--distance-1);
+    margin-left: var(--distance-1) !important;
+    margin-right: var(--distance-1) !important;
   }
   .tmx-2 {
-    margin-left: var(--distance-2);
-    margin-right: var(--distance-2);
+    margin-left: var(--distance-2) !important;
+    margin-right: var(--distance-2) !important;
   }
   .tmx-3 {
-    margin-left: var(--distance-3);
-    margin-right: var(--distance-3);
+    margin-left: var(--distance-3) !important;
+    margin-right: var(--distance-3) !important;
   }
   .tmx-4 {
-    margin-left: var(--distance-4);
-    margin-right: var(--distance-4);
+    margin-left: var(--distance-4) !important;
+    margin-right: var(--distance-4) !important;
   }
   .tmx-5 {
-    margin-left: var(--distance-5);
-    margin-right: var(--distance-5);
+    margin-left: var(--distance-5) !important;
+    margin-right: var(--distance-5) !important;
   }
   .tmy-auto {
-    margin-top: auto;
-    margin-bottom: auto;
+    margin-top: auto !important;
+    margin-bottom: auto !important;
   }
   .tmy-0 {
-    margin-top: var(--distance-0);
-    margin-bottom: var(--distance-0);
+    margin-top: var(--distance-0) !important;
+    margin-bottom: var(--distance-0) !important;
   }
   .tmy-1 {
-    margin-top: var(--distance-1);
-    margin-bottom: var(--distance-1);
+    margin-top: var(--distance-1) !important;
+    margin-bottom: var(--distance-1) !important;
   }
   .tmy-2 {
-    margin-top: var(--distance-2);
-    margin-bottom: var(--distance-2);
+    margin-top: var(--distance-2) !important;
+    margin-bottom: var(--distance-2) !important;
   }
   .tmy-3 {
-    margin-top: var(--distance-3);
-    margin-bottom: var(--distance-3);
+    margin-top: var(--distance-3) !important;
+    margin-bottom: var(--distance-3) !important;
   }
   .tmy-4 {
-    margin-top: var(--distance-4);
-    margin-bottom: var(--distance-4);
+    margin-top: var(--distance-4) !important;
+    margin-bottom: var(--distance-4) !important;
   }
   .tmy-5 {
-    margin-top: var(--distance-5);
-    margin-bottom: var(--distance-5);
+    margin-top: var(--distance-5) !important;
+    margin-bottom: var(--distance-5) !important;
   }
   .tmt-auto {
-    margin-top: auto;
+    margin-top: auto !important;
   }
   .tmt-1 {
-    margin-top: var(--distance-1);
+    margin-top: var(--distance-1) !important;
   }
   .tmt-2 {
-    margin-top: var(--distance-2);
+    margin-top: var(--distance-2) !important;
   }
   .tmt-3 {
-    margin-top: var(--distance-3);
+    margin-top: var(--distance-3) !important;
   }
   .tmt-4 {
-    margin-top: var(--distance-4);
+    margin-top: var(--distance-4) !important;
   }
   .tmt-5 {
-    margin-top: var(--distance-5);
+    margin-top: var(--distance-5) !important;
   }
   .tml-auto {
-    margin-left: auto;
+    margin-left: auto !important;
   }
   .tml-1 {
-    margin-left: var(--distance-1);
+    margin-left: var(--distance-1) !important;
   }
   .tml-2 {
-    margin-left: var(--distance-2);
+    margin-left: var(--distance-2) !important;
   }
   .tml-3 {
-    margin-left: var(--distance-3);
+    margin-left: var(--distance-3) !important;
   }
   .tml-4 {
-    margin-left: var(--distance-4);
+    margin-left: var(--distance-4) !important;
   }
   .tml-5 {
-    margin-left: var(--distance-5);
+    margin-left: var(--distance-5) !important;
   }
   .tmr-auto {
-    margin-right: auto;
+    margin-right: auto !important;
   }
   .tmr-1 {
-    margin-right: var(--distance-1);
+    margin-right: var(--distance-1) !important;
   }
   .tmr-2 {
-    margin-right: var(--distance-2);
+    margin-right: var(--distance-2) !important;
   }
   .tmr-3 {
-    margin-right: var(--distance-3);
+    margin-right: var(--distance-3) !important;
   }
   .tmr-4 {
-    margin-right: var(--distance-4);
+    margin-right: var(--distance-4) !important;
   }
   .tmr-5 {
-    margin-right: var(--distance-5);
+    margin-right: var(--distance-5) !important;
   }
   .tmb-auto {
-    margin-bottom: auto;
+    margin-bottom: auto !important;
   }
   .tmb-1 {
-    margin-bottom: var(--distance-1);
+    margin-bottom: var(--distance-1) !important;
   }
   .tmb-2 {
-    margin-bottom: var(--distance-2);
+    margin-bottom: var(--distance-2) !important;
   }
   .tmb-3 {
-    margin-bottom: var(--distance-3);
+    margin-bottom: var(--distance-3) !important;
   }
   .tmb-4 {
-    margin-bottom: var(--distance-4);
+    margin-bottom: var(--distance-4) !important;
   }
   .tmb-5 {
-    margin-bottom: var(--distance-5);
+    margin-bottom: var(--distance-5) !important;
   }
 }
 @media (max-width: 767px) {
   .mm-0 {
-    margin: var(--distance-0);
+    margin: var(--distance-0) !important;
   }
   .mml-0 {
-    margin-left: var(--distance-0);
+    margin-left: var(--distance-0) !important;
   }
   .mmr-0 {
-    margin-right: var(--distance-0);
+    margin-right: var(--distance-0) !important;
   }
   .mmt-0 {
-    margin-top: var(--distance-0);
+    margin-top: var(--distance-0) !important;
   }
   .mmb-0 {
-    margin-bottom: var(--distance-0);
+    margin-bottom: var(--distance-0) !important;
   }
   .mmx-0 {
-    margin-left: var(--distance-0);
-    margin-right: var(--distance-0);
+    margin-left: var(--distance-0) !important;
+    margin-right: var(--distance-0) !important;
   }
   .mm-1 {
-    margin: var(--distance-1);
+    margin: var(--distance-1) !important;
   }
   .mm-2 {
-    margin: var(--distance-2);
+    margin: var(--distance-2) !important;
   }
   .mm-3 {
-    margin: var(--distance-3);
+    margin: var(--distance-3) !important;
   }
   .mm-4 {
-    margin: var(--distance-4);
+    margin: var(--distance-4) !important;
   }
   .mm-5 {
-    margin: var(--distance-5);
+    margin: var(--distance-5) !important;
   }
   .mmx-auto {
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
   .mmx-1 {
-    margin-left: var(--distance-1);
-    margin-right: var(--distance-1);
+    margin-left: var(--distance-1) !important;
+    margin-right: var(--distance-1) !important;
   }
   .mmx-2 {
-    margin-left: var(--distance-2);
-    margin-right: var(--distance-2);
+    margin-left: var(--distance-2) !important;
+    margin-right: var(--distance-2) !important;
   }
   .mmx-3 {
-    margin-left: var(--distance-3);
-    margin-right: var(--distance-3);
+    margin-left: var(--distance-3) !important;
+    margin-right: var(--distance-3) !important;
   }
   .mmx-4 {
-    margin-left: var(--distance-4);
-    margin-right: var(--distance-4);
+    margin-left: var(--distance-4) !important;
+    margin-right: var(--distance-4) !important;
   }
   .mmx-5 {
-    margin-left: var(--distance-5);
-    margin-right: var(--distance-5);
+    margin-left: var(--distance-5) !important;
+    margin-right: var(--distance-5) !important;
   }
   .mmy-auto {
-    margin-top: auto;
-    margin-bottom: auto;
+    margin-top: auto !important;
+    margin-bottom: auto !important;
   }
   .mmy-0 {
-    margin-top: var(--distance-0);
-    margin-bottom: var(--distance-0);
+    margin-top: var(--distance-0) !important;
+    margin-bottom: var(--distance-0) !important;
   }
   .mmy-1 {
-    margin-top: var(--distance-1);
-    margin-bottom: var(--distance-1);
+    margin-top: var(--distance-1) !important;
+    margin-bottom: var(--distance-1) !important;
   }
   .mmy-2 {
-    margin-top: var(--distance-2);
-    margin-bottom: var(--distance-2);
+    margin-top: var(--distance-2) !important;
+    margin-bottom: var(--distance-2) !important;
   }
   .mmy-3 {
-    margin-top: var(--distance-3);
-    margin-bottom: var(--distance-3);
+    margin-top: var(--distance-3) !important;
+    margin-bottom: var(--distance-3) !important;
   }
   .mmy-4 {
-    margin-top: var(--distance-4);
-    margin-bottom: var(--distance-4);
+    margin-top: var(--distance-4) !important;
+    margin-bottom: var(--distance-4) !important;
   }
   .mmy-5 {
-    margin-top: var(--distance-5);
-    margin-bottom: var(--distance-5);
+    margin-top: var(--distance-5) !important;
+    margin-bottom: var(--distance-5) !important;
   }
   .mmt-auto {
-    margin-top: auto;
+    margin-top: auto !important;
   }
   .mmt-1 {
-    margin-top: var(--distance-1);
+    margin-top: var(--distance-1) !important;
   }
   .mmt-2 {
-    margin-top: var(--distance-2);
+    margin-top: var(--distance-2) !important;
   }
   .mmt-3 {
-    margin-top: var(--distance-3);
+    margin-top: var(--distance-3) !important;
   }
   .mmt-4 {
-    margin-top: var(--distance-4);
+    margin-top: var(--distance-4) !important;
   }
   .mmt-5 {
-    margin-top: var(--distance-5);
+    margin-top: var(--distance-5) !important;
   }
   .mml-auto {
-    margin-left: auto;
+    margin-left: auto !important;
   }
   .mml-1 {
-    margin-left: var(--distance-1);
+    margin-left: var(--distance-1) !important;
   }
   .mml-2 {
-    margin-left: var(--distance-2);
+    margin-left: var(--distance-2) !important;
   }
   .mml-3 {
-    margin-left: var(--distance-3);
+    margin-left: var(--distance-3) !important;
   }
   .mml-4 {
-    margin-left: var(--distance-4);
+    margin-left: var(--distance-4) !important;
   }
   .mml-5 {
-    margin-left: var(--distance-5);
+    margin-left: var(--distance-5) !important;
   }
   .mmr-auto {
-    margin-right: auto;
+    margin-right: auto !important;
   }
   .mmr-1 {
-    margin-right: var(--distance-1);
+    margin-right: var(--distance-1) !important;
   }
   .mmr-2 {
-    margin-right: var(--distance-2);
+    margin-right: var(--distance-2) !important;
   }
   .mmr-3 {
-    margin-right: var(--distance-3);
+    margin-right: var(--distance-3) !important;
   }
   .mmr-4 {
-    margin-right: var(--distance-4);
+    margin-right: var(--distance-4) !important;
   }
   .mmr-5 {
-    margin-right: var(--distance-5);
+    margin-right: var(--distance-5) !important;
   }
   .mmb-auto {
-    margin-bottom: auto;
+    margin-bottom: auto !important;
   }
   .mmb-1 {
-    margin-bottom: var(--distance-1);
+    margin-bottom: var(--distance-1) !important;
   }
   .mmb-2 {
-    margin-bottom: var(--distance-2);
+    margin-bottom: var(--distance-2) !important;
   }
   .mmb-3 {
-    margin-bottom: var(--distance-3);
+    margin-bottom: var(--distance-3) !important;
   }
   .mmb-4 {
-    margin-bottom: var(--distance-4);
+    margin-bottom: var(--distance-4) !important;
   }
   .mmb-5 {
-    margin-bottom: var(--distance-5);
+    margin-bottom: var(--distance-5) !important;
   }
 }
 .p-0 {
@@ -1565,201 +1576,149 @@ hr {
   border-color: var(--hr-color);
   margin-bottom: var(--default-distance);
 }
-summary.button,
 button {
   border-radius: 2px;
   padding: 0.6rem 1.5rem 0.9rem 1.5rem;
   background-color: transparent;
   border: 0;
+  /** if we have a span, then we do not need to adjust for lineheight **/
 }
-summary.button:focus,
+button:has(span) {
+  padding: 0.6rem 1.5rem;
+}
 button:focus,
-summary.button:active,
 button:active {
   outline: none;
   cursor: pointer;
   box-shadow: 0 0 0 1px var(--button-outline-color);
 }
-summary.button:not(.no-border),
 button:not(.no-border) {
   border: 0.5px solid var(--border-color);
-  background-color: var(--button-background);
+  background-color: var(--button-background) !important;
 }
-summary.button:hover,
 button:hover {
   cursor: pointer;
-  background-color: var(--button-hover);
+  background-color: var(--button-hover) !important;
 }
-summary.button.icon,
 button.icon {
   display: flex;
   flex-direction: column;
   width: auto;
   padding: 0;
-  color: var(--icon);
+  color: var(--icon) !important;
 }
-summary.button.icon:disabled,
 button.icon:disabled {
-  color: var(--icon-disabled);
+  color: var(--icon-disabled) !important;
 }
-summary.button.icon:disabled:hover,
 button.icon:disabled:hover {
-  background-color: transparent;
+  background-color: transparent !important;
 }
-summary.button.primary,
 button.primary {
   border: 0;
-  color: var(--color-on-primary);
-  background-color: var(--primary);
+  color: var(--color-on-primary) !important;
+  background-color: var(--primary) !important;
 }
-summary.button.primary:hover,
 button.primary:hover {
-  background-color: var(--primary-hover);
+  background-color: var(--primary-hover) !important;
 }
-summary.button.danger,
 button.danger {
   border: 0;
-  color: var(--color-on-danger);
-  background-color: var(--danger);
+  color: var(--color-on-danger) !important;
+  background-color: var(--danger) !important;
 }
-summary.button.danger:hover,
 button.danger:hover {
-  background-color: var(--danger-hover);
+  background-color: var(--danger-hover) !important;
 }
-summary.button.accent,
 button.accent {
   border: 0;
-  color: var(--color-on-accent);
-  background-color: var(--accent);
+  color: var(--color-on-accent) !important;
+  background-color: var(--accent) !important;
 }
-summary.button.accent:hover,
 button.accent:hover {
-  background-color: var(--accent-hover);
+  background-color: var(--accent-hover) !important;
 }
-summary.button.contrast,
 button.contrast {
   border: 0;
-  color: var(--color-on-contrast);
-  background-color: var(--contrast);
+  color: var(--color-on-contrast) !important;
+  background-color: var(--contrast) !important;
 }
-summary.button.contrast:hover,
 button.contrast:hover {
-  background-color: var(--contrast-hover);
+  background-color: var(--contrast-hover) !important;
 }
-summary.button.primary:focus,
 button.primary:focus,
-summary.button.danger:focus,
 button.danger:focus,
-summary.button.accent:focus,
 button.accent:focus,
-summary.button.contrast:focus,
 button.contrast:focus,
-summary.button.primary:active,
 button.primary:active,
-summary.button.danger:active,
 button.danger:active,
-summary.button.accent:active,
 button.accent:active,
-summary.button.contrast:active,
 button.contrast:active {
-  box-shadow: 0 0 0 1px var(--button-outline-color);
+  box-shadow: 0 0 0 1px var(--button-outline-color) !important;
 }
-summary.button.primary.disabled,
 button.primary.disabled,
-summary.button.danger.disabled,
 button.danger.disabled,
-summary.button.accent.disabled,
 button.accent.disabled,
-summary.button.contrast.disabled,
 button.contrast.disabled,
-summary.button.primary:disabled,
 button.primary:disabled,
-summary.button.danger:disabled,
 button.danger:disabled,
-summary.button.accent:disabled,
 button.accent:disabled,
-summary.button.contrast:disabled,
 button.contrast:disabled {
-  color: var(--colored-disabled-button-color);
+  color: var(--colored-disabled-button-color) !important;
   cursor: initial;
   outline: none;
 }
-summary.button.primary.disabled:not(.link),
 button.primary.disabled:not(.link),
-summary.button.danger.disabled:not(.link),
 button.danger.disabled:not(.link),
-summary.button.accent.disabled:not(.link),
 button.accent.disabled:not(.link),
-summary.button.contrast.disabled:not(.link),
 button.contrast.disabled:not(.link),
-summary.button.primary:disabled:not(.link),
 button.primary:disabled:not(.link),
-summary.button.danger:disabled:not(.link),
 button.danger:disabled:not(.link),
-summary.button.accent:disabled:not(.link),
 button.accent:disabled:not(.link),
-summary.button.contrast:disabled:not(.link),
 button.contrast:disabled:not(.link) {
-  background-color: var(--disabled-button-background);
-  border-color: var(--disabled-button-background);
+  background-color: var(--disabled-button-background) !important;
+  border-color: var(--disabled-button-background) !important;
 }
-summary.button.outline-hover:hover,
 button.outline-hover:hover {
   background-color: transparent;
-  outline: 0.5px solid var(--button-outline-color);
+  outline: 0.5px solid var(--button-outline-color) !important;
 }
-summary.button.link,
 button.link {
   border: 0;
-  color: var(--primary);
-  background-color: transparent;
+  color: var(--primary) !important;
+  background-color: transparent !important;
   padding: 0;
 }
-summary.button.link.accent,
 button.link.accent {
-  color: var(--accent);
+  color: var(--accent) !important;
 }
-summary.button.link.contrast,
 button.link.contrast {
-  color: var(--contrast);
+  color: var(--contrast) !important;
 }
-summary.button.link.danger,
 button.link.danger {
-  color: var(--danger);
+  color: var(--danger) !important;
 }
-summary.button.link:hover,
 button.link:hover,
-summary.button.link:focus,
 button.link:focus,
-summary.button.link:active,
 button.link:active {
-  text-decoration: underline;
-  background-color: transparent;
-  box-shadow: unset;
+  text-decoration: underline !important;
+  background-color: transparent !important;
+  box-shadow: unset !important;
 }
-summary.button.disabled,
 button.disabled,
-summary.button:disabled,
 button:disabled {
-  color: var(--disabled-button-color);
+  color: var(--disabled-button-color) !important;
   cursor: initial;
 }
-summary.button.disabled:not(.link):not(.icon),
 button.disabled:not(.link):not(.icon),
-summary.button:disabled:not(.link):not(.icon),
 button:disabled:not(.link):not(.icon) {
-  background-color: var(--disabled-button-background);
-  border-color: var(--disabled-button-background);
+  background-color: var(--disabled-button-background) !important;
+  border-color: var(--disabled-button-background) !important;
 }
-summary.button.disabled.link,
 button.disabled.link,
-summary.button:disabled.link,
 button:disabled.link {
-  color: var(--disabled-button-color);
+  color: var(--disabled-button-color) !important;
 }
-summary.button.disabled:hover,
 button.disabled:hover,
-summary.button:disabled:hover,
 button:disabled:hover {
   text-decoration: none;
   outline: none;
@@ -2234,9 +2193,6 @@ table td {
   vertical-align: top;
   padding: 0.5rem 2.5rem 0.6rem 0.5rem;
 }
-table th {
-  padding-left: 0.3rem;
-}
 table:not(.no-hover) tbody tr:hover {
   background-color: var(--table-hover);
 }
@@ -2282,6 +2238,31 @@ table.striped tbody tr:hover {
     padding-right: 1.7rem;
   }
 }
+.cursor-not-allowed:hover {
+  cursor: not-allowed !important;
+}
+.cursor-pointer:hover {
+  cursor: pointer !important;
+}
+.cursor-grab:hover {
+  cursor: grab !important;
+}
+.cursor-grabbing:hover {
+  cursor: grabbing !important;
+}
+.cursor-zoom-in:hover {
+  cursor: zoom-in !important;
+}
+.cursor-zoom-out:hover {
+  cursor: zoom-out !important;
+}
+.cursor-wait:hover {
+  cursor: wait !important;
+}
+.cursor-help:hover {
+  cursor: help !important;
+}
+/** borders may not be important, because the are used in other classes */
 .border {
   border: 0.5px solid var(--border-color);
 }
@@ -2319,120 +2300,124 @@ table.striped tbody tr:hover {
   border-color: var(--icon-success);
 }
 html {
-  background-color: var(--html-background);
+  background-color: var(--html-background) !important;
+}
+.bg-gray-light {
+  background-color: var(--gray-light) !important;
+  color: var(--color-on-gray-light) !important;
 }
 .bg-gray {
-  background-color: var(--gray);
-  color: var(--color-on-gray);
+  background-color: var(--gray) !important;
+  color: var(--color-on-gray) !important;
 }
 .bg-gray-dark {
-  background-color: var(--gray-dark);
-  color: var(--color-on-gray-dark);
+  background-color: var(--gray-dark) !important;
+  color: var(--color-on-gray-dark) !important;
 }
 .bg-black {
-  background-color: var(--black);
-  color: var(--color-on-black);
+  background-color: var(--black) !important;
+  color: var(--color-on-black) !important;
 }
 .bg-white {
-  background-color: var(--white);
-  color: var(--font-color);
+  background-color: var(--white) !important;
+  color: var(--font-color) !important;
 }
 .bg-primary {
-  background-color: var(--primary);
-  color: var(--color-on-primary);
+  background-color: var(--primary) !important;
+  color: var(--color-on-primary) !important;
 }
 .bg-accent {
-  background-color: var(--accent);
-  color: var(--color-on-accent);
+  background-color: var(--accent) !important;
+  color: var(--color-on-accent) !important;
 }
 .bg-danger {
-  background-color: var(--danger);
-  color: var(--color-on-danger);
+  background-color: var(--danger) !important;
+  color: var(--color-on-danger) !important;
 }
 .bg-success {
-  background-color: var(--success);
-  color: var(--color-on-success);
+  background-color: var(--success) !important;
+  color: var(--color-on-success) !important;
 }
 .bg-error {
-  background-color: var(--error);
-  color: var(--color-on-error);
+  background-color: var(--error) !important;
+  color: var(--color-on-error) !important;
 }
 .bg-warning {
-  background-color: var(--warning);
-  color: var(--color-on-warning);
+  background-color: var(--warning) !important;
+  color: var(--color-on-warning) !important;
 }
 .text-black {
-  color: var(--black);
+  color: var(--black) !important;
 }
 .text-white {
-  color: var(--white);
+  color: var(--white) !important;
 }
 .text-gray {
-  color: var(--gray-darker);
+  color: var(--gray-darker) !important;
 }
 .text-primary {
-  color: var(--primary);
+  color: var(--primary) !important;
 }
 .text-accent {
-  color: var(--accent);
+  color: var(--accent) !important;
 }
 .text-danger {
-  color: var(--danger);
+  color: var(--danger) !important;
 }
 .text-success {
-  color: var(--icon-success);
+  color: var(--icon-success) !important;
 }
 .icon-gray {
-  color: var(--gray);
+  color: var(--gray) !important;
 }
 .icon-gray-dark {
-  color: var(--gray-dark);
+  color: var(--gray-dark) !important;
 }
 .icon-success {
-  color: var(--icon-success);
+  color: var(--icon-success) !important;
 }
 .icon-primary {
-  color: var(--primary);
+  color: var(--primary) !important;
 }
 .icon-accent {
-  color: var(--accent);
+  color: var(--accent) !important;
 }
 .icon-danger {
-  color: var(--danger);
+  color: var(--danger) !important;
 }
 .icon-black {
-  color: var(--black);
+  color: var(--black) !important;
 }
 .icon-white {
-  color: var(--white);
+  color: var(--white) !important;
 }
 .shadow {
-  box-shadow: 0 0.6px 3.6px 0 rgba(var(--shadow-color), 0.132), 0 0.3px 0.9px 0 rgba(var(--shadow-color), 0.108);
+  box-shadow: 0 0.6px 3.6px 0 rgba(var(--shadow-color), 0.132), 0 0.3px 0.9px 0 rgba(var(--shadow-color), 0.108) !important;
 }
 .shadow-top {
-  box-shadow: 0 -1.6px 3.6px 0 rgba(var(--shadow-color), 0.132), 0 -0.3px 0.9px 0 rgba(var(--shadow-color), 0.108);
+  box-shadow: 0 -1.6px 3.6px 0 rgba(var(--shadow-color), 0.132), 0 -0.3px 0.9px 0 rgba(var(--shadow-color), 0.108) !important;
 }
 .shadow-left {
-  box-shadow: -1.6px 0 3.6px 0 rgba(var(--shadow-color), 0.132), 0.3px 0 0.9px 0 rgba(var(--shadow-color), 0.108);
+  box-shadow: -1.6px 0 3.6px 0 rgba(var(--shadow-color), 0.132), 0.3px 0 0.9px 0 rgba(var(--shadow-color), 0.108) !important;
 }
 .shadow-right {
-  box-shadow: 1.6px 0 3.6px 0 rgba(var(--shadow-color), 0.132), -0.3px 0 0.9px 0 rgba(var(--shadow-color), 0.108);
+  box-shadow: 1.6px 0 3.6px 0 rgba(var(--shadow-color), 0.132), -0.3px 0 0.9px 0 rgba(var(--shadow-color), 0.108) !important;
 }
 .shadow-bottom {
-  box-shadow: 0 1.6px 3.6px 0 rgba(var(--shadow-color), 0.132), 0 0.3px 0.9px 0 rgba(var(--shadow-color), 0.108);
+  box-shadow: 0 1.6px 3.6px 0 rgba(var(--shadow-color), 0.132), 0 0.3px 0.9px 0 rgba(var(--shadow-color), 0.108) !important;
 }
 .shadow-lg {
-  box-shadow: 0px 0px 5px 0px rgba(var(--shadow-color), 0.132);
+  box-shadow: 0px 0px 5px 0px rgba(var(--shadow-color), 0.132) !important;
 }
 .shadow-top-lg {
-  box-shadow: 0px -3px 5px 0px rgba(var(--shadow-color), 0.132);
+  box-shadow: 0px -3px 5px 0px rgba(var(--shadow-color), 0.132) !important;
 }
 .shadow-bottom-lg {
-  box-shadow: 0px 3px 5px 0px rgba(var(--shadow-color), 0.132);
+  box-shadow: 0px 3px 5px 0px rgba(var(--shadow-color), 0.132) !important;
 }
 .shadow-left-lg {
-  box-shadow: -3px 0px 5px 0px rgba(var(--shadow-color), 0.132);
+  box-shadow: -3px 0px 5px 0px rgba(var(--shadow-color), 0.132) !important;
 }
 .shadow-right-lg {
-  box-shadow: 3px 0px 5px 0px rgba(var(--shadow-color), 0.132);
+  box-shadow: 3px 0px 5px 0px rgba(var(--shadow-color), 0.132) !important;
 }

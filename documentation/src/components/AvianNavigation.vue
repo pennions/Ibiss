@@ -41,6 +41,7 @@ import { RouterLink } from 'vue-router'
         <li class="ml-1"><router-link to="/colors">Colors</router-link></li>
         <li class="ml-1"><router-link to="/borders">Borders</router-link></li>
         <li class="ml-1"><router-link to="/shadows">Shadows</router-link></li>
+        <li class="ml-1"><router-link to="/cursors">Cursors</router-link></li>
       </ul>
     </nav>
   </section>

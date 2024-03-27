@@ -54,11 +54,11 @@ import Card from '../../shared/Card.vue'
               <td><div class="shadow-bottom-lg p-1 px-3">Element with shadow-bottom-lg</div></td>
             </tr>
             <tr>
-              <td><code class="language-html">shadow-left </code></td>
+              <td><code class="language-html">shadow-lg-left </code></td>
               <td><div class="shadow-left-lg p-1 px-3">Element with shadow-left-lg</div></td>
             </tr>
             <tr>
-              <td><code class="language-html">shadow-right </code></td>
+              <td><code class="language-html">shadow-lg-right </code></td>
               <td><div class="shadow-right-lg p-1 px-3">Element with shadow-right-lg</div></td>
             </tr>
           </tbody>

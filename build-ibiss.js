@@ -14,7 +14,12 @@ function build() {
 
         const rocketJsCommands = [
             `npx uglifyjs --compress --mangle --output dist/rocketjs-v${version}/rocket.min.js dist/rocketjs-v${version}/rocket.js`,
-            `npx uglifyjs --compress --mangle --output documentation/src/assets/js/rocket.min.js dist/rocketjs-v${version}/rocket.min.js`
+            `npx uglifyjs --compress --mangle --output documentation/src/assets/js/rocket.min.js dist/rocketjs-v${version}/rocket.js`
+        ];
+
+        const flightkitJsCommands = [
+            `npx uglifyjs --compress --mangle --output dist/flightkit-v${version}/flightkit.min.js dist/flightkit-v${version}/flightkit.js`,
+            `npx uglifyjs --compress --mangle --output documentation/public/js/flightkit.min.js dist/flightkit-v${version}/flightkit.js`
         ];
 
         const htmxCommands = [
@@ -24,11 +29,12 @@ function build() {
         const avianCssCommands = [
             `node ./node_modules/less/bin/lessc aviancss/aviancss.less dist/aviancss-v${version}/avian.css`,
             `npx postcss ./dist/aviancss-v${version}/avian.css > ./dist/aviancss-v${version}/avian.min.css`,
-            `npx postcss ./dist/aviancss-v${version}/avian.css > ./documentation/src/assets/css/avian.min.css`
+            `npx postcss ./dist/aviancss-v${version}/avian.css > ./documentation/public/css/avian.min.css`,
+            `npx postcss ./dist/aviancss-v${version}/avian.css > ./flightkit/public/css/avian.min.css`
         ];
 
-        const buildDocumentation = 'npm run build --prefix documentation'
-        const buildCommands = [...rollupCommands, ...rocketJsCommands, ...avianCssCommands, ...htmxCommands, buildDocumentation];
+        const buildDocumentation = 'npm run build --prefix documentation';
+        const buildCommands = [...rollupCommands, ...rocketJsCommands, ...avianCssCommands, ...htmxCommands, ...flightkitJsCommands, buildDocumentation];
 
         for (const command of buildCommands) {
             execSync(command, (error) => {

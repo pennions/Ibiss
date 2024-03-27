@@ -9,6 +9,7 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
+    /** Avian CSS routes */
     {
       path: '/aviancss',
       name: 'aviancss',
@@ -92,9 +93,46 @@ const router = createRouter({
           name: 'avian-shadows',
           component: () => import('../components/avian/utilities/shadows.vue'),
         },
+        {
+          path: '/cursors',
+          name: 'avian-cursors',
+          component: () => import('../components/avian/utilities/cursors.vue'),
+        },
       ]
-    }
-  ]
+    },
+    /** Flightkit routes */
+    {
+      path: '/flightkit',
+      name: 'flightkit',
+      component: () => import('../views/Flightkit.vue'),
+      children: [
+        {
+          path: '',
+          name: 'flightkit-index',
+          component: () => import('../components/flightkit/index.vue'),
+        },
+        {
+          path: '/flightkit-table',
+          name: 'flightkit-table',
+          component: () => import('../components/flightkit/flightkit-table.vue'),
+        },
+        {
+          path: '/flightkit-draggable',
+          name: 'flightkit-draggable',
+          component: () => import('../components/flightkit/flightkit-draggable.vue'),
+        },
+        {
+          path: '/flightkit-modal',
+          name: 'flightkit-modal',
+          component: () => import('../components/flightkit/flightkit-modal.vue'),
+        },
+        {
+          path: '/flightkit-dropdown',
+          name: 'flightkit-dropdown',
+          component: () => import('../components/flightkit/flightkit-dropdown.vue'),
+        },
+      ]
+    }]
 });
 
 export default router;

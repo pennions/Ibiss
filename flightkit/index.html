@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Flightkit dev</title>
+        <script src="js/irisset.js"></script>
+        <script src="js/ardeaset.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
+        <script type="module" src="/main.js" defer></script>
+        <style></style>
+    </head>
+    <body>
+        <button id="hide">Open modal</button>
+
+        <flk-modal id="foo" e-hide="onHide" title="My Modal">
+            <div class="p-1">
+                <h1>Modal title</h1>
+                <hr />
+                <section>Hello Modal!</section>
+            </div>
+        </flk-modal>
+
+        <flk-dropdown
+            text="My dropdown and then some more you know"
+            class="primary"
+            drawer-width="70rem"
+            right
+        >
+            <template>
+                <ul class="p-5 test">
+                    <li><a>Link 1</a></li>
+                    <li><a>Link 2</a></li>
+                    <li><a>Link 3</a></li>
+                    <li><a>Link 4</a></li>
+                    <li><a>Link 5</a></li>
+                </ul>
+            </template>
+        </flk-dropdown>
+        <div>something below</div>
+
+        <h1>Hello?</h1>
+
+        <flk-dropdown text="Another dropdown" class="primary">
+            <template>
+                <h1>will I close?</h1>
+                <ul class="p-5 test">
+                    <li><a>Link 1</a></li>
+                    <li><a>Link 2</a></li>
+                    <li><a>Link 3</a></li>
+                    <li><a>Link 4</a></li>
+                    <li><a>Link 5</a></li>
+                </ul>
+            </template>
+        </flk-dropdown>
+        <script>
+            window.onload = function () {
+                document
+                    .getElementById('hide')
+                    .addEventListener('click', () => {
+                        let x = document.getElementById('foo');
+                        x.openModal(true);
+                    });
+            };
+        </script>
+
+        <script>
+            function onHide(event) {
+                console.log(event);
+            }
+        </script>
+    </body>
+</html>

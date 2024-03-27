@@ -1,7 +1,5 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import './assets/css/prism.css'
-import './assets/js/prism.js'
 </script>
 
 <template>

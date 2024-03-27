@@ -23,6 +23,10 @@ import Card from '../../shared/Card.vue'
               <td colspan="2"><b>Background</b></td>
             </tr>
             <tr>
+              <td><code class="language-html">bg-gray-light</code></td>
+              <td><div class="bg-gray-light p-1 px-3">light grey background</div></td>
+            </tr>
+            <tr>
               <td><code class="language-html">bg-gray </code></td>
               <td><div class="bg-gray p-1 px-3">grey background</div></td>
             </tr>
