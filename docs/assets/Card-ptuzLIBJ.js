@@ -1,0 +1,1 @@
+import{_ as s,o as t,c,k as o}from"./index-9HWLB3Yh.js";const r={},a={class:"card shadow py-1 px-2 f-fill bg-white"};function n(e,d){return t(),c("article",a,[o(e.$slots,"default",{},void 0,!0)])}const f=s(r,[["render",n],["__scopeId","data-v-87b5e8f1"]]);export{f as C};
