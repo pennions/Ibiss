@@ -14,7 +14,7 @@
     "test": "jest --collectCoverage",
     "lint": "npx prettier -w rocketjs/**",
     "publish": "npm run build && npm publish --access public",
-    "actions:install": "npm install && npm install --prefix flightkit && npm install --prefix aviancss && npm install --prefix rocketjs && npm install --prefix documentation",
+    "actions:install": "npm install && npm install --prefix flightkit && npm install --prefix aviancss && npm install --prefix rocketjs && npm install --prefix documentation"
   },
   "author": "Jelmer Veen <https://github.com/pennions>",
   "license": "GPL-3.0",
