@@ -58,6 +58,16 @@ onMounted(() => {
                     you want, by adding the attributes.
                   </td>
                 </tr>
+                <tr>
+                  <td><code>zIndex=""</code></td>
+                  <td>Sets the zIndex of the draggable.</td>
+                  <td>it will set the element.style.zIndex to the number you provided. <b>E.G.</b> zIndex="2000"</td>
+                </tr>
+                <tr>
+                  <td><code>handle="{YourId}"</code></td>
+                  <td>If you want to have a specific part of your draggable to enable drag.</td>
+                  <td>It will use the id as a selector for the drag event.</td>
+                </tr>
               </tbody>
             </table>
           </div>

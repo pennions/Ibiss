@@ -1,8 +1,8 @@
 button {
     border-radius: 2px;
     padding: 0.6rem 1.5rem 0.9rem 1.5rem;
-    background-color: transparent;
-    border: 0;
+    .border();
+    background-color: var(--button-background);
 
     /** if we have a span, then we do not need to adjust for lineheight **/
     &:has(span) {
@@ -16,9 +16,9 @@ button {
         box-shadow: 0 0 0 1px var(--button-outline-color);
     }
 
-    &:not(.no-border) {
-        .border();
-        background-color: var(--button-background) !important;
+    &.no-border {
+        border: none !important;
+        background-color: transparent !important;
     }
 
     &:hover {
@@ -105,7 +105,7 @@ button {
     }
 
     &.outline-hover:hover {
-        background-color: transparent;
+        background-color: transparent !important;
         outline: 0.5px solid var(--button-outline-color) !important;
     }
 

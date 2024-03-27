@@ -7,6 +7,6 @@
 <style scoped>
 .card {
   overflow-y: auto;
-  max-height: 100dvh;
+  min-height: 100dvh;
 }
 </style>

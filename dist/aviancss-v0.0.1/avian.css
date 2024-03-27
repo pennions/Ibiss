@@ -1579,8 +1579,8 @@ hr {
 button {
   border-radius: 2px;
   padding: 0.6rem 1.5rem 0.9rem 1.5rem;
-  background-color: transparent;
-  border: 0;
+  border: 0.5px solid var(--border-color);
+  background-color: var(--button-background);
   /** if we have a span, then we do not need to adjust for lineheight **/
 }
 button:has(span) {
@@ -1592,9 +1592,9 @@ button:active {
   cursor: pointer;
   box-shadow: 0 0 0 1px var(--button-outline-color);
 }
-button:not(.no-border) {
-  border: 0.5px solid var(--border-color);
-  background-color: var(--button-background) !important;
+button.no-border {
+  border: none !important;
+  background-color: transparent !important;
 }
 button:hover {
   cursor: pointer;
@@ -1679,7 +1679,7 @@ button.contrast:disabled:not(.link) {
   border-color: var(--disabled-button-background) !important;
 }
 button.outline-hover:hover {
-  background-color: transparent;
+  background-color: transparent !important;
   outline: 0.5px solid var(--button-outline-color) !important;
 }
 button.link {
@@ -2345,6 +2345,9 @@ html {
 .bg-warning {
   background-color: var(--warning) !important;
   color: var(--color-on-warning) !important;
+}
+.bg-transparent {
+  background-color: transparent !important;
 }
 .text-black {
   color: var(--black) !important;

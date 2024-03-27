@@ -9,10 +9,3 @@ import AvianNavigation from '../components/AvianNavigation.vue'
     <RouterView />
   </main>
 </template>
-
-<style scoped>
-.navigation {
-  height: 100dvh;
-  min-width: fit-content;
-}
-</style>

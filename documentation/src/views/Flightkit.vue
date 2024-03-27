@@ -9,10 +9,3 @@ import FlightkitNavigation from '../components/FlightkitNavigation.vue';
     <RouterView />
   </main>
 </template>
-
-<style scoped>
-.navigation {
-  height: 100dvh;
-  min-width: fit-content;
-}
-</style>

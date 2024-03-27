@@ -1410,6 +1410,11 @@
             let top = this.getAttribute('top');
             let left = this.getAttribute('left');
             let center = this.getAttribute('center');
+            let zIndex = this.getAttribute('zIndex');
+
+            if (!this.id) {
+                this.id = this.base.generateId();
+            }
 
             this.style.display = "block";
             this.style.position = "fixed";
@@ -1424,67 +1429,74 @@
                 this.style.left = left || this.clientLeft + "px";
             }
 
+            if (zIndex) {
+                this.style.zIndex = zIndex;
+            }
+
             /** id for the handle */
             this.componentId = this.getAttribute('handle');
 
             const draggableElement = document.createElement('div');
             draggableElement.innerHTML = this.innerHTML;
             this.component = draggableElement;
+
+            /** events are added to base so they are disposed properly */
+            const draggableId = `#${this.componentId || this.id}`;
+            this.base.addEvent(draggableId, 'mousedown', this._dragElement);
             this.base.render(this);
-
-            let renderTimer = setTimeout(() => {
-                clearTimeout(renderTimer);
-                this._dragElement(this);
-
-            }, 10);
         };
         disconnectedCallback() {
             this.base.removeEvents(this);
         }
+        _dragElement(event) {
+            const topLevelEvent = returnEventWithTopLevelElement(event, 'flk-draggable');
+            const element = topLevelEvent.target;
 
-        _dragElement(element) {
-            let pos1 = 0,
-                pos2 = 0,
-                pos3 = 0,
-                pos4 = 0;
-            if (document.getElementById(element.componentId)) {
-                // if present, the header is where you move the DIV from:
-                const handleElement = document.getElementById(element.componentId);
-                handleElement.onmousedown = dragMouseDown;
-            } else {
-                // otherwise, move the DIV from anywhere inside the DIV:
-                element.onmousedown = dragMouseDown;
+            let offsetX, offsetY;
+
+            /** Function to handle the start of dragging */
+            function handleDragStart(event) {
+                /** Calculate the offset from mouse to the top-left corner of the element */
+                offsetX = event.clientX - element.offsetLeft;
+                offsetY = event.clientY - element.offsetTop;
             }
 
-            function dragMouseDown(e) {
-                e = e || window.event;
-                e.preventDefault();
-                // get the mouse cursor position at startup:
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                document.onmouseup = closeDragElement;
-                // call a function whenever the cursor moves:
-                document.onmousemove = elementDrag;
+            /** calculates the position **/
+            function setPosition(event) {
+                const x = event.clientX - offsetX;
+                const y = event.clientY - offsetY;
+
+                /** Set the position of the element */
+                element.style.left = `${x}px`;
+                element.style.top = `${y}px`;
             }
 
-            function elementDrag(e) {
-                e = e || window.event;
-                e.preventDefault();
-                // calculate the new cursor position:
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                // set the element's new position:
-                element.style.top = element.offsetTop - pos2 + "px";
-                element.style.left = element.offsetLeft - pos1 + "px";
+            function preventDefault(event) {
+                event.preventDefault();
             }
 
-            function closeDragElement() {
-                // stop moving when mouse button is released:
-                document.onmouseup = null;
-                document.onmousemove = null;
+            function enableDrag() {
+                element.setAttribute('draggable', true);
+                element.addEventListener('dragstart', handleDragStart);
+                element.addEventListener('dragend', removeDrag);
+
+                /** Prevent default behavior for certain events to enable dragging */
+                document.addEventListener('dragover', preventDefault);
+                /** so that the cursor does not say can't drop */
+                document.addEventListener('drop', setPosition);
             }
+            function removeDrag() {
+                element.removeAttribute('draggable');
+
+                /** remove all the events */
+                element.removeEventListener('dragstart', handleDragStart);
+                element.removeEventListener('dragend', removeDrag);
+                document.removeEventListener('dragover', preventDefault);
+                document.removeEventListener('drop', setPosition);
+            }
+
+            /** initialize */
+            enableDrag();
         }
     }
 
@@ -1540,7 +1552,7 @@
             flkDraggable.setAttribute('center', '');
             flkDraggable.setAttribute('top', '40%');
             flkDraggable.setAttribute('handle', windowHeaderId);
-            flkDraggable.style.zIndex = '1080';
+            flkDraggable.setAttribute('zIndex', '1080');
             flkDraggable.classList.add('border', 'shadow-lg', 'bg-white');
 
             const windowHeader = document.createElement('div');
@@ -1555,11 +1567,21 @@
             }
 
             windowHeader.id = windowHeaderId;
-            windowHeader.classList.add('bg-gray-light', 'border-bottom', 'row', 'justify-end');
+
+            const headerClass = this.getAttribute('header-class');
+            let headerClassesToAdd = [];
+            if (headerClass) {
+                headerClassesToAdd = headerClassesToAdd.concat(headerClass.split(' '));
+            }
+            else {
+                headerClassesToAdd.push('bg-gray-light');
+            }
+
+            windowHeader.classList.add(...headerClassesToAdd, 'border-bottom', 'row', 'justify-end');
 
             const closeModalId = this.base.generateId();
             const closeModalButton = document.createElement('button');
-            closeModalButton.classList.add('py-0', 'px-1', 'bg-gray-light', 'no-border');
+            closeModalButton.classList.add('py-0', 'px-1', 'outline-hover', 'no-border', ...headerClassesToAdd);
             closeModalButton.innerText = 'X';
             closeModalButton.id = closeModalId;
 
