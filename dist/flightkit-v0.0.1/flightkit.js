@@ -1554,6 +1554,7 @@
             flkDraggable.setAttribute('handle', windowHeaderId);
             flkDraggable.setAttribute('zIndex', '1080');
             flkDraggable.classList.add('border', 'shadow-lg', 'bg-white');
+            flkDraggable.style.width = 'max-content'; /** fixes collapsing at the border. */
 
             const windowHeader = document.createElement('div');
 
