@@ -1,4 +1,4 @@
-name: Bot PR
+name: Automatic build.
 
 on:
   workflow_dispatch:
@@ -24,11 +24,11 @@ jobs:
     - name: Build
       run: npm run build  # Replace this with the command to build your JavaScript files
 
-    - name: Commit Changes
+    - name: Create a new branch
       run: |
-        git checkout -b bot/`date +%Y-%m-%dT%H.%M.%S`
+        git checkout -b release/`date +%Y-%m-%dT%H.%M.%S`
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Actions"
         git add .
-        git commit -m "Build Ibiss"
-        git push --set-upstream origin bot/`date +%Y-%m-%dT%H.%M.%S`
+        git commit -m "Release Ibiss"
+        git push --set-upstream origin release/`date +%Y-%m-%dT%H.%M.%S`
