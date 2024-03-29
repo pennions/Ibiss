@@ -1,4 +1,4 @@
-name: Build Ibiss PR
+name: Bot PR
 
 on:
   workflow_dispatch:
@@ -25,10 +25,9 @@ jobs:
 
     - name: Commit Changes
       run: |
+        git checkout -b bot/`date +%Y-%m-%dT%H.%M.%S`
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Actions"
         git add .
-        git commit -m "Build Ibiss"
-
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v6
+        git commit -m "Build Ibiss
+        git push --set-upstream origin bot/`date +%Y-%m-%dT%H.%M.%S`"
