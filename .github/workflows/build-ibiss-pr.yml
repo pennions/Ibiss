@@ -12,6 +12,7 @@ jobs:
       # Give the default GITHUB_TOKEN write permission to commit and push the
       # added or changed files to the repository.
       pull-requests: write
+      contents: write
 
     steps:
     - name: Checkout code
