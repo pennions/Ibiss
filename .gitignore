@@ -145,4 +145,3 @@ out
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-.github/workflows/build-ibiss.yml
