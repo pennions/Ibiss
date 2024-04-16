@@ -5,6 +5,14 @@ import { ardeaDataset } from '@/assets/js/ardeaDataset'
 
 const tableComponentCode = '<flk-table>  </flk-table>'
 const vanillaSetup = `window.onload = () => {\n                let ftTable = document.getElementById('ft-table');\n                ftTable.setContents(ardeaSet);\n                ftTable.init();\n      \n   })\n};`
+const templateExample = '<button class="test" title="{{common_name}}">{{ common_name }}</button>'
+const templatePlaceholder = '{{ common_name }}'
+
+const customTemplates = {
+  common_name: `<i>{{ common_name }}</i>`
+}
+
+const customTemplateString = `templates='{"common_name":"<button class="test" title="{{common_name}}">{{ common_name }}</button>"}'`
 
 onMounted(() => {
   // eslint-disable-next-line no-undef
@@ -94,6 +102,16 @@ function handleSelect(event) {
                 </tr>
 
                 <tr>
+                  <td><code>templates=""</code></td>
+                  <td>Ability to add templates to wrap the value in.</td>
+                  <td>
+                    a stringified JSON object that has a template that will be used. Use a placeholder with the property like:
+                    <code>{{ templatePlaceholder }}</code>to use any value you want out of the row. 
+                    <br /><b class="mr-1">E.G.</b> <code class="language-html">{{ customTemplateString }} </code>
+                  </td>
+                </tr>
+
+                <tr>
                   <td><code>selection-property=""</code></td>
                   <td>
                     When it is assigned, it will use the value to be a unique identifier for
@@ -104,7 +122,7 @@ function handleSelect(event) {
                     a property name that has a unique value per row in a table. Emits the event
                     'select' on checkbox change. On the event parameter, there is a property
                     <i>detail</i> which has a property <i>selection</i> with the objects you
-                    selected<b>E.G.</b> selection-property="id"
+                    selected <b>E.G.</b> selection-property="id"
                   </td>
                 </tr>
                 <tr>
@@ -113,6 +131,21 @@ function handleSelect(event) {
                   <td>
                     Will trigger on the event <b>E.G.</b> <code>e-click="myFunction"</code> will
                     trigger the global function myEvent when clicked.
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3"><b>Functions:</b></td>
+                </tr>
+                <tr>
+                  <td><code>setTemplates</code></td>
+                  <td>Ability to add templates to wrap the value in.</td>
+                  <td>
+                    Add the template using the function on the element <b>E.G.</b>
+                    <pre>
+<code class="language-html">templatedTable.setTemplates({
+      common_name: "{{ templateExample }}"
+  }); </code>
+</pre>
                   </td>
                 </tr>
               </tbody>
@@ -125,7 +158,7 @@ function handleSelect(event) {
           <hr />
 
           <div class="column gap-3 mb-3">
-            <i><b>With filter:</b></i>
+            <i><b>With filter and custom template:</b></i>
 
             <input
               class="self-align-start"
@@ -139,6 +172,7 @@ function handleSelect(event) {
               :filter="filter"
               class="table"
               :contents="ardeaDataset"
+              :templates="JSON.stringify(customTemplates)"
             ></flk-table>
           </div>
 
