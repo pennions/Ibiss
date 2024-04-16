@@ -953,8 +953,10 @@
         uniqueEntriesByProperties = {};
         propertyLabelDictionary = {};
 
+        _columnTemplates = {}; /** html templates to use for columns */
+
         static get observedAttributes() {
-            return ['contents', 'columns', 'order', 'filter', 'selection-property'];
+            return ['contents', 'columns', 'order', 'filter', 'selection-property', 'templates'];
         };
 
         get columnOrder() {
@@ -1025,6 +1027,7 @@
             /** We can not inherit from this using extends, because of vue3  */
             this.base = new BaseComponent();
             this.setContents(this.getAttribute('contents'));
+            this.setTemplates(this.getAttribute('templates'));
             this.setColumnOrder(this.getAttribute('columns'));
             this.filter = this.getAttribute('filter') || '';
 
@@ -1043,6 +1046,10 @@
             switch (name) {
                 case "contents": {
                     this.setContents(newValue);
+                    break;
+                }
+                case "templates": {
+                    this.setTemplates(newValue);
                     break;
                 }
                 case "order": {
@@ -1249,6 +1256,26 @@
             }
         }
 
+        setTemplates(newValue) {
+            if (!newValue) return;
+
+            try {
+                switch (typeof newValue) {
+                    case 'string': {
+                        this._columnTemplates = JSON.parse(newValue) || [];
+                        break;
+                    }
+                    case 'object': {
+                        this._columnTemplates = newValue;
+                        break;
+                    }
+                }
+            }
+            catch (e) {
+                console.log(e);
+            }
+        }
+
         setContents(newValue) {
             /** check if it came from an attibute callback, or directly set as property */
             const valueToSet = newValue || this.contents || [];
@@ -1257,6 +1284,7 @@
                 switch (typeof valueToSet) {
                     case 'string': {
                         this.contents = JSON.parse(valueToSet) || [];
+                        break;
                     }
                     case 'object': {
                         if (Array.isArray(valueToSet)) {
@@ -1265,6 +1293,7 @@
                         else {
                             this.contents = [valueToSet];
                         }
+                        break;
                     }
                 }
             }
@@ -1285,6 +1314,24 @@
             const convertedKey = result.charAt(0).toUpperCase() + result.slice(1);
             this.propertyLabelDictionary[jsonKey] = convertedKey;
             return convertedKey;
+        }
+
+        /** replaces {{ property }} with the value */
+        parseTemplate(template, object) {
+            return template.replace(/\{\{([\s\S]+?)\}\}/gim, (_, p1) => {
+
+                let replacement = '';
+
+                p1 = p1.trim();
+
+                let templateItem = object[p1];
+
+                if (templateItem) {
+                    replacement = templateItem;
+                }
+
+                return Array.isArray(replacement) ? replacement.join(', ') : replacement.toString().trim();
+            });
         }
 
         createSelectionCheckbox(data) {
@@ -1323,7 +1370,14 @@
 
             for (const property of this.columnOrder) {
                 const tableCell = document.createElement('td');
-                tableCell.innerText = rowContent[property];
+
+                if (this._columnTemplates[property]) {
+                    tableCell.innerHTML = this.parseTemplate(this._columnTemplates[property], rowContent);
+                }
+                else {
+                    tableCell.innerText = rowContent[property];
+                }
+
                 tableRow.append(tableCell);
             }
             return tableRow;
@@ -1386,6 +1440,12 @@
             tableHead.append(headerRow);
             return tableHead;
         };
+
+
+        /** so that you can add events to templates */
+        addEvent(selector, eventType, callback) {
+            this.base.addEvent(selector, eventType, callback);
+        }
 
         /** Needed for vanilla webcomponent and compatibility with Vue3
          * If I try to render this on setContents, Vue3 gives illegal operation.

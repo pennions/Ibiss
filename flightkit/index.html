@@ -5,77 +5,39 @@
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Flightkit dev</title>
-        <script src="js/irisset.js"></script>
-        <script src="js/ardeaset.js"></script>
+        <script src="/js/irisset.js"></script>
+        <script src="/js/ardeaset.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
         <script type="module" src="/main.js" defer></script>
-        <style></style>
+        <style>
+            .test {
+                float: right;
+            }
+        </style>
     </head>
     <body>
-        <button id="hide">Open modal</button>
+        <flk-table id="templatedTable" class="table striped" templates='{"common_name":"<button class=\"test\" title=\"{{value}}\">{{ value }}</button>"}'></flk-table>
 
-        <flk-modal id="foo" e-hide="onHide" title="My Modal" header-class="bg-primary">
-            <div class="p-1">
-                <h1>Modal title</h1>
-                <hr />
-                <section>Hello Modal!</section>
-            </div>
-        </flk-modal>
-        <!-- <flk-draggable id="foo" zIndex="2000">
-            <div class="p-1">
-                <h1>Modal title</h1>
-                <hr />
-                <section>Hello Modal!</section>
-            </div>
-        </flk-draggable> -->
-
-        <flk-dropdown
-            text="My dropdown and then some more you know"
-            class="primary"
-            drawer-width="70rem"
-            right
-        >
-            <template>
-                <ul class="p-5 test">
-                    <li><a>Link 1</a></li>
-                    <li><a>Link 2</a></li>
-                    <li><a>Link 3</a></li>
-                    <li><a>Link 4</a></li>
-                    <li><a>Link 5</a></li>
-                </ul>
-            </template>
-        </flk-dropdown>
-        <div>something below</div>
-
-        <h1>Hello?</h1>
-
-        <flk-dropdown text="Another dropdown" class="primary">
-            <template>
-                <h1>will I close?</h1>
-                <ul class="p-5 test">
-                    <li><a>Link 1</a></li>
-                    <li><a>Link 2</a></li>
-                    <li><a>Link 3</a></li>
-                    <li><a>Link 4</a></li>
-                    <li><a>Link 5</a></li>
-                </ul>
-            </template>
-        </flk-dropdown>
         <script>
-            window.onload = function () {
-                document
-                    .getElementById('hide')
-                    .addEventListener('click', () => {
-                        let x = document.getElementById('foo');
-                        x.openModal(true);
-                    });
+            window.onload = () => {
+                const templatedTable =
+                    document.getElementById('templatedTable');
+                templatedTable.setContents(window.ardeaSet);
+                // templatedTable.setTemplates({
+                //     common_name:
+                //         '<button class="test" title="{{value}}">{{ value }}</button>'
+                // });
+            
+                templatedTable.addEvent('.test', 'click', (event) => {
+                    console.log(
+                        event.target.offsetParent.parentElement.dataset.rowId
+                    );
+                });
+
+                templatedTable.setRowIdProperty('common_name');
+
+                templatedTable.init();
             };
-        </script>
-
-        <script>
-            function onHide(event) {
-                console.log(event);
-            }
         </script>
     </body>
 </html>
