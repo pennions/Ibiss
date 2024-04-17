@@ -1304,7 +1304,6 @@
 
         /** function to create HTML */
         convertJsonKeyToTitle(jsonKey) {
-            debugger;
             if (typeof jsonKey !== 'string') jsonKey = jsonKey.toString();
             if (this.propertyLabelDictionary[jsonKey]) return this.propertyLabelDictionary[jsonKey];
 
