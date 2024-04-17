@@ -1,58 +1,58 @@
 window.ardeaSet = [
 	{
-		"scientific_name": "Ardea cinerea",
+		"ScientificName": "Ardea cinerea",
 		"common_name": "Grey heron"
 	},
 	{
-		"scientific_name": "Ardea herodias",
+		"ScientificName": "Ardea herodias",
 		"common_name": "Great blue heron"
 	},
 	{
-		"scientific_name": "Ardea cocoi",
+		"ScientificName": "Ardea cocoi",
 		"common_name": "Cocoi heron"
 	},
 	{
-		"scientific_name": "Ardea pacifica",
+		"ScientificName": "Ardea pacifica",
 		"common_name": "White-necked heron"
 	},
 	{
-		"scientific_name": "Ardea melanocephala",
+		"ScientificName": "Ardea melanocephala",
 		"common_name": "Black-headed heron"
 	},
 	{
-		"scientific_name": "Ardea humbloti",
+		"ScientificName": "Ardea humbloti",
 		"common_name": "Humblot's heron"
 	},
 	{
-		"scientific_name": "Ardea insignis",
+		"ScientificName": "Ardea insignis",
 		"common_name": "White-bellied heron"
 	},
 	{
-		"scientific_name": "Ardea sumatrana",
+		"ScientificName": "Ardea sumatrana",
 		"common_name": "Great-billed heron"
 	},
 	{
-		"scientific_name": "Ardea goliath",
+		"ScientificName": "Ardea goliath",
 		"common_name": "Goliath heron"
 	},
 	{
-		"scientific_name": "Ardea purpurea",
+		"ScientificName": "Ardea purpurea",
 		"common_name": "Purple heron"
 	},
 	{
-		"scientific_name": "Ardea alba",
+		"ScientificName": "Ardea alba",
 		"common_name": "Great egret, great white heron"
 	},
 	{
-		"scientific_name": "Ardea brachyrhyncha",
+		"ScientificName": "Ardea brachyrhyncha",
 		"common_name": "Yellow-billed egret"
 	},
 	{
-		"scientific_name": "Ardea intermedia",
+		"ScientificName": "Ardea intermedia",
 		"common_name": "Medium egret"
 	},
 	{
-		"scientific_name": "Ardea plumifera",
+		"ScientificName": "Ardea plumifera",
 		"common_name": "Plumed egret"
 	}
 ]
