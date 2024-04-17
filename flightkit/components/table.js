@@ -374,7 +374,7 @@ export class FlightkitTable extends HTMLElement {
         const result = jsonKey.replace(/([A-Z_])/g, ($1) => {
             if ($1 === "_") return " ";
             else return ` ${$1.toLowerCase()}`;
-        });
+        }).trim();
         const convertedKey = result.charAt(0).toUpperCase() + result.slice(1);
         this.propertyLabelDictionary[jsonKey] = convertedKey;
         return convertedKey;
