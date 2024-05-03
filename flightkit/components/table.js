@@ -16,8 +16,8 @@ export class FlightkitTable extends HTMLElement {
     _selectedIds = new Set(); /** used to sync selections */
     uniqueEntriesByProperties = {};
     propertyLabelDictionary = {};
-
-    _columnTemplates = {}; /** html templates to use for columns */
+    _templates = {}; /** html templates to use for columns and caption/tfoot */
+    _templateClasses = {};
 
     static get observedAttributes() {
         return ['contents', 'columns', 'order', 'filter', 'selection-property', 'templates'];
@@ -104,6 +104,21 @@ export class FlightkitTable extends HTMLElement {
         if (selectionProperty) {
             this._selectionProperty = selectionProperty;
         }
+
+        const innerTemplates = this.getElementsByTagName('template');
+
+        if (innerTemplates.length) {
+            const templatesToAdd = {};
+            for (const template of innerTemplates) {
+                const templateName = template.getAttribute('name');
+                templatesToAdd[templateName] = template.innerHTML;
+                if (template.classList.length) {
+                    this._templateClasses[templateName] = [...template.classList];
+                }
+            }
+            this.setTemplates(templatesToAdd);
+        }
+
     }
     /** we only need this if we dont use get/set */
     attributeChangedCallback(name, oldValue, newValue) {
@@ -136,6 +151,17 @@ export class FlightkitTable extends HTMLElement {
         /** in Vue3 this is not triggered. You need to set a :key property and handle that */
         this.createHtml();
         this.base.render(this);
+    }
+
+    _createElement(elementName) {
+        const element = document.createElement(elementName);
+
+        element.innerHTML = this._templates[elementName];
+
+        if (this._templateClasses[elementName]) {
+            element.classList.add(...this._templateClasses[elementName]);
+        }
+        return element;
     }
 
     createHtml() {
@@ -171,9 +197,17 @@ export class FlightkitTable extends HTMLElement {
         const tableHead = this.createHead();
         tableElement.append(tableHead);
 
+        if (this._templates['caption']) {
+            tableElement.append(this._createElement('caption'));
+        }
+
         const data = this.contents.execute();
         const tableBody = this.createBody(data);
         tableElement.append(tableBody);
+
+        if (this._templates['tfoot']) {
+            tableElement.append(this._createElement('tfoot'));
+        }
 
         this.component = tableElement;
     }
@@ -326,11 +360,11 @@ export class FlightkitTable extends HTMLElement {
         try {
             switch (typeof newValue) {
                 case 'string': {
-                    this._columnTemplates = JSON.parse(newValue) || [];
+                    this._templates = JSON.parse(newValue) || [];
                     break;
                 }
                 case 'object': {
-                    this._columnTemplates = newValue;
+                    this._templates = newValue;
                     break;
                 }
             }
@@ -435,8 +469,12 @@ export class FlightkitTable extends HTMLElement {
         for (const property of this.columnOrder) {
             const tableCell = document.createElement('td');
 
-            if (this._columnTemplates[property]) {
-                tableCell.innerHTML = this.parseTemplate(this._columnTemplates[property], rowContent);
+            if (this._templates[property]) {
+                tableCell.innerHTML = this.parseTemplate(this._templates[property], rowContent);
+                /** when you use templating inside the element. */
+                if (this._templateClasses[property]) {
+                    tableCell.classList.add(...this._templateClasses[property]);
+                }
             }
             else {
                 tableCell.innerText = rowContent[property];

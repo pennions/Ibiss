@@ -13,6 +13,13 @@ const customTemplates = {
 }
 
 const customTemplateString = `templates='{"common_name":"<button class="test" title="{{common_name}}">{{ common_name }}</button>"}'`
+const htmlTemplateExample =
+  '<template name="common_name"><button class="test" title="{{common_name}}">{{ common_name }}</button></template>'
+
+const footerExample =
+  '<template name="tfoot"><div class="classes are auto-added to footer">This is a footer</div></template>'
+const captionExample =
+  '<template name="caption"><div class="classes are auto-added to footer">This is a caption</div></template>'
 
 onMounted(() => {
   // eslint-disable-next-line no-undef
@@ -105,9 +112,11 @@ function handleSelect(event) {
                   <td><code>templates=""</code></td>
                   <td>Ability to add templates to wrap the value in.</td>
                   <td>
-                    a stringified JSON object that has a template that will be used. Use a placeholder with the property like:
-                    <code>{{ templatePlaceholder }}</code>to use any value you want out of the row. 
-                    <br /><b class="mr-1">E.G.</b> <code class="language-html">{{ customTemplateString }} </code>
+                    a stringified JSON object that has a template that will be used. Use a
+                    placeholder with the property like:
+                    <code>{{ templatePlaceholder }}</code
+                    >to use any value you want out of the row. <br /><b class="mr-1">E.G.</b>
+                    <code class="language-html">{{ customTemplateString }} </code>
                   </td>
                 </tr>
 
@@ -150,6 +159,29 @@ function handleSelect(event) {
                 </tr>
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <section class="column">
+          <div>
+            <h3 class="mb-2">Using html templates to customize the table.</h3>
+            <hr />
+            <p class="mb-4">You can use the same names like in the attribute object.</p>
+
+            <div class="column gap-3">
+              <div>
+                <b>Example:</b>
+
+                <pre><code class="language-html">{{ htmlTemplateExample }}</code></pre>
+              </div>
+              <div>
+                <b>For footer [tfoot] / caption [caption]:</b>
+
+                <pre><code class="language-html">{{ footerExample }}</code></pre>
+                <pre><code class="language-html">{{ captionExample }}</code></pre>
+                <small>You can also add these into your json string as attribute.</small>
+              </div>
+            </div>
           </div>
         </section>
 
