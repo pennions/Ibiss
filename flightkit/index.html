@@ -56,9 +56,7 @@
             templatedTable2.setContents(window.ardeaSet);
 
             templatedTable2.addEvent('.test', 'click', (event) => {
-                console.log(
-                    event.target.offsetParent.parentElement.dataset.rowId
-                );
+                alert("hi")
             });
 
             templatedTable2.init();
