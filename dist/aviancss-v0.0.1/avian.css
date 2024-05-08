@@ -1811,6 +1811,7 @@ textarea[type='button'],
 input[type='reset'],
 textarea[type='reset'] {
   border: 0;
+  padding: 0.6rem 1.5rem;
   /** targeting firefox */
 }
 @supports (-moz-appearance:none) {
