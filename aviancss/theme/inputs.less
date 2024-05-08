@@ -23,10 +23,11 @@ input,
 textarea {
     border: 0.5px solid var(--input-border-color);
     border-radius: 2px;
-    padding: 0 0.4rem;
+    padding: 0 1rem;
     min-height: 3rem;
     outline: currentcolor none 0px;
-    accent-color: var(--primary); /** for checkboxes, radiobuttons etc */
+    accent-color: var(--primary);
+    /** for checkboxes, radiobuttons etc */
 
     &:focus {
         border-color: var(--primary);
@@ -37,6 +38,7 @@ textarea {
     &:invalid:not([invalid='false']):not([required]),
     &[invalid]:not([invalid='false']) {
         border-color: var(--danger);
+
         &:hover,
         &:focus {
             box-shadow: inset 1px 1px 0 var(--danger),
@@ -75,7 +77,11 @@ textarea {
     &[type='button'],
     &[type='reset'] {
         border: 0;
-        padding: 0.5rem 1.5rem 0.9rem 1.5rem;
+
+        /** targeting firefox */
+        @supports (-moz-appearance:none) {
+            padding: 0.6rem 1.5rem 0.9rem 1.5rem;
+        }
 
         &:hover {
             cursor: pointer;
@@ -134,6 +140,7 @@ textarea {
     }
 
     &[type='file'] {
+
         &::file-selector-button,
         &::-webkit-file-upload-button {
             background-color: var(--primary);
@@ -144,6 +151,7 @@ textarea {
         }
 
         &:active {
+
             &::file-selector-button,
             &::-webkit-file-upload-button {
                 box-shadow: inset 0 0 0 2px var(--button-outline-color);
@@ -151,6 +159,7 @@ textarea {
         }
 
         &:hover {
+
             &::file-selector-button,
             &::-webkit-file-upload-button {
                 cursor: pointer;
@@ -220,6 +229,7 @@ textarea {
             &::-moz-range-progress {
                 background-color: var(--primary);
             }
+
             &::-moz-range-thumb {
                 border: 2px solid var(--primary);
             }
@@ -234,6 +244,7 @@ textarea {
         }
 
         &:disabled {
+
             &:hover,
             &:focus {
                 background: transparent;
@@ -242,6 +253,7 @@ textarea {
                 &::-moz-range-progress {
                     background-color: var(--range-filled-track-color);
                 }
+
                 &::-moz-range-thumb {
                     border: 2px solid var(--range-filled-track-color);
                 }
@@ -268,6 +280,7 @@ textarea {
         &:focus {
             box-shadow: none;
         }
+
         &:hover,
         &:focus {
             border-color: var(--primary);
@@ -276,6 +289,7 @@ textarea {
 
         &:disabled,
         &:invalid:not([invalid='false']):not([required]) {
+
             &:hover,
             &:focus {
                 box-shadow: none;
@@ -287,6 +301,7 @@ textarea {
 
         &:invalid:not([invalid='false']):not([required]),
         &[invalid]:not([invalid='false']) {
+
             &:hover,
             &:focus {
                 border-color: var(--danger);
@@ -295,6 +310,7 @@ textarea {
         }
 
         &:disabled {
+
             &:hover,
             &:focus {
                 border-color: var(--disabled-button-background);
