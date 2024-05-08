@@ -13,6 +13,9 @@ onMounted(() => {
 function showModal() {
   document.getElementById('foo').openModal()
 }
+function closeModal() {
+  document.getElementById('foo').closeModal()
+}
 </script>
 
 <template>
@@ -75,7 +78,7 @@ function showModal() {
                 <tr>
                   <td><code>myModal.openModal(reset = true)</code></td>
                   <td>
-                    If reset is <i>true</i> the modal will be reset to the center. If false it will
+                    If reset is <i>true [default]</i> the modal will be reset to the center. If false it will
                     appear where the user left it.
                   </td>
                   <td>Shows the modal</td>
@@ -83,10 +86,7 @@ function showModal() {
 
                 <tr>
                   <td><code>myModal.closeModal()</code></td>
-                  <td>
-                    Emits the event 'hide' with the
-                    <code>{ hidden: true, id: {id} }</code> parameters
-                  </td>
+                  <td></td>
                   <td>Closes the modal</td>
                 </tr>
               </tbody>
@@ -98,7 +98,8 @@ function showModal() {
           <h3 class="mb-2">Using the modal</h3>
           <hr />
 
-          <button @click="showModal">Open modal</button>
+          <button class="mr-3" @click="showModal">Open modal</button>
+          <button @click="closeModal">Close the modal</button>
 
           <flk-modal id="foo" title="My Modal">
             <div class="p-1">

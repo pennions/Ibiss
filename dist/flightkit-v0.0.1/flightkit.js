@@ -1617,13 +1617,8 @@
             ftElement.dispatchEvent(selectEvent);
         }
 
-        closeModal(event) {
-            /** have to do it twice, because of the use of flk-draggable. */
-            const topLevelEvent = returnEventWithTopLevelElement(event, 'flk-modal');
-            const modalElement = topLevelEvent.target;
-
-            modalElement.classList.add('hidden');
-            modalElement._emit('hide', modalElement, { hidden: true, id: modalElement.id });
+        closeModal() {
+            this.classList.add('hidden');
         }
 
         openModal(reset = true) {
