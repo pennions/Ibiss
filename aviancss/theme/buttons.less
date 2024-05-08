@@ -1,13 +1,8 @@
 button {
     border-radius: 2px;
-    padding: 0.6rem 1.5rem 0.9rem 1.5rem;
+    padding: 0.6rem 1.5rem;
     .border();
     background-color: var(--button-background);
-
-    /** if we have a span, then we do not need to adjust for lineheight **/
-    &:has(span) {
-        padding: 0.6rem 1.5rem;
-    }
 
     &:focus,
     &:active {
