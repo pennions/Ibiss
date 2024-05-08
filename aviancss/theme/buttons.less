@@ -1,8 +1,15 @@
 button {
     border-radius: 2px;
     padding: 0.6rem 1.5rem;
+
+    /** targeting firefox */
+    @supports (-moz-appearance:none) {
+        padding: 0.6rem 1.5rem 0.9rem 1.5rem;
+    }
+
     .border();
     background-color: var(--button-background);
+
 
     &:focus,
     &:active {
@@ -81,6 +88,7 @@ button {
     &.danger,
     &.accent,
     &.contrast {
+
         &:focus,
         &:active {
             box-shadow: 0 0 0 1px var(--button-outline-color) !important;
