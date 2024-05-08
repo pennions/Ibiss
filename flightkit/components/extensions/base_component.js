@@ -113,39 +113,66 @@ export class BaseComponent {
         if (parentElement.isConnected) {
             for (const eventToAdd of this._events) {
 
-                let element = document.querySelector(eventToAdd.selector);
-                if (!element) {
-                    continue;
-                }
-                /** check if it is a function (inner call) */
-                if (typeof eventToAdd.callback == 'function') {
-                    element.removeEventListener(eventToAdd.eventType, eventToAdd.callback);
-                    element.addEventListener(eventToAdd.eventType, eventToAdd.callback);
+                if (eventToAdd.selector.startsWith('.')) {
+
+                    let elements = document.querySelectorAll(eventToAdd.selector);
+
+                    for (const element of elements) {
+                        this._addEventToElement(eventToAdd, element)
+                    }
                 }
                 else {
-                    element.removeEventListener(eventToAdd.eventType, this._outerEventHandler);
-                    element.addEventListener(eventToAdd.eventType, this._outerEventHandler);
+                    let element = document.querySelector(eventToAdd.selector);
+                    this._addEventToElement(eventToAdd, element)
                 }
             }
         }
     }
 
+    _addEventToElement(eventToAdd, element) {
+        if (!element) {
+            return;
+        }
+        /** check if it is a function (inner call) */
+        if (typeof eventToAdd.callback == 'function') {
+            element.removeEventListener(eventToAdd.eventType, eventToAdd.callback);
+            element.addEventListener(eventToAdd.eventType, eventToAdd.callback);
+        }
+        else {
+            element.removeEventListener(eventToAdd.eventType, this._outerEventHandler);
+            element.addEventListener(eventToAdd.eventType, this._outerEventHandler);
+        }
+    }
+
     removeEvents() {
         for (const eventToRemove of this._events) {
-            let element = document.querySelector(eventToRemove.selector);
+            if (eventToRemove.selector.startsWith('.')) {
 
-            if (!element) {
-                continue;
-            }
+                let elements = document.querySelectorAll(eventToRemove.selector);
 
-            if (typeof eventToRemove.callback == 'function') {
-                element.removeEventListener(eventToRemove.eventType, eventToRemove.callback);
+                for (const element of elements) {
+                    this._addEventToElement(eventToRemove, element)
+                }
             }
             else {
-                element.removeEventListener(eventToRemove.eventType, this._outerEventHandler);
+                let element = document.querySelector(eventToRemove.selector);
+                this._addEventToElement(eventToRemove, element)
             }
         }
+
         this._events = [];
+    }
+
+    _removeEventToElement(eventToRemove, element) {
+        if (!element) {
+            return;
+        }
+        if (typeof eventToRemove.callback == 'function') {
+            element.removeEventListener(eventToRemove.eventType, eventToRemove.callback);
+        }
+        else {
+            element.removeEventListener(eventToRemove.eventType, this._outerEventHandler);
+        }
     }
 
     _assignToDom(parentElement, element) {
@@ -153,10 +180,10 @@ export class BaseComponent {
 
         const elementsToAdd = Array.isArray(element) ? element : [element]
 
-        for(const HTMLElement of elementsToAdd) {
+        for (const HTMLElement of elementsToAdd) {
             parentElement.append(HTMLElement);
         }
-   
+
         /** need to add timeout so it can be applied properly */
         const eventTimer = setTimeout(() => {
             this._addEvents(parentElement);
