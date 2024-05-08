@@ -1172,10 +1172,11 @@
                     }
                     else if (hasSelection && allSelected) {
                         selectionCheckbox.indeterminate = false;
-                        selectionCheckbox.setAttribute('checked', true);
+                        selectionCheckbox.checked = true;
                     }
                     else {
                         selectionCheckbox.indeterminate = false;
+                        selectionCheckbox.checked = false;
                     }
                 }
                 else {

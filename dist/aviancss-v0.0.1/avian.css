@@ -1578,13 +1578,15 @@ hr {
 }
 button {
   border-radius: 2px;
-  padding: 0.6rem 1.5rem 0.9rem 1.5rem;
+  padding: 0.6rem 1.5rem;
+  /** targeting firefox */
   border: 0.5px solid var(--border-color);
   background-color: var(--button-background);
-  /** if we have a span, then we do not need to adjust for lineheight **/
 }
-button:has(span) {
-  padding: 0.6rem 1.5rem;
+@supports (-moz-appearance:none) {
+  button {
+    padding: 0.6rem 1.5rem 0.9rem 1.5rem;
+  }
 }
 button:focus,
 button:active {
