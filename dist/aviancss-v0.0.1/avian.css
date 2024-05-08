@@ -1746,7 +1746,7 @@ input,
 textarea {
   border: 0.5px solid var(--input-border-color);
   border-radius: 2px;
-  padding: 0 0.4rem;
+  padding: 0 1rem;
   min-height: 3rem;
   outline: currentcolor none 0px;
   accent-color: var(--primary);
@@ -1811,7 +1811,18 @@ textarea[type='button'],
 input[type='reset'],
 textarea[type='reset'] {
   border: 0;
-  padding: 0.5rem 1.5rem 0.9rem 1.5rem;
+  padding: 0.6rem 1.5rem;
+  /** targeting firefox */
+}
+@supports (-moz-appearance:none) {
+  input[type='submit'],
+  textarea[type='submit'],
+  input[type='button'],
+  textarea[type='button'],
+  input[type='reset'],
+  textarea[type='reset'] {
+    padding: 0.6rem 1.5rem 0.9rem 1.5rem;
+  }
 }
 input[type='submit']:hover,
 textarea[type='submit']:hover,
