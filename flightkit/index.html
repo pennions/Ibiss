@@ -1,72 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Flightkit dev</title>
-        <script src="/js/irisset.js"></script>
-        <script src="/js/ardeaset.js"></script>
-        <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
-        <script type="module" src="/main.js" defer></script>
-        <style>
-            .test {
-                float: right;
-            }
 
-            #templatedTableOtherwise {
-                display: inline-block;
-                height: 100px;
-            }
-        </style>
-    </head>
-    <body>
-        <flk-table
-            id="templatedTable"
-            class="table striped"
-            templates='{"common_name":"<button class=\"test\" title=\"{{ScientificName}}\">{{ common_name }}</button>"}'
-        ></flk-table>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flightkit dev</title>
+    <script src="/js/irisset.js"></script>
+    <script src="/js/ardeaset.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
+    <script type="module" src="/main.js" defer></script>
+    <style>
+        .test {
+            float: right;
+        }
 
-        <flk-table
-            id="templatedTableOtherwise"
-            class="table sticky-header striped mt-5"
-        >
+        #templatedTableOtherwise {
+            display: inline-block;
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <flk-table selection-property="common_name" id="templatedTable" class="table striped"
+        templates='{"common_name":"<button class=\"test\" title=\"{{ScientificName}}\">{{ common_name }}</button>"}'></flk-table>
+
+    <flk-table id="templatedTableOtherwise" class="table sticky-header striped mt-5">
         <template class="bg-primary" name="caption">I am a caption</template>
-        <template  name="common_name">
-                <button class="test" title="{{ScientificName}}">
-                    {{ common_name }} - "Added as template element"
-                </button>
-            </template>
-            <template name="tfoot"><small>I'm a footer</small></template>
-        </flk-table>
+        <template name="common_name">
+            <button class="test" title="{{ScientificName}}">
+                {{ common_name }} - "Added as template element"
+            </button>
+        </template>
+        <template name="tfoot"><small>I'm a footer</small></template>
+    </flk-table>
 
-        <script>
-            window.onload = () => {
-                const templatedTable =
-                    document.getElementById('templatedTable');
-                templatedTable.setContents(window.ardeaSet);
+    <script>
+        window.onload = () => {
+            const templatedTable =
+                document.getElementById('templatedTable');
+            templatedTable.setContents(window.ardeaSet);
 
-                templatedTable.addEvent('.test', 'click', (event) => {
-                    console.log(
-                        event.target.offsetParent.parentElement.dataset.rowId
-                    );
-                });
-
-                templatedTable.init();
-
-                const templatedTable2 = document.getElementById(
-                    'templatedTableOtherwise'
+            templatedTable.addEvent('.test', 'click', (event) => {
+                console.log(
+                    event.target.offsetParent.parentElement.dataset.rowId
                 );
-                templatedTable2.setContents(window.ardeaSet);
+            });
 
-                templatedTable2.addEvent('.test', 'click', (event) => {
-                    console.log(
-                        event.target.offsetParent.parentElement.dataset.rowId
-                    );
-                });
+            templatedTable.init();
 
-                templatedTable2.init();
-            };
-        </script>
-    </body>
+            const templatedTable2 = document.getElementById(
+                'templatedTableOtherwise'
+            );
+            templatedTable2.setContents(window.ardeaSet);
+
+            templatedTable2.addEvent('.test', 'click', (event) => {
+                console.log(
+                    event.target.offsetParent.parentElement.dataset.rowId
+                );
+            });
+
+            templatedTable2.init();
+        };
+    </script>
+</body>
+
 </html>
