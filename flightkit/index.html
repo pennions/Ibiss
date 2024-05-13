@@ -36,7 +36,26 @@
         <template name="tfoot"><small>I'm a footer</small></template>
     </flk-table>
 
+    <button class="mr-3" onclick="showModal()">Open modal</button>
+    <button onclick="closeModal()">Close the modal</button>
+
+    <flk-modal id="foo" modal-title="My Modal">
+        <div class="p-1">
+            <h1>Modal title</h1>
+            <hr />
+            <section>Hello Modal!</section>
+        </div>
+    </flk-modal>
+
     <script>
+
+        function showModal() {
+            document.getElementById('foo').openModal()
+        }
+        function closeModal() {
+            document.getElementById('foo').closeModal()
+        }
+
         window.onload = () => {
             const templatedTable =
                 document.getElementById('templatedTable');

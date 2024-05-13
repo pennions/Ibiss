@@ -48,9 +48,9 @@ function closeModal() {
               </thead>
               <tbody>
                 <tr>
-                  <td><code>title=""</code></td>
+                  <td><code>modal-title=""</code></td>
                   <td>Sets the title of the modal header</td>
-                  <td><b>E.G.</b> title="my modal"</td>
+                  <td><b>E.G.</b> modal-title="my modal"</td>
                 </tr>
                 <tr>
                   <td><code>header-class=""</code></td>
@@ -101,7 +101,7 @@ function closeModal() {
           <button class="mr-3" @click="showModal">Open modal</button>
           <button @click="closeModal">Close the modal</button>
 
-          <flk-modal id="foo" title="My Modal">
+          <flk-modal id="foo" modal-title="My Modal">
             <div class="p-1">
               <h1>Modal title</h1>
               <hr />

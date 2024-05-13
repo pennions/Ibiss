@@ -48,13 +48,39 @@ export class FlightkitDraggable extends HTMLElement {
         /** events are added to base so they are disposed properly */
         const draggableId = `#${this.componentId || this.id}`;
         this.base.addEvent(draggableId, 'mousedown', this._dragElement);
+        this.base.addEvent(draggableId, 'mousedown', this._grabbingCursor);
+        this.base.addEvent(draggableId, 'mouseup', this._grabCursor);
+        this.base.addEvent(draggableId, 'mousemove', this._grabCursorRelease);
         this.base.render(this);
     };
     disconnectedCallback() {
         this.base.removeEvents(this);
-    }
-    _dragElement(event) {
-        const topLevelEvent = returnEventWithTopLevelElement(event, 'flk-draggable');
+    };
+    _grabCursor(e) {
+        e.target.style.cursor = 'grab';
+    };
+    _grabCursorRelease(e) {
+        /** do not lose grab with a small wiggle. */
+        if (Math.abs(e.x - e.target.dataset.x) > 4 || Math.abs(e.y - e.target.dataset.y) > 4) {
+            if (e.target.dataset.grabbed) {
+                let movementTimer = setTimeout(function () {
+                    e.target.style.cursor = 'grab';
+                    delete e.target.dataset.grabbed;
+                    delete e.target.dataset.x;
+                    delete e.target.dataset.y;
+                    clearTimeout(movementTimer);
+                }, 120)
+            }
+        }
+    };
+    _grabbingCursor(e) {
+        e.target.dataset.x = e.x;
+        e.target.dataset.y = e.y;
+        e.target.dataset.grabbed = true;
+        e.target.style.cursor = 'grabbing';
+    };
+    _dragElement(e) {
+        const topLevelEvent = returnEventWithTopLevelElement(e, 'flk-draggable');
         const element = topLevelEvent.target;
 
         let offsetX, offsetY;
