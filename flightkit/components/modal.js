@@ -54,7 +54,7 @@ export class FlightkitModal extends HTMLElement {
 
         const windowHeader = document.createElement('div');
 
-        const windowHeaderText = this.getAttribute('title');
+        const windowHeaderText = this.getAttribute('modal-title');
 
         if (windowHeaderText) {
             const headerTextElement = document.createElement('span');
