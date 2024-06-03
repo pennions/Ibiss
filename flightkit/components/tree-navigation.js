@@ -69,23 +69,16 @@ export class FlightkitTreeNavigation extends HTMLElement {
             const branches = [];
             for (const key of keys) {
 
-                if (typeof node[key] === 'object') {
-                    let trunk = document.createElement('li');
-                    let branch = document.createElement('details');
-                    let branchName = document.createElement('summary');
-                    branchName.innerText = this.convertJsonKeyToTitle(key);
-                    branch.append(branchName);
-                    trunk.append(this.createBranch(node[key], branch));
 
-                    branches.push(trunk);
-                }
-                else {
-                    let leaf = document.createElement('li');
-                    leaf.dataset.leafkey = key;
-                    leaf.dataset.leaf = node[key];
-                    leaf.innerText = node[key];
-                    element.append(leaf);
-                }
+                let trunk = document.createElement('li');
+                let branch = document.createElement('details');
+                let branchName = document.createElement('summary');
+                branchName.innerText = this.convertJsonKeyToTitle(key);
+                branch.append(branchName);
+                trunk.append(this.createBranch(node[key], branch));
+
+                branches.push(trunk);
+
             }
 
             /** check if we started with a list or not.  */
@@ -106,7 +99,15 @@ export class FlightkitTreeNavigation extends HTMLElement {
             let leaf = document.createElement('li');
             leaf.dataset.leaf = node;
             leaf.innerText = node;
-            element.append(leaf)
+
+            if (element.tagName.toLowerCase() !== this.listType) {
+                let listContainer = document.createElement(this.listType);
+                listContainer.append(leaf)
+                element.append(listContainer)
+            }
+            else {
+                element.append(leaf)
+            }
         }
         return element;
     }

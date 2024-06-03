@@ -11,6 +11,7 @@ window.sectionSet = {
                 "employee_name": "Emily"
             }
         ],
+        "Test Job": "To be determined",
         "Architect": [
             {
                 "employee_name": "Tom"
@@ -334,5 +335,7 @@ window.sectionSet = {
                 "employee_name": "Lisa"
             }
         ]
-    }
+    },
+    "Section Z": "Secret section",
+    "Section list": ["A", "B", "C"]
 }
