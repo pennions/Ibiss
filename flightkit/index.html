@@ -8,6 +8,7 @@
     <title>Flightkit dev</title>
     <script src="/js/irisset.js"></script>
     <script src="/js/ardeaset.js"></script>
+    <script src="/js/sectionset.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
     <script type="module" src="/main.js" defer></script>
     <style>
@@ -23,6 +24,12 @@
 </head>
 
 <body>
+
+
+
+    <flk-tree-nav id="tree-nav"></flk-tree-nav>
+
+    <hr class="py-5 my-5" />
     <flk-table selection-property="common_name" id="templatedTable" class="table striped"
         templates='{"common_name":"<button class=\"test\" title=\"{{ScientificName}}\">{{ common_name }}</button>"}'></flk-table>
 
@@ -79,6 +86,13 @@
             });
 
             templatedTable2.init();
+
+
+            const myTreeNav = document.getElementById('tree-nav');
+            myTreeNav.setContents(window.sectionSet)
+
+            myTreeNav.init();
+
         };
     </script>
 </body>
