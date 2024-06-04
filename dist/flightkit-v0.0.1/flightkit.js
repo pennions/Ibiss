@@ -1930,19 +1930,53 @@
         contents;
         component;
         listType = 'ul';
-        // currently just by adding this, it will change the iconset to table.
-        iconType;
+        // currently just by adding this, it will change the iconset to database.
+        iconSet;
 
         static get observedAttributes() {
-            return ['contents', 'icon-type'];
+            return ['contents', 'icon-type', 'max-depth'];
         };
+
+        _emit(event, ftElement, detail) {
+            let selectEvent = new CustomEvent(event, {
+                detail,
+                bubbles: true,
+                cancelable: true
+            });
+            ftElement.dispatchEvent(selectEvent);
+        }
 
         constructor() {
             super();
             this.base = new BaseComponent();
             /** Check if there is contents already there. */
             this.setContents(this.getAttribute('contents'));
-            this.iconType = this.getAttribute('icon-type') ? this.getAttribute('icon-type') : 'file';
+            this.iconSet = this.getAttribute('icon-set') ? this.getAttribute('icon-type') : 'file';
+            this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
+
+            this.style.display = 'block';
+            this.style.maxWidth = 'fit-content';
+            this.style.margin = '0.5rem 1rem 0 0';
+
+            this.base.addEvent('.flk-branch', 'click', this.emitNodeToggle);
+        }
+
+        emitNodeToggle(event) {
+            event.stopPropagation();
+            const flkEvent = returnEventWithTopLevelElement(event, 'flk-tree-nav');
+            const flkElement = flkEvent.target;
+            const item = returnDataSetValue(event, 'branchKey');
+
+            let data = flkElement.contents;
+            const trail = item.split('.');
+
+            for (const crumb of trail) {
+                data = data[crumb];
+            }
+
+            /** because of internal array, we have to do a substring. */
+            const path = item.substring(item.indexOf('.') + 1);
+            flkElement._emit('tree-click', flkElement, { path, data, branch: typeof data === 'object' });
         }
 
         convertJsonKeyToTitle(jsonKey) {
@@ -1982,23 +2016,72 @@
             }
         };
 
-        // todo: add crumb trail > so we can navigate back a.b.c.0 etc. [also depth gauge for icons]
-        createBranch(node, element) {
-            if (Array.isArray(node)) {
-                for (let subNode of node) {
+        createLeaf(text, element, key) {
+            let leaf = document.createElement('li');
+            leaf.classList.add('flk-branch', 'cursor-no-select');
+            leaf.style.marginTop = '0.4rem';
+            leaf.dataset.branchKey = key;
+
+            const iconToUse = this.iconSet === 'file' ? fileListIcon : columnListIcon;
+            leaf.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`;
+            leaf.style.position = 'relative';
+            leaf.style.left = '2px';
+            let leafText = document.createElement('span');
+            leafText.innerText = text;
+            leafText.style.position = 'relative';
+            leafText.style.top = '-3px';
+            leaf.append(leafText);
+
+            if (element.tagName.toLowerCase() !== this.listType) {
+                let listContainer = document.createElement(this.listType);
+                const iconToUse = this.iconSet === 'file' ? folderListIcon : tableListIcon;
+                listContainer.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`;
+
+                listContainer.append(leaf);
+                element.append(listContainer);
+            }
+            else {
+                element.append(leaf);
+            }
+            return;
+        }
+
+        createBranch(node, element, key, depth) {
+            /** We can now cap the depth, for better visualization */
+            if (depth === this.maxDepth && typeof node === 'object') {
+                let leafNodes = Array.isArray(node) ? node : Object.keys(node);
+                /** check if array of objects */
+                if (typeof leafNodes[0] === 'object') {
+                    for (const nodeKey in leafNodes) {
+                        const leafs = Object.keys(node[nodeKey]);
+
+                        for (const leaf of leafs) {
+                            this.createLeaf(this.convertJsonKeyToTitle(leaf), element, `${key}.${nodeKey}.${leaf}`);
+                        }
+                    }
+                }
+                else {
+                    for (const leaf of leafNodes) {
+                        this.createLeaf(leaf, element, key);
+                    }
+                }
+            }
+            else if (Array.isArray(node)) {
+                for (let nodeKey in node) {
                     let branch = document.createElement(this.listType);
-                    element.append(this.createBranch(subNode, branch));
+                    element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
                 }
             }
             else if (typeof node === 'object') {
-                let keys = Object.keys(node);
+                let nodeKeys = Object.keys(node);
                 const branches = [];
-                for (const key of keys) {
+                for (const nodeKey of nodeKeys) {
 
                     let trunk = document.createElement('li');
+                    trunk.classList.add('flk-branch', 'cursor-no-select');
                     trunk.style.position = 'relative';
                     trunk.style.left = '2px';
-                    trunk.dataset.leafKey = key;
+                    trunk.dataset.branchKey = `${key}.${nodeKey}`;
 
                     let branch = document.createElement('details');
                     /** fix offset for custom icon */
@@ -2006,16 +2089,16 @@
                     branch.style.top = '-3px';
                     branch.classList.add('cursor-default');
                     let branchName = document.createElement('summary');
-                    branchName.innerText = this.convertJsonKeyToTitle(key);
+                    branchName.innerText = this.convertJsonKeyToTitle(nodeKey);
                     branch.append(branchName);
-                    trunk.append(this.createBranch(node[key], branch));
+                    trunk.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
                     branches.push(trunk);
                 }
 
                 /** check if we started with a list or not.  */
                 if (element.tagName.toLowerCase() !== this.listType) {
                     let listContainer = document.createElement(this.listType);
-                    const iconToUse = this.iconType === 'file' ? folderListIcon : tableListIcon;
+                    const iconToUse = this.iconSet === 'file' ? folderListIcon : tableListIcon;
                     listContainer.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`;
 
                     for (const branch of branches) {
@@ -2030,31 +2113,7 @@
                 }
             }
             else {
-                let leaf = document.createElement('li');
-                leaf.style.marginTop = '0.4rem';
-                leaf.dataset.leafContents = node;
-
-                const iconToUse = this.iconType === 'file' ? fileListIcon : columnListIcon;
-                leaf.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`;
-                leaf.style.position = 'relative';
-                leaf.style.left = '2px';
-                let leafText = document.createElement('span');
-                leafText.innerText = node;
-                leafText.style.position = 'relative';
-                leafText.style.top = '-2px';
-                leaf.append(leafText);
-
-                if (element.tagName.toLowerCase() !== this.listType) {
-                    let listContainer = document.createElement(this.listType);
-                    const iconToUse = this.iconType === 'file' ? folderListIcon : tableListIcon;
-                    listContainer.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`;
-
-                    listContainer.append(leaf);
-                    element.append(listContainer);
-                }
-                else {
-                    element.append(leaf);
-                }
+                this.createLeaf(node, element, key);
             }
             return element;
         }
@@ -2062,7 +2121,7 @@
         createHtml() {
             let mainList = document.createElement(this.listType);
 
-            const iconToUse = this.iconType === 'file' ? folderListIcon : databaseListIcon;
+            const iconToUse = this.iconSet === 'file' ? folderListIcon : databaseListIcon;
             mainList.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`;
             mainList.style.marginLeft = '3rem';
 
@@ -2071,8 +2130,8 @@
                 return;
             }
 
-            for (const node of this.contents) {
-                mainList = this.createBranch(node, mainList);
+            for (const key in this.contents) {
+                mainList = this.createBranch(this.contents[key], mainList, key, 0);
             }
             this.component = mainList;
         };

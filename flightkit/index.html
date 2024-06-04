@@ -1,52 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Flightkit dev</title>
+        <script src="/js/irisset.js"></script>
+        <script src="/js/ardeaset.js"></script>
+        <script src="/js/sectionset.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
+        <script type="module" src="/main.js" defer></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Flightkit dev</title>
-    <script src="/js/irisset.js"></script>
-    <script src="/js/ardeaset.js"></script>
-    <script src="/js/sectionset.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
-    <script type="module" src="/main.js" defer></script>
-</head>
+    <body>
+        <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
+        <flk-tree-nav
+            id="db-nav"
+            class="mt-5"
+            icon-set="database"
+            e-tree-click="clicky"
+            max-depth="2"
+        ></flk-tree-nav>
 
-<body>
-
-
-
-    <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
-
-    <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" e-tree-click="clicky"></flk-tree-nav>
-
-    <script>
-
-        function clicky(e) {
-            let trail = e.contents.split('.');
-            let value = window.sectionSet;
-
-            for (const crumb of trail) {
-                value = value[crumb]
-
+        <script>
+            function clicky(e) {
+                console.log(e.contents);
             }
-            console.log(value, {lastItem: trail.reverse()[0]})
+            window.onload = () => {
+                const myTreeNav = document.getElementById('tree-nav');
+                myTreeNav.setContents(window.sectionSet);
 
-        }
-        window.onload = () => {
-            const myTreeNav = document.getElementById('tree-nav');
-            myTreeNav.setContents(window.sectionSet)
+                myTreeNav.init();
 
-            myTreeNav.init();
+                const myDbNav = document.getElementById('db-nav');
+                myDbNav.setContents(window.sectionSet);
 
-            const myDbNav = document.getElementById('db-nav');
-            myDbNav.setContents(window.sectionSet)
-
-            myDbNav.init();
-
-        };
-    </script>
-</body>
-
+                myDbNav.init();
+            };
+        </script>
+    </body>
 </html>
