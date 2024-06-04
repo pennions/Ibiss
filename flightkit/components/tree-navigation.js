@@ -1,4 +1,5 @@
 import { folderListIcon, fileListIcon, databaseListIcon, tableListIcon, columnListIcon } from '../htmlbuilder/icons';
+import { returnDataSetValue, returnEventWithTopLevelElement } from '../htmlbuilder/domTraversal';
 import { BaseComponent } from './extensions/base_component';
 
 export class FlightkitTreeNavigation extends HTMLElement {
@@ -7,18 +8,45 @@ export class FlightkitTreeNavigation extends HTMLElement {
     component;
     listType = 'ul';
     // currently just by adding this, it will change the iconset to table.
-    iconType;
+    iconSet;
 
     static get observedAttributes() {
         return ['contents', 'icon-type'];
     };
+
+    _emit(event, ftElement, detail) {
+        let selectEvent = new CustomEvent(event, {
+            detail,
+            bubbles: true,
+            cancelable: true
+        });
+        ftElement.dispatchEvent(selectEvent);
+    }
 
     constructor() {
         super();
         this.base = new BaseComponent();
         /** Check if there is contents already there. */
         this.setContents(this.getAttribute('contents'));
-        this.iconType = this.getAttribute('icon-type') ? this.getAttribute('icon-type') : 'file'
+        this.iconSet = this.getAttribute('icon-set') ? this.getAttribute('icon-type') : 'file';
+
+        this.style.display = 'block';
+        this.style.maxWidth = 'fit-content';
+        this.style.margin = '0.5rem 1rem 0 0';
+
+        this.base.addEvent('.flk-branch', 'click', this.emitNodeToggle)
+    }
+
+    emitNodeToggle(event) {
+        event.stopPropagation();
+        const flkEvent = returnEventWithTopLevelElement(event, 'flk-tree-nav');
+        const flkElement = flkEvent.target;
+        const item = returnDataSetValue(event, 'branchKey');
+
+        /** because of internal array, we have to do a substring. */
+        const key = item.substring(item.indexOf('.') + 1);
+
+        flkElement._emit('tree-click', flkElement, key)
     }
 
     convertJsonKeyToTitle(jsonKey) {
@@ -58,23 +86,24 @@ export class FlightkitTreeNavigation extends HTMLElement {
         }
     };
 
-    // todo: add crumb trail > so we can navigate back a.b.c.0 etc. [also depth gauge for icons]
-    createBranch(node, element) {
+    createBranch(node, element, key) {
+
         if (Array.isArray(node)) {
-            for (let subNode of node) {
+            for (let nodeKey in node) {
                 let branch = document.createElement(this.listType);
-                element.append(this.createBranch(subNode, branch));
+                element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`));
             }
         }
         else if (typeof node === 'object') {
-            let keys = Object.keys(node);
+            let nodeKeys = Object.keys(node);
             const branches = [];
-            for (const key of keys) {
+            for (const nodeKey of nodeKeys) {
 
                 let trunk = document.createElement('li');
+                trunk.classList.add('flk-branch', 'cursor-no-select')
                 trunk.style.position = 'relative';
                 trunk.style.left = '2px';
-                trunk.dataset.leafKey = key;
+                trunk.dataset.branchKey = `${key}.${nodeKey}`;
 
                 let branch = document.createElement('details');
                 /** fix offset for custom icon */
@@ -82,16 +111,16 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 branch.style.top = '-3px'
                 branch.classList.add('cursor-default')
                 let branchName = document.createElement('summary');
-                branchName.innerText = this.convertJsonKeyToTitle(key);
+                branchName.innerText = this.convertJsonKeyToTitle(nodeKey);
                 branch.append(branchName);
-                trunk.append(this.createBranch(node[key], branch));
+                trunk.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`));
                 branches.push(trunk);
             }
 
             /** check if we started with a list or not.  */
             if (element.tagName.toLowerCase() !== this.listType) {
                 let listContainer = document.createElement(this.listType);
-                const iconToUse = this.iconType === 'file' ? folderListIcon : tableListIcon
+                const iconToUse = this.iconSet === 'file' ? folderListIcon : tableListIcon
                 listContainer.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`
 
                 for (const branch of branches) {
@@ -107,10 +136,11 @@ export class FlightkitTreeNavigation extends HTMLElement {
         }
         else {
             let leaf = document.createElement('li');
+            leaf.classList.add('flk-branch', 'cursor-no-select')
             leaf.style.marginTop = '0.4rem'
-            leaf.dataset.leafContents = node;
+            leaf.dataset.branchKey = key;
 
-            const iconToUse = this.iconType === 'file' ? fileListIcon : columnListIcon
+            const iconToUse = this.iconSet === 'file' ? fileListIcon : columnListIcon
             leaf.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`
             leaf.style.position = 'relative';
             leaf.style.left = '2px';
@@ -122,7 +152,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
             if (element.tagName.toLowerCase() !== this.listType) {
                 let listContainer = document.createElement(this.listType);
-                const iconToUse = this.iconType === 'file' ? folderListIcon : tableListIcon
+                const iconToUse = this.iconSet === 'file' ? folderListIcon : tableListIcon
                 listContainer.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`
 
                 listContainer.append(leaf)
@@ -138,7 +168,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     createHtml() {
         let mainList = document.createElement(this.listType);
 
-        const iconToUse = this.iconType === 'file' ? folderListIcon : databaseListIcon
+        const iconToUse = this.iconSet === 'file' ? folderListIcon : databaseListIcon
         mainList.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`
         mainList.style.marginLeft = '3rem'
 
@@ -147,8 +177,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
             return;
         }
 
-        for (const node of this.contents) {
-            mainList = this.createBranch(node, mainList);
+        for (const key in this.contents) {
+            mainList = this.createBranch(this.contents[key], mainList, key);
         }
         this.component = mainList;
     };

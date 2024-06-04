@@ -17,11 +17,23 @@
 
 
 
-    <flk-tree-nav id="tree-nav"></flk-tree-nav>
+    <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
 
-    <flk-tree-nav id="db-nav" class="mt-5" icon-type="table"></flk-tree-nav>
+    <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" e-tree-click="clicky"></flk-tree-nav>
 
     <script>
+
+        function clicky(e) {
+            let trail = e.contents.split('.');
+            let value = window.sectionSet;
+
+            for (const crumb of trail) {
+                value = value[crumb]
+
+            }
+            console.log(value, {lastItem: trail.reverse()[0]})
+
+        }
         window.onload = () => {
             const myTreeNav = document.getElementById('tree-nav');
             myTreeNav.setContents(window.sectionSet)
