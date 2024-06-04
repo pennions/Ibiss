@@ -11,16 +11,6 @@
     <script src="/js/sectionset.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
     <script type="module" src="/main.js" defer></script>
-    <style>
-        .test {
-            float: right;
-        }
-
-        #templatedTableOtherwise {
-            display: inline-block;
-            height: 100px;
-        }
-    </style>
 </head>
 
 <body>
@@ -29,69 +19,19 @@
 
     <flk-tree-nav id="tree-nav"></flk-tree-nav>
 
-    <hr class="py-5 my-5" />
-    <flk-table selection-property="common_name" id="templatedTable" class="table striped"
-        templates='{"common_name":"<button class=\"test\" title=\"{{ScientificName}}\">{{ common_name }}</button>"}'></flk-table>
-
-    <flk-table id="templatedTableOtherwise" class="table sticky-header striped mt-5">
-        <template class="bg-primary" name="caption">I am a caption</template>
-        <template name="common_name">
-            <button class="test" title="{{ScientificName}}">
-                {{ common_name }} - "Added as template element"
-            </button>
-        </template>
-        <template name="tfoot"><small>I'm a footer</small></template>
-    </flk-table>
-
-    <button class="mr-3" onclick="showModal()">Open modal</button>
-    <button onclick="closeModal()">Close the modal</button>
-
-    <flk-modal id="foo" modal-title="My Modal">
-        <div class="p-1">
-            <h1>Modal title</h1>
-            <hr />
-            <section>Hello Modal!</section>
-        </div>
-    </flk-modal>
+    <flk-tree-nav id="db-nav" class="mt-5" icon-type="table"></flk-tree-nav>
 
     <script>
-
-        function showModal() {
-            document.getElementById('foo').openModal()
-        }
-        function closeModal() {
-            document.getElementById('foo').closeModal()
-        }
-
         window.onload = () => {
-            const templatedTable =
-                document.getElementById('templatedTable');
-            templatedTable.setContents(window.ardeaSet);
-
-            templatedTable.addEvent('.test', 'click', (event) => {
-                console.log(
-                    event.target.offsetParent.parentElement.dataset.rowId
-                );
-            });
-
-            templatedTable.init();
-
-            const templatedTable2 = document.getElementById(
-                'templatedTableOtherwise'
-            );
-            templatedTable2.setContents(window.ardeaSet);
-
-            templatedTable2.addEvent('.test', 'click', (event) => {
-                alert("hi")
-            });
-
-            templatedTable2.init();
-
-
             const myTreeNav = document.getElementById('tree-nav');
             myTreeNav.setContents(window.sectionSet)
 
             myTreeNav.init();
+
+            const myDbNav = document.getElementById('db-nav');
+            myDbNav.setContents(window.sectionSet)
+
+            myDbNav.init();
 
         };
     </script>
