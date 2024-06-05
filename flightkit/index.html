@@ -19,7 +19,7 @@
             class="mt-5"
             icon-set="database"
             e-tree-click="clicky"
-            max-depth="2"
+            max-depth="1"
             beautify="false"
         ></flk-tree-nav>
 
@@ -37,6 +37,8 @@
                 myDbNav.setContents(window.sectionSet);
 
                 myDbNav.init();
+
+                myDbNav.setFilter('A');
             };
         </script>
     </body>

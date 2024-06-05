@@ -9,7 +9,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     listType = 'ul';
     // currently just by adding this, it will change the iconset to database.
     iconSet;
-    filter = '';
+    filter = { value: '', caseSensitive: false };
 
     static get observedAttributes() {
         return ['contents', 'icon-set', 'max-depth', 'filter'];
@@ -24,9 +24,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
         let values = [];
 
         for (const kvPair of jsonKeyValueArray) {
-
-            values = values.concat(kvPair.split(":"))
-
+            values = values.concat(kvPair.split(":"));
         }
         return [...new Set(values)];
     }
@@ -40,11 +38,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
         ftElement.dispatchEvent(selectEvent);
     }
 
-    setFilter(newString) {
-        this.filter = newString;
-        this.init();
-    }
-
     constructor() {
         super();
         this.base = new BaseComponent();
@@ -52,7 +45,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
         this.setContents(this.getAttribute('contents'));
         this.iconSet = this.getAttribute('icon-set') ? this.getAttribute('icon-type') : 'file';
         this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
-        this.filter = this.getAttribute('filter') ? this.getAttribute('filter') : '';
+        this.setFilter(this.getAttribute('filter'));
 
         this.style.display = 'block';
         this.style.maxWidth = 'fit-content';
@@ -94,10 +87,9 @@ export class FlightkitTreeNavigation extends HTMLElement {
         /** check if it came from an attibute callback, or directly set as property */
         const valueToSet = newValue || this.contents || [];
         try {
-
             switch (typeof valueToSet) {
                 case 'string': {
-                    this.contents = JSON.parse(valueToSet) || [];
+                    this.contents = JSON.parse(valueToSet);
                     break;
                 }
                 case 'object': {
@@ -117,24 +109,61 @@ export class FlightkitTreeNavigation extends HTMLElement {
     };
 
 
+    filterTree() {
+        let searchTimer = setTimeout(() => {
+            let foundElements = this.querySelectorAll('[data-branch-values]');
+            console.log(foundElements);
+            clearTimeout(searchTimer);
+        }, 10);
+    }
+
+    setFilter(newValue) {
+        /** check if it came from an attibute callback, or directly set as property */
+        const valueToSet = newValue || {};
+        try {
+            switch (typeof valueToSet) {
+                case 'string': {
+                    if (valueToSet.includes('{')) {
+                        this.filter = JSON.parse(valueToSet);
+                        if (this.filter.caseSensitive === false) {
+                            this.filter.value = this.filter.value.toLowerCase();
+                        }
+                    }
+                    else {
+                        this.filter.value = newValue.toLowerCase();
+                    }
+                    break;
+                }
+                case 'object': {
+                    this.filter = valueToSet;
+                    break;
+                }
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
+        this.filterTree();
+    }
+
     createTextTag(text, element) {
-        let hasComment = text.includes('(') || text.includes('[')
-   
+        let hasComment = text.includes('(') || text.includes('[');
+
         if (hasComment) {
             let tagContainer = document.createElement('div');
             let roundBracketIndex = text.indexOf('(');
             let squareBracketIndex = text.indexOf('[');
-    
+
             let indexToCut = squareBracketIndex === -1 ? roundBracketIndex : squareBracketIndex;
 
-            let mainTitleElement = document.createElement('span')
+            let mainTitleElement = document.createElement('span');
 
             mainTitleElement.innerText = this.convertJsonKeyToTitle(text.substring(0, indexToCut));
 
-            let commentElement = document.createElement('small')
+            let commentElement = document.createElement('small');
             commentElement.innerText = text.substring(indexToCut);
-            commentElement.style.marginLeft = '1rem';
-            tagContainer.append(mainTitleElement, commentElement)
+            commentElement.classList.add('ml-2');
+            tagContainer.append(mainTitleElement, commentElement);
             tagContainer.style.display = 'inline-flex';
             tagContainer.style.alignItems = 'center';
             element.append(tagContainer);
@@ -144,9 +173,9 @@ export class FlightkitTreeNavigation extends HTMLElement {
         }
     }
 
-    createLeaf(text, element, key) {
+    createLeaf(text, element, key, branchValues = []) {
         let leaf = document.createElement('li');
-        leaf.classList.add('flk-branch', 'cursor-no-select');
+        leaf.classList.add('cursor-no-select');
         leaf.style.marginTop = '0.4rem';
         leaf.dataset.branchKey = key;
 
@@ -155,9 +184,11 @@ export class FlightkitTreeNavigation extends HTMLElement {
         leaf.style.position = 'relative';
         leaf.style.left = '2px';
         let leafText = document.createElement('span');
-        leafText.classList.add('flk-leaf') /** used to start the search. */
 
-        this.createTextTag(text, leafText)
+        let allBranchValues = [text].concat(branchValues);
+        leafText.dataset.branchValues = [...new Set(allBranchValues)].join();
+
+        this.createTextTag(text, leafText);
 
         leafText.style.position = 'relative';
         leafText.style.top = '-3px';
@@ -187,13 +218,18 @@ export class FlightkitTreeNavigation extends HTMLElement {
                     const leafs = Object.keys(node[nodeKey]);
 
                     for (const leaf of leafs) {
-                        this.createLeaf(leaf, element, `${key}.${nodeKey}.${leaf}`);
+                        let branchValues = this._jsonToValueArray(node[nodeKey]);
+                        this.createLeaf(leaf, element, `${key}.${nodeKey}.${leaf}`, branchValues);
                     }
                 }
             }
             else {
                 for (const leaf of leafNodes) {
-                    this.createLeaf(leaf, element, key);
+                    let branchValues;
+                    if (node[leaf]) {
+                        branchValues = this._jsonToValueArray(node[leaf]);
+                    }
+                    this.createLeaf(leaf, element, key, branchValues);
                 }
             }
         }
@@ -209,13 +245,13 @@ export class FlightkitTreeNavigation extends HTMLElement {
             for (const nodeKey of nodeKeys) {
 
                 let trunk = document.createElement('li');
-                trunk.classList.add('flk-branch', 'cursor-no-select');
+                trunk.classList.add('cursor-no-select');
                 trunk.style.position = 'relative';
                 trunk.style.left = '2px';
                 trunk.dataset.branchKey = `${key}.${nodeKey}`;
 
                 let branch = document.createElement('details');
-
+                branch.classList.add('flk-branch');
                 /** set values as we go down, for easy filtering */
                 branch.dataset.branchValues = [nodeKey].concat(this._jsonToValueArray(node[nodeKey])); /** also want to key above. */
 
@@ -225,7 +261,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 branch.classList.add('cursor-default');
                 let branchName = document.createElement('summary');
 
-                this.createTextTag(nodeKey, branchName)
+                this.createTextTag(nodeKey, branchName);
 
                 branch.append(branchName);
                 trunk.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
@@ -252,8 +288,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
         else {
             this.createLeaf(node, element, key);
         }
-
-        // if we have a filter we need to know if there is something in the tree that is found
         return element;
     }
 
@@ -269,11 +303,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
             return;
         }
 
-        let contentsToRender = this.contents
-
-        if (this.filter.length) {
-
-        }
+        let contentsToRender = this.contents;
 
         for (const key in contentsToRender) {
             mainList = this.createBranch(this.contents[key], mainList, key, 0);
@@ -289,15 +319,15 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 break;
             }
             case "icon-set": {
-                this.iconSet = newValue
+                this.iconSet = newValue;
                 break;
             }
             case "max-depth": {
-                this.maxDepth = newValue;
+                this.maxDepth = typeof newValue === 'string' ? parseInt(newValue) : newValue;
                 break;
             }
             case "filter": {
-                this.filter = newValue || '';
+                this.setFilter(newValue);
                 break;
             }
             case "beautify": {
