@@ -370,7 +370,7 @@ import Card from '../shared/Card.vue'
           </tr>
           <tr>
             <td><code>--small-font-size</code></td>
-            <td>1.4rem</td>
+            <td>1.2rem</td>
           </tr>
 
           <tr>

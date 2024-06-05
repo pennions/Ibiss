@@ -1932,10 +1932,27 @@
         listType = 'ul';
         // currently just by adding this, it will change the iconset to database.
         iconSet;
+        filter = '';
 
         static get observedAttributes() {
-            return ['contents', 'icon-type', 'max-depth'];
+            return ['contents', 'icon-set', 'max-depth', 'filter'];
         };
+
+        _jsonToValueArray(json) {
+
+            let jsonString = JSON.stringify(json);
+            /** replace any array and object brackets */
+            jsonString = jsonString.replace(/[\[\]{}\"]/g, "");
+            let jsonKeyValueArray = jsonString.split(',');
+            let values = [];
+
+            for (const kvPair of jsonKeyValueArray) {
+
+                values = values.concat(kvPair.split(":"));
+
+            }
+            return [...new Set(values)];
+        }
 
         _emit(event, ftElement, detail) {
             let selectEvent = new CustomEvent(event, {
@@ -1946,6 +1963,11 @@
             ftElement.dispatchEvent(selectEvent);
         }
 
+        setFilter(newString) {
+            this.filter = newString;
+            this.init();
+        }
+
         constructor() {
             super();
             this.base = new BaseComponent();
@@ -1953,6 +1975,8 @@
             this.setContents(this.getAttribute('contents'));
             this.iconSet = this.getAttribute('icon-set') ? this.getAttribute('icon-type') : 'file';
             this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
+            this.filter = this.getAttribute('filter') ? this.getAttribute('filter') : '';
+            this.beautify = this.getAttribute('beautify') ? this.getAttribute('beautify').toLowerCase() === 'true' : true; /** default on */
 
             this.style.display = 'block';
             this.style.maxWidth = 'fit-content';
@@ -1980,6 +2004,10 @@
         }
 
         convertJsonKeyToTitle(jsonKey) {
+            if (this.beautify === false) {
+                return jsonKey
+            }
+
             if (typeof jsonKey !== 'string') jsonKey = jsonKey.toString();
 
             const result = jsonKey.replace(/([A-Z_])/g, ($1) => {
@@ -2016,6 +2044,29 @@
             }
         };
 
+
+        createTextTag(text, element) {
+            let hasComment = text.includes('(' );
+            if (hasComment) {
+                let roundBracketIndex = text.indexOf('(');
+                let squareBracketIndex = text.indexOf('[');
+
+                let indexToCut = squareBracketIndex === -1 ? roundBracketIndex : squareBracketIndex;
+
+                let mainTitleElement = document.createElement('span');
+
+                mainTitleElement.innerText = this.convertJsonKeyToTitle(text.substring(0, indexToCut));
+
+                let commentElement = document.createElement('small');
+                commentElement.innerText = text.substring(indexToCut);
+                commentElement.style.marginLeft = '0.5rem';
+                element.append(mainTitleElement, commentElement);
+            }
+            else {
+                element.innerText = text;
+            }
+        }
+
         createLeaf(text, element, key) {
             let leaf = document.createElement('li');
             leaf.classList.add('flk-branch', 'cursor-no-select');
@@ -2027,7 +2078,10 @@
             leaf.style.position = 'relative';
             leaf.style.left = '2px';
             let leafText = document.createElement('span');
-            leafText.innerText = text;
+            leafText.classList.add('flk-leaf'); /** used to start the search. */
+
+            this.createTextTag(text, leafText);
+
             leafText.style.position = 'relative';
             leafText.style.top = '-3px';
             leaf.append(leafText);
@@ -2056,7 +2110,7 @@
                         const leafs = Object.keys(node[nodeKey]);
 
                         for (const leaf of leafs) {
-                            this.createLeaf(this.convertJsonKeyToTitle(leaf), element, `${key}.${nodeKey}.${leaf}`);
+                            this.createLeaf(leaf, element, `${key}.${nodeKey}.${leaf}`);
                         }
                     }
                 }
@@ -2084,12 +2138,18 @@
                     trunk.dataset.branchKey = `${key}.${nodeKey}`;
 
                     let branch = document.createElement('details');
+
+                    /** set values as we go down, for easy filtering */
+                    branch.dataset.branchValues = this._jsonToValueArray(node[nodeKey]);
+
                     /** fix offset for custom icon */
                     branch.style.position = 'relative';
                     branch.style.top = '-3px';
                     branch.classList.add('cursor-default');
                     let branchName = document.createElement('summary');
-                    branchName.innerText = this.convertJsonKeyToTitle(nodeKey);
+
+                    this.createTextTag(nodeKey, branchName);
+
                     branch.append(branchName);
                     trunk.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
                     branches.push(trunk);
@@ -2115,6 +2175,8 @@
             else {
                 this.createLeaf(node, element, key);
             }
+
+            // if we have a filter we need to know if there is something in the tree that is found
             return element;
         }
 
@@ -2130,16 +2192,47 @@
                 return;
             }
 
-            for (const key in this.contents) {
+            let contentsToRender = this.contents;
+
+            if (this.filter.length) ;
+
+            for (const key in contentsToRender) {
                 mainList = this.createBranch(this.contents[key], mainList, key, 0);
             }
             this.component = mainList;
         };
 
+
+        attributeChangedCallback(name, oldValue, newValue) {
+            switch (name) {
+                case "contents": {
+                    this.setContents(newValue);
+                    break;
+                }
+                case "icon-set": {
+                    this.iconSet = newValue;
+                    break;
+                }
+                case "max-depth": {
+                    this.maxDepth = newValue;
+                    break;
+                }
+                case "filter": {
+                    this.filter = newValue || '';
+                    break;
+                }
+                case "beautify": {
+                    this.beautify = newValue.toLowerCase() === 'true';
+                    break;
+                }
+            }
+            /** in Vue3 this is not triggered. You need to set a :key property and handle that */
+            this.init();
+        }
+
         /** grab inner HTML from here */
         connectedCallback() {
-            this.createHtml();
-            this.base.render(this);
+            this.init();
         };
 
         disconnectedCallback() {
