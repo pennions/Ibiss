@@ -49,8 +49,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
         this.style.display = 'block';
         this.style.maxWidth = 'fit-content';
-        this.style.margin = '0.5rem 1rem 0 0';
-
+        this.style.margin = '0 1rem 0 0';
         this.base.addEvent('.flk-branch', 'click', this.emitNodeToggle);
     }
 
@@ -108,11 +107,53 @@ export class FlightkitTreeNavigation extends HTMLElement {
         }
     };
 
+    applyFilter(element) {
+        let match;
+        const detailsEl = element.tagName.toLowerCase() === 'details';
+
+        if (this.filter.caseSensitive) {
+            match = element.dataset.branchValues.includes(this.filter.value);
+        }
+        else {
+            match = element.dataset.branchValues.toLowerCase().includes(this.filter.value.toLowerCase());
+        }
+
+        /** hide the <li> */
+        if (match) {
+            element.parentElement.classList.remove('hidden');
+        }
+        else {
+            element.parentElement.classList.add('hidden');
+        }
+
+        if (detailsEl && match) {
+            element.setAttribute('open', '');
+        }
+        else {
+            element.removeAttribute('open');
+        }
+    }
+
+    resetTree(element) {
+        element.parentElement.classList.remove('hidden');
+        element.removeAttribute('open');
+
+    }
 
     filterTree() {
         let searchTimer = setTimeout(() => {
             let foundElements = this.querySelectorAll('[data-branch-values]');
-            console.log(foundElements);
+
+            for (const element of foundElements) {
+
+                let filterCleared = this.filter.value === undefined || this.filter.value.length === 0;
+                if (filterCleared) {
+                    this.resetTree(element);
+                }
+                else {
+                    this.applyFilter(element);
+                }
+            }
             clearTimeout(searchTimer);
         }, 10);
     }
@@ -162,7 +203,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
             let commentElement = document.createElement('small');
             commentElement.innerText = text.substring(indexToCut);
-            commentElement.classList.add('ml-2');
+            commentElement.style.marginLeft = '1rem';
             tagContainer.append(mainTitleElement, commentElement);
             tagContainer.style.display = 'inline-flex';
             tagContainer.style.alignItems = 'center';
@@ -328,10 +369,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
             case "filter": {
                 this.setFilter(newValue);
-                break;
-            }
-            case "beautify": {
-                this.beautify = newValue.toLowerCase() === 'true';
                 break;
             }
         }

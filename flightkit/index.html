@@ -14,6 +14,8 @@
 
     <body>
         <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
+
+        <input id="search" class="m-2" type="text" placeholder="search" />
         <flk-tree-nav
             id="db-nav"
             class="mt-5"
@@ -27,6 +29,12 @@
             function clicky(e) {
                 console.log(e.contents);
             }
+
+            function searchDbTree(e) {
+                let myDbNav = document.getElementById('db-nav');
+                myDbNav.setFilter(e.target.value);
+            }
+
             window.onload = () => {
                 const myTreeNav = document.getElementById('tree-nav');
                 myTreeNav.setContents(window.sectionSet);
@@ -38,7 +46,9 @@
 
                 myDbNav.init();
 
-                myDbNav.setFilter('A');
+                document
+                    .getElementById('search')
+                    .addEventListener('keyup', searchDbTree);
             };
         </script>
     </body>
