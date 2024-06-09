@@ -11,7 +11,8 @@ function build() {
     if (!fs.existsSync(ibissCdnDir)) {
         fs.mkdirSync(ibissCdnDir);
     } else {
-        throw new Error('Directory exists, update ibiss version!');
+        console.log('Already built!');
+        return;
     }
 
     fs.rmdir('./dist', { recursive: true }, () => {
