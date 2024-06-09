@@ -2285,6 +2285,7 @@ table.striped tbody tr:hover {
 .cursor-help:hover {
   cursor: help !important;
 }
+.cursor-default,
 .cursor-default:hover {
   cursor: default !important;
 }

@@ -90,9 +90,3 @@ onMounted(() => {
     </article>
   </Card>
 </template>
-
-<style scope>
-.property-table th:first-child {
-  min-width: 20rem;
-}
-</style>

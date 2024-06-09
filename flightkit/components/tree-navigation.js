@@ -43,6 +43,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
         this.base = new BaseComponent();
         /** Check if there is contents already there. */
         this.setContents(this.getAttribute('contents'));
+
         this.iconSet = this.getAttribute('icon-set') ? this.getAttribute('icon-type') : 'file';
         this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
         this.setFilter(this.getAttribute('filter'));
@@ -85,6 +86,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     setContents(newValue) {
         /** check if it came from an attibute callback, or directly set as property */
         const valueToSet = newValue || this.contents || [];
+
         try {
             switch (typeof valueToSet) {
                 case 'string': {
@@ -137,7 +139,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
     resetTree(element) {
         element.parentElement.classList.remove('hidden');
         element.removeAttribute('open');
-
     }
 
     filterTree() {

@@ -810,10 +810,12 @@
                 }
             }
             clearTimeout(this._renderTimer);
+
+            console.log(parentElement.component);
             /** try to limit the amount of rendering */
             this.renderTimeout = setTimeout(() => {
-                clearTimeout(this._renderTimer);
                 this._assignToDom(parentElement, parentElement.component);
+                clearTimeout(this._renderTimer);
             }, 10);
         }
 
@@ -1579,36 +1581,11 @@
             /** events are added to base so they are disposed properly */
             const draggableId = `#${this.componentId || this.id}`;
             this.base.addEvent(draggableId, 'mousedown', this._dragElement);
-            this.base.addEvent(draggableId, 'mousedown', this._grabbingCursor);
-            this.base.addEvent(draggableId, 'mouseup', this._grabCursor);
-            this.base.addEvent(draggableId, 'mousemove', this._grabCursorRelease);
+            this.base.addEvent(draggableId, 'mouseup', this._reset);
             this.base.render(this);
         };
         disconnectedCallback() {
             this.base.removeEvents(this);
-        };
-        _grabCursor(e) {
-            e.target.style.cursor = 'grab';
-        };
-        _grabCursorRelease(e) {
-            /** do not lose grab with a small wiggle. */
-            if (Math.abs(e.x - e.target.dataset.x) > 4 || Math.abs(e.y - e.target.dataset.y) > 4) {
-                if (e.target.dataset.grabbed) {
-                    let movementTimer = setTimeout(function () {
-                        e.target.style.cursor = 'grab';
-                        delete e.target.dataset.grabbed;
-                        delete e.target.dataset.x;
-                        delete e.target.dataset.y;
-                        clearTimeout(movementTimer);
-                    }, 120);
-                }
-            }
-        };
-        _grabbingCursor(e) {
-            e.target.dataset.x = e.x;
-            e.target.dataset.y = e.y;
-            e.target.dataset.grabbed = true;
-            e.target.style.cursor = 'grabbing';
         };
         _dragElement(e) {
             const topLevelEvent = returnEventWithTopLevelElement(e, 'flk-draggable');
@@ -1680,7 +1657,15 @@
             ftElement.dispatchEvent(selectEvent);
         }
 
-        closeModal() {
+        /** internal calls */
+        _closeModal(event) {
+            event.stopPropagation();
+            const flkEvent = returnEventWithTopLevelElement(event, 'flk-modal');
+            const flkElement = flkEvent.target;
+            flkElement.classList.add('hidden');
+        }
+
+        closeModal(event) {
             this.classList.add('hidden');
         }
 
@@ -1735,11 +1720,11 @@
                 headerClassesToAdd.push('bg-gray-light');
             }
 
-            windowHeader.classList.add(...headerClassesToAdd, 'border-bottom', 'row', 'justify-end');
+            windowHeader.classList.add(...headerClassesToAdd, 'border-bottom', 'row', 'justify-end', 'cursor-no-select');
 
             const closeModalId = this.base.generateId();
             const closeModalButton = document.createElement('button');
-            closeModalButton.classList.add('py-0', 'px-1', 'outline-hover', 'no-border', ...headerClassesToAdd);
+            closeModalButton.classList.add('py-0', 'px-1', 'outline-hover', 'no-border', 'cursor-default', ...headerClassesToAdd);
             closeModalButton.innerText = 'X';
             closeModalButton.id = closeModalId;
 
@@ -1753,7 +1738,7 @@
             modalContainer.append(flkDraggable);
             this.component = modalContainer;
 
-            this.base.addEvent(`#${closeModalId}`, 'click', this.closeModal);
+            this.base.addEvent(`#${closeModalId}`, 'click', this._closeModal);
             this.base.render(this);
             /** start hidden ofcourse. */
             this.classList.add('hidden');
@@ -1966,6 +1951,7 @@
             this.base = new BaseComponent();
             /** Check if there is contents already there. */
             this.setContents(this.getAttribute('contents'));
+
             this.iconSet = this.getAttribute('icon-set') ? this.getAttribute('icon-type') : 'file';
             this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
             this.setFilter(this.getAttribute('filter'));
@@ -2008,6 +1994,7 @@
         setContents(newValue) {
             /** check if it came from an attibute callback, or directly set as property */
             const valueToSet = newValue || this.contents || [];
+
             try {
                 switch (typeof valueToSet) {
                     case 'string': {
@@ -2060,7 +2047,6 @@
         resetTree(element) {
             element.parentElement.classList.remove('hidden');
             element.removeAttribute('open');
-
         }
 
         filterTree() {

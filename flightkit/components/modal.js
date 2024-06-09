@@ -19,7 +19,15 @@ export class FlightkitModal extends HTMLElement {
         ftElement.dispatchEvent(selectEvent);
     }
 
-    closeModal() {
+    /** internal calls */
+    _closeModal(event) {
+        event.stopPropagation();
+        const flkEvent = returnEventWithTopLevelElement(event, 'flk-modal');
+        const flkElement = flkEvent.target;
+        flkElement.classList.add('hidden');
+    }
+
+    closeModal(event) {
         this.classList.add('hidden');
     }
 
@@ -74,11 +82,11 @@ export class FlightkitModal extends HTMLElement {
             headerClassesToAdd.push('bg-gray-light');
         }
 
-        windowHeader.classList.add(...headerClassesToAdd, 'border-bottom', 'row', 'justify-end');
+        windowHeader.classList.add(...headerClassesToAdd, 'border-bottom', 'row', 'justify-end', 'cursor-no-select');
 
         const closeModalId = this.base.generateId();
         const closeModalButton = document.createElement('button');
-        closeModalButton.classList.add('py-0', 'px-1', 'outline-hover', 'no-border', ...headerClassesToAdd);
+        closeModalButton.classList.add('py-0', 'px-1', 'outline-hover', 'no-border', 'cursor-default', ...headerClassesToAdd);
         closeModalButton.innerText = 'X';
         closeModalButton.id = closeModalId;
 
@@ -92,7 +100,7 @@ export class FlightkitModal extends HTMLElement {
         modalContainer.append(flkDraggable);
         this.component = modalContainer;
 
-        this.base.addEvent(`#${closeModalId}`, 'click', this.closeModal);
+        this.base.addEvent(`#${closeModalId}`, 'click', this._closeModal);
         this.base.render(this);
         /** start hidden ofcourse. */
         this.classList.add('hidden');

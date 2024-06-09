@@ -50,10 +50,12 @@ export class BaseComponent {
             }
         }
         clearTimeout(this._renderTimer);
+
+        console.log(parentElement.component)
         /** try to limit the amount of rendering */
         this.renderTimeout = setTimeout(() => {
-            clearTimeout(this._renderTimer);
             this._assignToDom(parentElement, parentElement.component);
+            clearTimeout(this._renderTimer);
         }, 10);
     }
 
