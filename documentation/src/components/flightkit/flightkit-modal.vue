@@ -113,13 +113,3 @@ function closeModal() {
     </article>
   </Card>
 </template>
-
-<style scope>
-button {
-  max-width: fit-content;
-}
-
-.property-table th:first-child {
-  min-width: 20rem;
-}
-</style>

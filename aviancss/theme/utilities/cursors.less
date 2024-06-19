@@ -1,24 +1,54 @@
 .cursor-not-allowed:hover {
     cursor: not-allowed !important;
 }
+
+/* If you indicate that it can be clicked, stop text selection*/
+.cursor-pointer {
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
+
 .cursor-pointer:hover {
     cursor: pointer !important;
 }
+
 .cursor-grab:hover {
     cursor: grab !important;
 }
+
 .cursor-grabbing:hover {
     cursor: grabbing !important;
 }
+
 .cursor-zoom-in:hover {
     cursor: zoom-in !important;
 }
+
 .cursor-zoom-out:hover {
     cursor: zoom-out !important;
 }
+
 .cursor-wait:hover {
     cursor: wait !important;
 }
+
 .cursor-help:hover {
     cursor: help !important;
+}
+.cursor-default,
+.cursor-default:hover {
+    cursor: default !important;
+}
+
+.cursor-no-select {
+    -webkit-user-select: none !important;
+    /* Safari */
+    -ms-user-select: none !important;
+    /* IE 10 and IE 11 */
+    user-select: none !important;
+    /* Standard syntax */
 }

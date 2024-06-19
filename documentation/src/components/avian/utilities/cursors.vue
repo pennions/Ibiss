@@ -53,11 +53,19 @@ import Card from '../../shared/Card.vue'
             </tr>
             <tr>
               <td><code class="language-html">cursor-wait</code></td>
-              <td><div class="border p-1 px-3 cursor-wait">Hover me, cursor turns to spinner</div></td>
+              <td><div class="border p-1 px-3 cursor-wait">Hover me, cursor turns to spinner or hourglass depending in the browser </div></td>
             </tr>
             <tr>
               <td><code class="language-html">cursor-help</code></td>
               <td><div class="border p-1 px-3 cursor-help">Hover me, cursor turns to help icon</div></td>
+            </tr>
+            <tr>
+              <td><code class="language-html">cursor-default</code></td>
+              <td><div class="border p-1 px-3 cursor-default">Makes the cursor to be the default arrow.</div></td>
+            </tr>
+            <tr>
+              <td><code class="language-html">cursor-no-select</code></td>
+              <td><div class="border p-1 px-3 cursor-no-select">Makes the cursor unable to select text.</div></td>
             </tr>
           </tbody>
         </table>

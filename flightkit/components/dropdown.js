@@ -1,4 +1,3 @@
-/** example component */
 import { returnEventWithTopLevelElement } from '../htmlbuilder/domTraversal';
 import { chevronDownIcon, chevronUpIcon, rehydrateSvg } from '../htmlbuilder/icons';
 import { BaseComponent } from './extensions/base_component';

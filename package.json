@@ -1,6 +1,10 @@
 {
   "name": "@pennions/ibiss",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "avian_version": "0.0.2",
+  "flightkit_version": "0.0.2",
+  "htmx_plugin_version": "0.0.1",
+  "rocketjs_version": "0.0.1",
   "description": "Frontend library of Pennions",
   "files": [
     "dist"

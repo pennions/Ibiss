@@ -1,86 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Flightkit dev</title>
+        <script src="/js/irisset.js"></script>
+        <script src="/js/ardeaset.js"></script>
+        <script src="/js/sectionset.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
+        <script type="module" src="/main.js" defer></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Flightkit dev</title>
-    <script src="/js/irisset.js"></script>
-    <script src="/js/ardeaset.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
-    <script type="module" src="/main.js" defer></script>
-    <style>
-        .test {
-            float: right;
-        }
+    <body>
+        <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
 
-        #templatedTableOtherwise {
-            display: inline-block;
-            height: 100px;
-        }
-    </style>
-</head>
+        <input id="search" class="m-2" type="text" placeholder="search" />
+        <flk-tree-nav
+            id="db-nav"
+            class="mt-5"
+            icon-set="database"
+            e-tree-click="clicky"
+            max-depth="1"
+            beautify="false"
+        ></flk-tree-nav>
 
-<body>
-    <flk-table selection-property="common_name" id="templatedTable" class="table striped"
-        templates='{"common_name":"<button class=\"test\" title=\"{{ScientificName}}\">{{ common_name }}</button>"}'></flk-table>
+        <script>
+            function clicky(e) {
+                console.log(e.contents);
+            }
 
-    <flk-table id="templatedTableOtherwise" class="table sticky-header striped mt-5">
-        <template class="bg-primary" name="caption">I am a caption</template>
-        <template name="common_name">
-            <button class="test" title="{{ScientificName}}">
-                {{ common_name }} - "Added as template element"
-            </button>
-        </template>
-        <template name="tfoot"><small>I'm a footer</small></template>
-    </flk-table>
+            function searchDbTree(e) {
+                let myDbNav = document.getElementById('db-nav');
+                myDbNav.setFilter(e.target.value);
+            }
 
-    <button class="mr-3" onclick="showModal()">Open modal</button>
-    <button onclick="closeModal()">Close the modal</button>
+            window.onload = () => {
+                const myTreeNav = document.getElementById('tree-nav');
+                myTreeNav.setContents(window.sectionSet);
 
-    <flk-modal id="foo" modal-title="My Modal">
-        <div class="p-1">
-            <h1>Modal title</h1>
-            <hr />
-            <section>Hello Modal!</section>
-        </div>
-    </flk-modal>
+                myTreeNav.init();
 
-    <script>
+                const myDbNav = document.getElementById('db-nav');
+                myDbNav.setContents(window.sectionSet);
 
-        function showModal() {
-            document.getElementById('foo').openModal()
-        }
-        function closeModal() {
-            document.getElementById('foo').closeModal()
-        }
+                myDbNav.init();
 
-        window.onload = () => {
-            const templatedTable =
-                document.getElementById('templatedTable');
-            templatedTable.setContents(window.ardeaSet);
-
-            templatedTable.addEvent('.test', 'click', (event) => {
-                console.log(
-                    event.target.offsetParent.parentElement.dataset.rowId
-                );
-            });
-
-            templatedTable.init();
-
-            const templatedTable2 = document.getElementById(
-                'templatedTableOtherwise'
-            );
-            templatedTable2.setContents(window.ardeaSet);
-
-            templatedTable2.addEvent('.test', 'click', (event) => {
-                alert("hi")
-            });
-
-            templatedTable2.init();
-        };
-    </script>
-</body>
-
+                document
+                    .getElementById('search')
+                    .addEventListener('keyup', searchDbTree);
+            };
+        </script>
+    </body>
 </html>
