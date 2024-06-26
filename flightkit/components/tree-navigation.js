@@ -1,6 +1,7 @@
 import { folderListIcon, fileListIcon, databaseListIcon, tableListIcon, columnListIcon } from '../htmlbuilder/icons';
 import { returnDataSetValue, returnEventWithTopLevelElement } from '../htmlbuilder/domTraversal';
 import { BaseComponent } from './extensions/base_component';
+import { comment } from 'postcss';
 
 export class FlightkitTreeNavigation extends HTMLElement {
     base;
@@ -73,6 +74,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
     }
 
     convertJsonKeyToTitle(jsonKey) {
+        if (!jsonKey) return '';
+
         if (typeof jsonKey !== 'string') jsonKey = jsonKey.toString();
 
         const result = jsonKey.replace(/([A-Z_])/g, ($1) => {
@@ -189,7 +192,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     }
 
     createTextTag(text, element) {
-        let hasComment = text.includes('(') || text.includes('[');
+        let hasComment = typeof text === 'string' ? text.includes('(') || text.includes('[') : false;
 
         if (hasComment) {
             let tagContainer = document.createElement('div');
@@ -240,7 +243,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
             let listContainer = document.createElement(this.listType);
             const iconToUse = this.iconSet === 'file' ? folderListIcon : tableListIcon;
             listContainer.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`;
-
             listContainer.append(leaf);
             element.append(listContainer);
         }
@@ -254,15 +256,19 @@ export class FlightkitTreeNavigation extends HTMLElement {
         /** We can now cap the depth, for better visualization */
         if (depth === this.maxDepth && typeof node === 'object') {
             let leafNodes = Array.isArray(node) ? node : Object.keys(node);
+
             /** check if array of objects */
             if (typeof leafNodes[0] === 'object') {
-                for (const nodeKey in leafNodes) {
-                    const leafs = Object.keys(node[nodeKey]);
+                let allKeys = [];
 
-                    for (const leaf of leafs) {
-                        let branchValues = this._jsonToValueArray(node[nodeKey]);
-                        this.createLeaf(leaf, element, `${key}.${nodeKey}.${leaf}`, branchValues);
-                    }
+                for (const obj of leafNodes) {
+                    allKeys = allKeys.concat(Object.keys(obj));
+                }
+                let uniqueKeys = [...new Set(allKeys)];
+
+                for (let nodeKey of uniqueKeys) {
+                    let branch = document.createElement(this.listType);
+                    element.append(this.createBranch(nodeKey, branch, `${key}.${nodeKey}`, depth + 1));
                 }
             }
             else {
@@ -276,12 +282,27 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
         }
         else if (Array.isArray(node)) {
-            for (let nodeKey in node) {
-                let branch = document.createElement(this.listType);
-                element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
+            const isObjectArray = typeof node[0] === 'object';
+            let allKeys = [];
+            if (isObjectArray) {
+                for (const obj of node) {
+                    allKeys = allKeys.concat(Object.keys(obj));
+                }
+                let uniqueKeys = [...new Set(allKeys)];
+
+                for (let nodeKey of uniqueKeys) {
+                    let branch = document.createElement(this.listType);
+                    element.append(this.createBranch(nodeKey, branch, `${key}.${nodeKey}`, depth + 1));
+                }
+            }
+            else {
+                for (let nodeKey in node) {
+                    let branch = document.createElement(this.listType);
+                    element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
+                }
             }
         }
-        else if (typeof node === 'object') {
+        else if (node !== null && typeof node === 'object') {
             let nodeKeys = Object.keys(node);
             const branches = [];
             for (const nodeKey of nodeKeys) {
