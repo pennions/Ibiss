@@ -1,55 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Flightkit dev</title>
-        <script src="/js/irisset.js"></script>
-        <script src="/js/ardeaset.js"></script>
-        <script src="/js/sectionset.js"></script>
-        <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
-        <script type="module" src="/main.js" defer></script>
-    </head>
 
-    <body>
-        <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flightkit dev</title>
+    <script src="/js/irisset.js"></script>
+    <script src="/js/ardeaset.js"></script>
+    <script src="/js/databaseset.js"></script>
+    <script src="/js/sectionset.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
+    <script type="module" src="/main.js" defer></script>
+</head>
 
-        <input id="search" class="m-2" type="text" placeholder="search" />
-        <flk-tree-nav
-            id="db-nav"
-            class="mt-5"
-            icon-set="database"
-            e-tree-click="clicky"
-            max-depth="1"
-            beautify="false"
-        ></flk-tree-nav>
+<body>
+    <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
 
-        <script>
-            function clicky(e) {
-                console.log(e.contents);
-            }
+    <input id="search" class="m-2" type="text" placeholder="search" />
+    <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" e-tree-click="clicky" max-depth="3"></flk-tree-nav>
 
-            function searchDbTree(e) {
-                let myDbNav = document.getElementById('db-nav');
-                myDbNav.setFilter(e.target.value);
-            }
+    <hr />
 
-            window.onload = () => {
-                const myTreeNav = document.getElementById('tree-nav');
-                myTreeNav.setContents(window.sectionSet);
+    <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky"> </flk-tree-nav>
 
-                myTreeNav.init();
+    <script>
+        function clicky(e) {
+            console.log(e.contents);
+        }
 
-                const myDbNav = document.getElementById('db-nav');
-                myDbNav.setContents(window.sectionSet);
+        function searchDbTree(e) {
+            let myDbNav = document.getElementById('db-nav');
+            myDbNav.setFilter(e.target.value);
+        }
 
-                myDbNav.init();
+        window.onload = () => {
+            const myTreeNav = document.getElementById('tree-nav');
+            myTreeNav.setContents(window.sectionSet);
 
-                document
-                    .getElementById('search')
-                    .addEventListener('keyup', searchDbTree);
-            };
-        </script>
-    </body>
+            myTreeNav.init();
+
+            const myDbNav = document.getElementById('db-nav');
+            myDbNav.setContents(window.sectionSet);
+
+            myDbNav.init();
+
+            document
+                .getElementById('search')
+                .addEventListener('keyup', searchDbTree);
+
+            const databasesNav = document.getElementById('databases');
+            databasesNav.setContents(window.databaseSet);
+
+            databasesNav.init();
+        };
+    </script>
+</body>
+
 </html>
