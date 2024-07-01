@@ -967,7 +967,7 @@
     const chevronUpIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up"><path d="m18 15-6-6-6 6"/></svg>';
 
     const folderListIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="gold" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>';
-    const fileListIcon =  '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>';
+    const fileListIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>';
 
     /** adapted so it works with fill. */
     const databaseListIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="silver" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-database"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="m 3,12 a 9,3 0 0 0 18,0 M 3,5 v 14 a 9,3 0 0 0 18,0 V 5 m 0,0 A 9,3 0 0 1 12,8 9,3 0 0 1 3,5 9,3 0 0 1 12,2 9,3 0 0 1 21,5 Z" /></svg>';
@@ -9654,12 +9654,27 @@
             const trail = item.split('.');
 
             for (const crumb of trail) {
-                data = data[crumb];
+                if (data[crumb]) {
+                    data = data[crumb];
+                }
+                else {
+                    /** Dealing with an array of objects */
+                    let extractedData = [];
+
+                    for (const obj of data) {
+                        if (obj[crumb]) {
+                            extractedData.push(obj[crumb]);
+                        }
+                    }
+                    data = extractedData;
+                }
             }
 
             /** because of internal array, we have to do a substring. */
             const path = item.substring(item.indexOf('.') + 1);
-            flkElement._emit('tree-click', flkElement, { path, data, branch: typeof data === 'object' });
+
+            let leafText = flkElement.createLeafText(trail.reverse()[0]);
+            flkElement._emit('tree-click', flkElement, { path, data, key: `${leafText.titleText} ${leafText.commentText}`.trim(), branch: typeof data === 'object' });
         }
 
         convertJsonKeyToTitle(jsonKey) {
@@ -9780,30 +9795,49 @@
             this.filterTree();
         }
 
-        createTextTag(text, element) {
+
+        createLeafText(text) {
             let hasComment = typeof text === 'string' ? text.includes('(') || text.includes('[') : false;
 
+            let titleText = '';
+            let commentText = '';
+
             if (hasComment) {
-                let tagContainer = document.createElement('div');
                 let roundBracketIndex = text.indexOf('(');
                 let squareBracketIndex = text.indexOf('[');
-
                 let indexToCut = squareBracketIndex === -1 ? roundBracketIndex : squareBracketIndex;
 
+                titleText = this.convertJsonKeyToTitle(text.substring(0, indexToCut));
+                commentText = text.substring(indexToCut);
+            }
+            else {
+                titleText = this.convertJsonKeyToTitle(text);
+            }
+
+            return { titleText, commentText }
+        }
+
+        createTextTag(text, element) {
+            let leafText = this.createLeafText(text);
+
+            if (leafText.commentText) {
+                let tagContainer = document.createElement('div');
                 let mainTitleElement = document.createElement('span');
 
-                mainTitleElement.innerText = this.convertJsonKeyToTitle(text.substring(0, indexToCut));
+                mainTitleElement.innerText = leafText.titleText;
 
                 let commentElement = document.createElement('small');
-                commentElement.innerText = text.substring(indexToCut);
+                commentElement.innerText = leafText.commentText;
                 commentElement.style.marginLeft = '1rem';
+
                 tagContainer.append(mainTitleElement, commentElement);
                 tagContainer.style.display = 'inline-flex';
                 tagContainer.style.alignItems = 'center';
+
                 element.append(tagContainer);
             }
             else {
-                element.innerText = this.convertJsonKeyToTitle(text);
+                element.innerText = leafText.titleText;
             }
         }
 
@@ -9871,24 +9905,9 @@
                 }
             }
             else if (Array.isArray(node)) {
-                const isObjectArray = typeof node[0] === 'object';
-                let allKeys = [];
-                if (isObjectArray) {
-                    for (const obj of node) {
-                        allKeys = allKeys.concat(Object.keys(obj));
-                    }
-                    let uniqueKeys = [...new Set(allKeys)];
-
-                    for (let nodeKey of uniqueKeys) {
-                        let branch = document.createElement(this.listType);
-                        element.append(this.createBranch(nodeKey, branch, `${key}.${nodeKey}`, depth + 1));
-                    }
-                }
-                else {
-                    for (let nodeKey in node) {
-                        let branch = document.createElement(this.listType);
-                        element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
-                    }
+                for (let nodeKey in node) {
+                    let branch = document.createElement(this.listType);
+                    element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
                 }
             }
             else if (node !== null && typeof node === 'object') {
@@ -9938,6 +9957,8 @@
                 }
             }
             else {
+
+                console.trace({ node, element, key });
                 this.createLeaf(node, element, key);
             }
             return element;

@@ -316,24 +316,9 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
         }
         else if (Array.isArray(node)) {
-            const isObjectArray = typeof node[0] === 'object';
-            let allKeys = [];
-            if (isObjectArray) {
-                for (const obj of node) {
-                    allKeys = allKeys.concat(Object.keys(obj));
-                }
-                let uniqueKeys = [...new Set(allKeys)];
-
-                for (let nodeKey of uniqueKeys) {
-                    let branch = document.createElement(this.listType);
-                    element.append(this.createBranch(nodeKey, branch, `${key}.${nodeKey}`, depth + 1));
-                }
-            }
-            else {
-                for (let nodeKey in node) {
-                    let branch = document.createElement(this.listType);
-                    element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
-                }
+            for (let nodeKey in node) {
+                let branch = document.createElement(this.listType);
+                element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
             }
         }
         else if (node !== null && typeof node === 'object') {
@@ -383,6 +368,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
         }
         else {
+
+            console.trace({ node, element, key })
             this.createLeaf(node, element, key);
         }
         return element;
