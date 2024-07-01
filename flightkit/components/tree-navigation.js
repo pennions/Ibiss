@@ -1,7 +1,6 @@
 import { folderListIcon, fileListIcon, databaseListIcon, tableListIcon, columnListIcon } from '../htmlbuilder/icons';
 import { returnDataSetValue, returnEventWithTopLevelElement } from '../htmlbuilder/domTraversal';
 import { BaseComponent } from './extensions/base_component';
-import { comment } from 'postcss';
 
 export class FlightkitTreeNavigation extends HTMLElement {
     base;
