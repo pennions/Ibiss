@@ -9657,10 +9657,12 @@
                 if (data[crumb]) {
                     data = data[crumb];
                 }
+                else if (data[crumb] === null) {
+                    data = null;
+                }
                 else {
                     /** Dealing with an array of objects */
                     let extractedData = [];
-
                     for (const obj of data) {
                         if (obj[crumb]) {
                             extractedData.push(obj[crumb]);
@@ -9855,6 +9857,10 @@
 
             let allBranchValues = [text].concat(branchValues);
             leafText.dataset.branchValues = [...new Set(allBranchValues)].join();
+            /** This is the 'leaf' but if we have branch values we want to know where we click on */
+            if (branchValues.length) {
+                leafText.dataset.leafKey = allBranchValues[0];
+            }
 
             this.createTextTag(text, leafText);
 
@@ -9880,28 +9886,12 @@
             if (depth === this.maxDepth && typeof node === 'object') {
                 let leafNodes = Array.isArray(node) ? node : Object.keys(node);
 
-                /** check if array of objects */
-                if (typeof leafNodes[0] === 'object') {
-                    let allKeys = [];
-
-                    for (const obj of leafNodes) {
-                        allKeys = allKeys.concat(Object.keys(obj));
+                for (const leaf of leafNodes) {
+                    let branchValues;
+                    if (node[leaf]) {
+                        branchValues = this._jsonToValueArray(node[leaf]);
                     }
-                    let uniqueKeys = [...new Set(allKeys)];
-
-                    for (let nodeKey of uniqueKeys) {
-                        let branch = document.createElement(this.listType);
-                        element.append(this.createBranch(nodeKey, branch, `${key}.${nodeKey}`, depth + 1));
-                    }
-                }
-                else {
-                    for (const leaf of leafNodes) {
-                        let branchValues;
-                        if (node[leaf]) {
-                            branchValues = this._jsonToValueArray(node[leaf]);
-                        }
-                        this.createLeaf(leaf, element, key, branchValues);
-                    }
+                    this.createLeaf(leaf, element, `${key}.${leaf}`, branchValues);
                 }
             }
             else if (Array.isArray(node)) {
@@ -9957,8 +9947,6 @@
                 }
             }
             else {
-
-                console.trace({ node, element, key });
                 this.createLeaf(node, element, key);
             }
             return element;
