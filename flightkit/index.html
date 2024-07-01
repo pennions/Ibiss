@@ -12,21 +12,37 @@
     <script src="/js/sectionset.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
     <script type="module" src="/main.js" defer></script>
+    <style>
+        code {
+            width:30%;
+        }
+    </style>
 </head>
 
-<body>
+<body class="row gap-5 p-3">
     <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
+    <div>
 
-    <input id="search" class="m-2" type="text" placeholder="search" />
-    <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" e-tree-click="clicky" max-depth="3"></flk-tree-nav>
+        <input id="search" class="m-2" type="text" placeholder="search" />
+        <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" e-tree-click="clicky" max-depth="4"></flk-tree-nav>
+    </div>
 
     <hr />
 
     <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky"> </flk-tree-nav>
 
+    <code>
+        Click on a tree to get the Preview
+        <pre id="clicky-preview">
+
+        </pre>
+    </code>
+
     <script>
         function clicky(e) {
-            console.log(e.contents);
+
+            let previewEl = document.getElementById('clicky-preview')
+            previewEl.innerText = JSON.stringify(e.contents, null, 4);
         }
 
         function searchDbTree(e) {
