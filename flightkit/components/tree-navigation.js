@@ -10,6 +10,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     // currently just by adding this, it will change the iconset to database.
     iconSet;
     filter = { value: '', caseSensitive: false };
+    selectedElement = [];
 
     static get observedAttributes() {
         return ['contents', 'icon-set', 'max-depth', 'filter'];
@@ -82,11 +83,48 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
         }
 
+        let leafKey;
+        let parent = event.target
+
+        do {
+            if (parent.dataset && parent.dataset.leafKey) {
+                leafKey = parent.dataset.leafKey
+            }
+            else {
+                parent = parent.parentNode || parent.parentElement;
+            }
+        }
+        while (!leafKey)
+
+        if (flkElement.selectedElement.length) {
+            for (const selectedElement of flkElement.selectedElement) {
+                selectedElement.classList.remove('font-weight-bold');
+            }
+        }
+        flkElement.selectedElement = [];
+
+        if (parent.tagName === 'DETAILS') {
+            flkElement.selectedElement.push(parent.childNodes[0]);
+
+            /** for when we have 2 spans */
+            if(parent.childNodes.length && parent.childNodes[0].childNodes.length && parent.childNodes[0].childNodes[0].tagName === 'DIV') {
+                console.log(parent.childNodes[0].childNodes)
+                flkElement.selectedElement = parent.childNodes[0].childNodes[0].childNodes
+            }
+        }
+        else {
+            flkElement.selectedElement.push(parent)
+        }
+
+        for (const selectedElement of flkElement.selectedElement) {
+            selectedElement.classList.add('font-weight-bold');
+        }
+
         /** because of internal array, we have to do a substring. */
         const path = item.substring(item.indexOf('.') + 1);
 
         let leafText = flkElement.createLeafText(trail.reverse()[0])
-        flkElement._emit('tree-click', flkElement, { path, data, key: `${leafText.titleText} ${leafText.commentText}`.trim(), branch: typeof data === 'object' });
+        flkElement._emit('tree-click', flkElement, { path, data, key: leafKey, label: `${leafText.titleText} ${leafText.commentText}`.trim(), branch: typeof data === 'object' });
     }
 
     convertJsonKeyToTitle(jsonKey) {
@@ -267,10 +305,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
         let allBranchValues = [text].concat(branchValues);
         leafText.dataset.branchValues = [...new Set(allBranchValues)].join();
-        /** This is the 'leaf' but if we have branch values we want to know where we click on */
-        if (branchValues.length) {
-            leafText.dataset.leafKey = allBranchValues[0];
-        }
+        /** to get the leaf */
+        leafText.dataset.leafKey = allBranchValues[0];
 
         this.createTextTag(text, leafText);
 
@@ -321,6 +357,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 trunk.style.left = '2px';
                 trunk.dataset.branchKey = `${key}.${nodeKey}`;
 
+
                 let branch = document.createElement('details');
                 branch.classList.add('flk-branch');
                 /** set values as we go down, for easy filtering */
@@ -333,6 +370,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 let branchName = document.createElement('summary');
 
                 this.createTextTag(nodeKey, branchName);
+                branch.dataset.leafKey = nodeKey;
 
                 branch.append(branchName);
                 trunk.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
