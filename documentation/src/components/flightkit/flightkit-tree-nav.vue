@@ -78,7 +78,7 @@ onMounted(() => {
             </table>
           </div>
         </section>
-        <p>It uses url svgs. Which do not work in vue3. :(</p>
+        <p>It uses attributes and url svgs. Which do not work in vue3. :(</p>
       </div>
     </article>
   </Card>

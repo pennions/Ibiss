@@ -21,15 +21,18 @@ export class FlightkitDropdown extends HTMLElement {
         this._buttonId = this.base.generateId();
 
         const btnElement = document.createElement('button');
+        btnElement.setAttribute('type', 'button');
         btnElement.classList.add('row');
         btnElement.id = this._buttonId;
 
         const btnTextElement = document.createElement('span');
+        btnTextElement.classList.add("self-align-center");
         btnTextElement.innerText = this.getAttribute('text');
 
         this._iconId = this.base.generateId();
 
         const iconElement = document.createElement('span');
+        iconElement.classList.add("self-align-center");
         const closedIcon = rehydrateSvg(chevronDownIcon);
 
         const openIcon = rehydrateSvg(chevronUpIcon);

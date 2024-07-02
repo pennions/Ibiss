@@ -10,7 +10,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     // currently just by adding this, it will change the iconset to database.
     iconSet;
     filter = { value: '', caseSensitive: false };
-    selectedElement = [];
+    selectedElements = [];
 
     static get observedAttributes() {
         return ['contents', 'icon-set', 'max-depth', 'filter'];
@@ -57,6 +57,12 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
     emitNodeToggle(event) {
         event.stopPropagation();
+
+        /** Clicked in between items in a list, ignore. */
+        if (["LI", "UL"].includes(event.target.tagName)) {
+            return false;
+        }
+
         const flkEvent = returnEventWithTopLevelElement(event, 'flk-tree-nav');
         const flkElement = flkEvent.target;
         const item = returnDataSetValue(event, 'branchKey');
@@ -96,28 +102,36 @@ export class FlightkitTreeNavigation extends HTMLElement {
         }
         while (!leafKey)
 
-        if (flkElement.selectedElement.length) {
-            for (const selectedElement of flkElement.selectedElement) {
+        if (flkElement.selectedElements.length) {
+            for (const selectedElement of flkElement.selectedElements) {
                 selectedElement.classList.remove('font-weight-bold');
+                delete selectedElement.dataset.selected;
+
             }
         }
-        flkElement.selectedElement = [];
+
+        // flkElement.previousElements = flkElement.selectedElements;
+        flkElement.selectedElements = [];
+
 
         if (parent.tagName === 'DETAILS') {
-            flkElement.selectedElement.push(parent.childNodes[0]);
+            flkElement.selectedElements.push(parent.childNodes[0]);
 
             /** for when we have 2 spans */
-            if(parent.childNodes.length && parent.childNodes[0].childNodes.length && parent.childNodes[0].childNodes[0].tagName === 'DIV') {
+            if (parent.childNodes.length && parent.childNodes[0].childNodes.length && parent.childNodes[0].childNodes[0].tagName === 'DIV') {
                 console.log(parent.childNodes[0].childNodes)
-                flkElement.selectedElement = parent.childNodes[0].childNodes[0].childNodes
+                flkElement.selectedElements = parent.childNodes[0].childNodes[0].childNodes
             }
         }
         else {
-            flkElement.selectedElement.push(parent)
+            flkElement.selectedElements.push(parent)
         }
 
-        for (const selectedElement of flkElement.selectedElement) {
-            selectedElement.classList.add('font-weight-bold');
+        for (const selectedElement of flkElement.selectedElements) {
+            if (!selectedElement.dataset.selected) {
+                selectedElement.classList.add('font-weight-bold');
+                selectedElement.dataset.selected = true;
+            }
         }
 
         /** because of internal array, we have to do a substring. */
@@ -263,7 +277,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
         else {
             titleText = this.convertJsonKeyToTitle(text);
         }
-
         return { titleText, commentText }
     }
 
