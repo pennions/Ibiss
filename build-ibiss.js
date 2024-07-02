@@ -11,8 +11,11 @@ function build() {
     if (!fs.existsSync(ibissCdnDir)) {
         fs.mkdirSync(ibissCdnDir);
     } else {
-        console.log('Already built!');
-        return;
+        let rebuild = process.argv.slice(2);
+        if (rebuild.length === 0) {
+            console.log('Already built!');
+            return;
+        }
     }
 
     fs.rmdir('./dist', { recursive: true }, () => {
