@@ -1,4 +1,4 @@
-import { returnEventWithTopLevelElement } from '../htmlbuilder/domTraversal';
+import { returnEventWithTopLevelElement } from '../flightkit-functions/domTraversal';
 import { BaseComponent } from './extensions/base_component';
 
 export class FlightkitDraggable extends HTMLElement {

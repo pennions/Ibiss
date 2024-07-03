@@ -1,455 +1,24 @@
 (function () {
     'use strict';
 
-    var DataType;
-    (function (DataType) {
-        DataType["Date"] = "date";
-        DataType["String"] = "string";
-        DataType["Float"] = "float";
-        DataType["Number"] = "number";
-        DataType["Array"] = "array";
-        DataType["Object"] = "object";
-        DataType["Bool"] = "bool";
-        DataType["Currency"] = "currency";
-        DataType["Undefined"] = "undefined";
-        DataType["Null"] = "null";
-    })(DataType || (DataType = {}));
-    const ValueRegexes = {
-        date: /^(\d{1,4}-\d{1,4}-\d{1,4}(T)?)/gim,
-        currency: /^[$|€]\s?[0-9]*(\.|,)?\d*(\.|,)?\d*/gim,
-        float: /\d+[,|.]\d+[,|.]?\d*/gim,
-        currencySign: /\$|€/gim,
-        array: /^\s?[[].[^,]+[\]],?/gi,
-        precision: /[-+$€,.]/gm,
-        string: /[a-zA-Z]/gim
-    };
-    const TypeCheck = (inputValue) => {
-        if (inputValue === null || inputValue === "null")
-            return DataType.Null;
-        if (!inputValue && inputValue !== 0 && inputValue !== false)
-            return DataType.Undefined; // !inputValue means also ignoring 0 and false
-        const dateValue = new RegExp(ValueRegexes.date).exec(inputValue);
-        if (dateValue !== null && !isNaN(Date.parse(inputValue))) {
-            return DataType.Date;
-        }
-        if (new RegExp(ValueRegexes.currency).exec(inputValue)) {
-            return DataType.Currency;
-        }
-        if (!new RegExp(ValueRegexes.string).exec(inputValue) && new RegExp(ValueRegexes.float).exec(inputValue.toString())) {
-            return DataType.Float;
-        }
-        if (!isNaN(inputValue) || inputValue === 0) {
-            return DataType.Number;
-        }
-        if (Array.isArray(inputValue)) {
-            return DataType.Array;
-        }
-        if (typeof inputValue === "object") {
-            return DataType.Object;
-        }
-        return DataType.String;
-    };
-    const TypeConversion = (inputValue, dataType) => {
-        if (!dataType)
-            dataType = TypeCheck(inputValue);
-        const result = { value: undefined, type: dataType, currencySign: "" };
-        switch (result.type) {
-            case DataType.String: {
-                result.value = inputValue.toString();
-                break;
-            }
-            case DataType.Float:
-            case DataType.Currency: {
-                inputValue = inputValue.toString();
-                const commas = inputValue.match(new RegExp(/(,)/gim));
-                const dots = inputValue.match(new RegExp(/(\.)/gim));
-                if (commas) {
-                    for (let comma = 1; comma <= commas.length; comma++) {
-                        if (comma === commas.length && !dots) /** if only one comma and no dot, it will be a dot.*/
-                            inputValue = inputValue.replace(",", ".");
-                        else {
-                            inputValue = inputValue.replace(",", "");
-                        }
-                    }
-                }
-                if (result.type === DataType.Currency) {
-                    const currencySignRegex = new RegExp(ValueRegexes.currencySign);
-                    const currencySign = currencySignRegex.exec(inputValue);
-                    result.currencySign = currencySign !== null ? currencySign[0] : "";
-                    inputValue = inputValue.replace(currencySignRegex, "");
-                }
-                result.value = parseFloat(inputValue).toPrecision(12);
-                break;
-            }
-            case DataType.Number: {
-                result.value = Number(inputValue);
-                break;
-            }
-            case DataType.Date: {
-                result.value = Date.parse(inputValue); /** Get milliseconds, makes searching easier. */
-                break;
-            }
-            case DataType.Array: {
-                if (inputValue.length) {
-                    if (typeof inputValue[0] === "object") {
-                        result.value = inputValue
-                            .map((item) => JSON.stringify(item)) // No nesting yet.
-                            .join(", ");
-                    }
-                    else {
-                        result.value = inputValue.join(", ");
-                    }
-                }
-                else {
-                    result.value = "";
-                }
-                break;
-            }
-            case DataType.Object: {
-                result.value = inputValue;
-                break;
-            }
-            case DataType.Undefined: {
-                result.value = "";
-                break;
-            }
-            case DataType.Null: {
-                result.value = null;
-                break;
-            }
-        }
-        return result;
-    };
-    function getColumnValue(column, jsonObject) {
-        const propertyTrail = column.split('.');
-        /** it will be an object first, and later it will be the actual value */
-        let objectValue;
-        for (let property of propertyTrail) {
-            property = property.trim();
-            if (!objectValue)
-                objectValue = jsonObject[property];
-            else if (typeof objectValue === "object" && !Array.isArray(objectValue))
-                objectValue = objectValue[property];
-        }
-        return objectValue;
-    }
-
-    function distinctJsonProperties(jsonArray, columnNames, concatenationToken) {
-        /** Nothing to distinct */
-        if (!columnNames || !columnNames.length) {
-            return jsonArray;
-        }
-        const groupedObjects = [];
-        const criteriaMet = [];
-        for (const jsonObject of jsonArray) {
-            const criteria = {};
-            let newCriteria = "";
-            for (const criteriaColumn of columnNames) {
-                const critValue = getColumnValue(criteriaColumn, jsonObject);
-                /** for use to group */
-                criteria[criteriaColumn] = critValue;
-                /** track which combination of values has been grouped already  */
-                newCriteria += critValue;
-            }
-            if (!criteriaMet.includes(newCriteria)) {
-                let critGroup = jsonArray;
-                const criteriaKeys = Object.keys(criteria);
-                for (const critKey of criteriaKeys) {
-                    critGroup = critGroup.filter((obj) => obj[critKey] === criteria[critKey]);
-                }
-                criteriaMet.push(newCriteria);
-                groupedObjects.push(critGroup);
-            }
-        }
-        const mergedObjects = [];
-        for (const objectGroup of groupedObjects) {
-            let mergedObject = {};
-            for (const jsonObject of objectGroup) {
-                const jsonProperties = Object.keys(mergedObject);
-                if (!jsonProperties.length) {
-                    mergedObject = jsonObject;
-                    continue;
-                }
-                for (const column of jsonProperties) {
-                    if (!columnNames.includes(column)) {
-                        const mergedValue = mergedObject[column];
-                        if (Array.isArray(mergedValue)) {
-                            const valueToMerge = jsonObject[column];
-                            if (Array.isArray(valueToMerge)) {
-                                mergedObject[column] = [
-                                    ...new Set(...mergedObject[column].concat(jsonObject[column])),
-                                ];
-                            }
-                            else {
-                                if (!mergedObject[column].includes(jsonObject[column])) {
-                                    mergedObject[column].push(jsonObject[column]);
-                                }
-                            }
-                        }
-                        else {
-                            if (isNaN(mergedObject[column]) && isNaN(jsonObject[column])) {
-                                if (mergedObject[column] !== jsonObject[column]) {
-                                    mergedObject[column] = [
-                                        mergedObject[column],
-                                        jsonObject[column],
-                                    ];
-                                }
-                            }
-                            else {
-                                mergedObject[column] =
-                                    mergedObject[column] + jsonObject[column];
-                            }
-                        }
-                    }
-                }
-            }
-            mergedObjects.push(mergedObject);
-        }
-        /** merge the arrays */
-        mergedObjects.forEach((jsonObject) => {
-            for (const prop in jsonObject) {
-                if (Array.isArray(jsonObject[prop])) {
-                    jsonObject[prop] = jsonObject[prop].join(concatenationToken);
-                }
-            }
-        });
-        return mergedObjects;
-    }
-
-    const bigger = (value, comparisonValue) => value > comparisonValue;
-    const smaller = (value, comparisonValue) => value < comparisonValue;
-    const biggerEquals = (value, comparisonValue) => value >= comparisonValue;
-    const smallerEquals = (value, comparisonValue) => value <= comparisonValue;
-    const equals = (value, comparisonValue, ignoreCase) => {
-        if (ignoreCase)
-            return value.toLowerCase() == comparisonValue.toLowerCase();
-        else
-            return value == comparisonValue;
-    };
-    const superEquals = (value, comparisonValue) => value === comparisonValue;
-    const notEquals = (value, comparisonValue) => value != comparisonValue;
-    const superNotEquals = (value, comparisonValue) => value !== comparisonValue;
-    const like = (value, comparisonValue) => {
-        if (comparisonValue !== null && comparisonValue !== undefined && typeof value === 'string') {
-            return value.toLowerCase().indexOf(comparisonValue.toString().toLowerCase()) >= 0;
-        }
-        else
-            return false;
-    };
-    const genericLike = (value, comparisonValue) => {
-        if (comparisonValue !== null && comparisonValue !== undefined) {
-            return value.toString().toLowerCase().indexOf(comparisonValue.toString().toLowerCase()) >= 0;
-        }
-        else
-            return false;
-    };
-    const notLike = (value, comparisonValue) => {
-        if (comparisonValue !== null && comparisonValue !== undefined && typeof value === 'string') {
-            return value.toLowerCase().indexOf(comparisonValue.toString().toLowerCase()) < 0;
-        }
-        return false;
-    };
-    function getComparisonFunction(comparisonOperator) {
-        switch (comparisonOperator.toLowerCase()) {
-            case ">":
-                return bigger;
-            case "<":
-                return smaller;
-            case ">=":
-                return biggerEquals;
-            case "<=":
-                return smallerEquals;
-            case "is":
-            case "==":
-                return equals;
-            case "!is":
-            case "!=":
-                return notEquals;
-            case "===":
-                return superEquals;
-            case "!==":
-                return superNotEquals;
-            case "like":
-            case "~":
-            case "contains":
-                return like;
-            case "!contains":
-            case "!like":
-            case "!~":
-                return notLike;
-            default:
-                return genericLike;
-        }
-    }
-
-    var FilterType;
-    (function (FilterType) {
-        FilterType["And"] = "and";
-        FilterType["Or"] = "or";
-    })(FilterType || (FilterType = {}));
-    var FilterOperator;
-    (function (FilterOperator) {
-        FilterOperator["GreaterThan"] = ">";
-        FilterOperator["LesserThan"] = "<";
-        FilterOperator["EqualsOrGreater"] = ">=";
-        FilterOperator["EqualsOrLesser"] = "<=";
-        FilterOperator["Is"] = "is";
-        FilterOperator["Equals"] = "==";
-        FilterOperator["NotEquals"] = "!=";
-        FilterOperator["SuperEquals"] = "===";
-        FilterOperator["SuperNotEquals"] = "!==";
-        FilterOperator["Like"] = "like";
-        FilterOperator["NotLike"] = "!like";
-        FilterOperator["Contains"] = "contains";
-        FilterOperator["NotContains"] = "!contains";
-    })(FilterOperator || (FilterOperator = {}));
-    function filterJsonArray(jsonArray, filterDetails) {
-        if (filterDetails.length === 0)
-            return jsonArray;
-        return filterFunction(jsonArray, filterDetails);
-    }
-    function filterFunction(jsonArray, filterDetails) {
-        const searchResults = [];
-        const filters = [];
-        let filterGroup = [];
-        for (const filter of filterDetails) {
-            if (!filter.type || filter.type === FilterType.And) {
-                filterGroup.push(filter);
-            }
-            else {
-                if (filterGroup.length) {
-                    filters.push(filterGroup);
-                }
-                filterGroup = [filter];
-            }
-        }
-        filters.push(filterGroup);
-        let indexThatMatch = [];
-        for (const filterGroup of filters) {
-            indexThatMatch = indexThatMatch.concat(compareValues(jsonArray, filterGroup));
-        }
-        /** deduplicate */
-        indexThatMatch = [...new Set(indexThatMatch)];
-        const jsonArrayLength = jsonArray.length;
-        for (let index = 0; index < jsonArrayLength; index++) {
-            if (indexThatMatch.includes(index)) {
-                searchResults.push(jsonArray[index]);
-            }
-        }
-        return searchResults;
-    }
-    const compareValues = function (jsonArray, filterDetails) {
-        const matches = [];
-        if (!jsonArray)
-            return matches;
-        for (const [index, objectToCheck] of jsonArray.entries()) {
-            let itemMatches = true;
-            for (const filterDetail of filterDetails) {
-                const columnValue = getColumnValue(filterDetail.propertyName, objectToCheck);
-                const parsedValue = TypeConversion(columnValue).value;
-                const comparisonValue = TypeConversion(filterDetail.value).value;
-                const comparisonFunction = getComparisonFunction(filterDetail.operator);
-                if (!comparisonFunction(parsedValue, comparisonValue, filterDetail.ignoreCase)) {
-                    itemMatches = false;
-                    break;
-                }
-            }
-            /** pushing the index so we can deduplicate later with other or clauses */
-            if (itemMatches) {
-                matches.push(index);
-            }
-        }
-        return matches;
-    };
-
-    function groupJsonArray(jsonArray, groupByProperties) {
-        if (!groupByProperties || groupByProperties.length === 0)
-            return jsonArray;
-        if (groupByProperties.length > 1) {
-            return multipleGroupFunction(jsonArray, groupByProperties);
-        }
-        else {
-            return groupFunction(jsonArray, groupByProperties[0]);
-        }
-    }
-    function groupFunction(objects, groupByProperty) {
-        const arrayOfGroupedObjects = [];
-        const groupIndex = []; // the index in the arrayOfGroupedObjects
-        do {
-            if (!objects || objects.length === 0)
-                break;
-            /** need to use shift instead of pop, because of sorting. else we are unintentionally reversing the array */
-            const nextInline = objects.shift();
-            if (!nextInline)
-                break;
-            const value = nextInline[groupByProperty];
-            const index = groupIndex.indexOf(value.toString());
-            if (index >= 0) {
-                arrayOfGroupedObjects[index].push(nextInline);
-            }
-            else {
-                groupIndex.push(value.toString());
-                if (arrayOfGroupedObjects[groupIndex.length - 1] !== undefined) // If it's not empty, we push a new one inside existing array
-                    arrayOfGroupedObjects[groupIndex.length - 1].push(nextInline);
-                else {
-                    arrayOfGroupedObjects.push([nextInline]); // We create a new array and push that
-                }
-            }
-        } while (objects.length > 0);
-        return arrayOfGroupedObjects;
-    }
-    function multipleGroupFunction(objects, groupByProperties) {
-        let arrayOfGroupedObjects = [];
-        let tempArray = [];
-        groupByProperties.forEach((property) => {
-            // we start
-            if (arrayOfGroupedObjects.length === 0) {
-                arrayOfGroupedObjects = arrayOfGroupedObjects.concat(groupFunction(objects, property));
-            }
-            else {
-                for (const objectArray of arrayOfGroupedObjects) {
-                    tempArray = tempArray.concat(groupFunction(objectArray, property));
-                }
-                arrayOfGroupedObjects = tempArray;
-                tempArray = [];
-            }
-        });
-        return arrayOfGroupedObjects;
-    }
-
-    function selectJsonArray(jsonArray, selection) {
-        if (selection.length === 0)
-            return jsonArray;
-        return selectFunction(jsonArray, selection);
-    }
-    function selectFunction(jsonArray, selection) {
-        let subselectedJsonArray = [];
-        for (const object of jsonArray) {
-            const newObject = {};
-            for (const property of selection) {
-                newObject[property] = object[property];
-            }
-            subselectedJsonArray.push(newObject);
-        }
-        return subselectedJsonArray;
-    }
-
-    var SortDirection;
-    (function (SortDirection) {
-        SortDirection["ascending"] = "asc";
-        SortDirection["descending"] = "desc";
-    })(SortDirection || (SortDirection = {}));
+    /**
+     * @param {*} jsonArray 
+     * @param {Object} sortDetails ( propertyName: string, direction: 'asc' | 'desc' )  
+     * @returns 
+     */
     function sortJsonArray(jsonArray, sortDetails) {
-        if (!sortDetails || sortDetails.length === 0)
-            return jsonArray;
-        /** need to make a copy, sort is in-place. So original order would be lost */
+        if (!sortDetails || sortDetails.length === 0) return jsonArray;
+
+        /** need to make a copy, sort is in-place. Else original order would be lost */
         const newJsonArray = Object.assign([], jsonArray);
+
         if (Array.isArray(newJsonArray[0])) {
             sortGroupedJsonArray(newJsonArray, sortDetails);
         }
         else {
             newJsonArray.sort(sortFunction(sortDetails));
         }
+
         return newJsonArray;
     }
     const sortGroupedJsonArray = (groupedJsonArray, sortDetails) => {
@@ -459,32 +28,72 @@
         }
         return result;
     };
+
+    function extractNumber(value) {
+        let testString = value.toString();
+        let match = testString.match(/^\d+|\d+$/);
+        return match ? parseInt(match[0]) : null;
+    }
+
+    function isBoolean(value) {
+        if (typeof value === 'boolean') return true;
+
+        if (typeof value === 'string') {
+            const comparison = value.toLocaleLowerCase();
+            return comparison === 'true' || comparison === 'false'
+        }
+        return false;
+    }
+
+    function getBooleanValue(value) {
+        if (typeof value === 'boolean') return value;
+        return value.toLocaleLowerCase() === 'true'
+    }
+
     function sortFunction(applicableSorters, index = 0) {
         return function (a, b) {
+
             const { propertyName, direction } = applicableSorters[index];
+
             /** if it is undefined, just make it a string. */
-            let valueA = a[propertyName] || "";
-            let valueB = b[propertyName] || "";
+            let valueA = a[propertyName] === null || a[propertyName] === undefined ? '' : a[propertyName];
+            let valueB = b[propertyName] === null || b[propertyName] === undefined ? '' : b[propertyName];
+
             const dateRegex = /^(\d{1,4}-\d{1,4}-\d{1,4}(T)?)/gim;
+
             const valuesAreDates = (valueA instanceof Date && valueB instanceof Date) || (dateRegex.test(valueA) && dateRegex.test(valueB));
             if (valuesAreDates) {
                 valueA = valueA instanceof Date ? valueA.valueOf() : new Date(Date.parse(valueA));
                 valueB = valueB instanceof Date ? valueB.valueOf() : new Date(Date.parse(valueB));
             }
-            const valuesAreNumbers = !isNaN(valueA) && !isNaN(valueB);
+
+            /** need to check for booleans, else valueA and valueB become NaN */
+            const valuesAreBooleans = isBoolean(valueA) && isBoolean(valueB);
+            const valuesAreNumbers = !valuesAreBooleans && !isNaN(valueA) && !isNaN(valueB);
+
+            const valueAHasNumber = extractNumber(valueA);
+            const valueBHasNumber = extractNumber(valueB);
+
             if (valuesAreNumbers) {
                 valueA = parseFloat(valueA).toPrecision(12);
                 valueB = parseFloat(valueB).toPrecision(12);
             }
-            const valuesAreBooleans = (valueA === "true" || valueA === "false") && (valueB === "true" || valueB === "false");
-            if (valuesAreBooleans) {
-                valueA = valueA === "true";
-                valueB = valueB === "true";
+            else if (valueAHasNumber !== null && valueBHasNumber !== null) {
+                valueA = parseFloat(valueAHasNumber).toPrecision(12);
+                valueB = parseFloat(valueBHasNumber).toPrecision(12);
             }
+
+            if (valuesAreBooleans) {
+                valueA = getBooleanValue(valueA);
+                valueB = getBooleanValue(valueB);
+            }
+
             /** set the values genericly */
             let leftHandValue, rightHandValue;
+
             switch (direction) {
-                case SortDirection.descending: {
+                case 'descending':
+                case 'desc': {
                     leftHandValue = valueB;
                     rightHandValue = valueA;
                     break;
@@ -495,8 +104,10 @@
                     break;
                 }
             }
+
             // check if -1 or 1, 0. if 0 then check again.
             let comparisonValue = 0;
+
             if (valuesAreBooleans || valuesAreDates || valuesAreNumbers) {
                 /** Yes this works for all these things. :D */
                 comparisonValue = leftHandValue - rightHandValue;
@@ -504,9 +115,12 @@
             else {
                 leftHandValue = leftHandValue.toString().trim().toLowerCase();
                 rightHandValue = rightHandValue.toString().trim().toLowerCase();
+
                 const digitRegex = /\d/gmi;
+
                 /** use this for the additional options in localeCompare */
                 const valuesAreAlphaNumeric = digitRegex.test(valueA) && digitRegex.test(valueB);
+
                 if (valuesAreAlphaNumeric) {
                     comparisonValue = leftHandValue.localeCompare(rightHandValue, undefined, {
                         numeric: true,
@@ -517,7 +131,9 @@
                     comparisonValue = leftHandValue.localeCompare(rightHandValue);
                 }
             }
+
             const nextSorterIndex = index + 1;
+
             /** the value is the same for this property and we have more sorters then go to the next */
             if (comparisonValue === 0 && nextSorterIndex < applicableSorters.length) {
                 const sortWrapper = sortFunction(applicableSorters, nextSorterIndex);
@@ -527,167 +143,6 @@
                 return comparisonValue;
             }
         };
-    }
-
-    const sumJsonArray = (jsonArray, propertiesToSum) => {
-        if (!propertiesToSum)
-            return {};
-        return sumFunction(jsonArray, propertiesToSum);
-    };
-    function sumFunction(jsonArray, propertiesToSum) {
-        const sumObject = {};
-        for (const sumProperty of propertiesToSum) {
-            let allValuesToSum = jsonArray.map(object => object[sumProperty].toString());
-            const dataTypes = allValuesToSum.map(value => TypeCheck(value));
-            const isFloat = dataTypes.some(type => type === DataType.Float);
-            if (isFloat) {
-                allValuesToSum = allValuesToSum.map(value => parseFloat(value));
-                sumObject[sumProperty] = parseFloat(allValuesToSum.reduce((a, b) => a + b).toFixed(2));
-            }
-            else {
-                allValuesToSum = allValuesToSum.map(value => parseInt(value));
-                sumObject[sumProperty] = allValuesToSum.reduce((a, b) => a + b);
-            }
-        }
-        return sumObject;
-    }
-
-    class JOQ {
-        model;
-        sortDetails = [];
-        filterDetails = [];
-        selection = [];
-        groupByProperties = [];
-        distinctProperties = [];
-        concatenationToken = ', ';
-        /**
-         * Jelmers Object Query Class
-         */
-        constructor(jsonArray) {
-            /** Make a hard copy */
-            this.model = JSON.parse(JSON.stringify(jsonArray));
-        }
-        /** Same as order, but here you can give the complete sorting details.*/
-        sort(sortDetails) {
-            this.sortDetails = sortDetails;
-            return this;
-        }
-        /** Order the array ascending or descending for the values of given property*/
-        orderBy(propertyName, direction) {
-            this.sortDetails.push({ propertyName, direction });
-            return this;
-        }
-        /** Add a consecutive ordering of the array ascending or descending for the values of given property*/
-        thenOrderBy(propertyName, direction) {
-            return this.orderBy(propertyName, direction);
-        }
-        /**
-         * Set the complete where / filter clause specification, for automated processes
-         * @param {Array<FilterDetail>} filterDetails an array with { column: string, value: any, operator: FilterOperator, type?: FilterType }
-         * @returns
-         */
-        filter(filterDetails) {
-            if (Array.isArray(filterDetails)) {
-                this.filterDetails = filterDetails;
-            }
-            else {
-                this.filterDetails.push(filterDetails);
-            }
-            return this;
-        }
-        ;
-        /**
-         * Add a where clause
-         * @param {Array<FilterDetail>} filterDetails an array with { column: string, value: any, operator: FilterOperator, type?: FilterType }
-         * @returns
-         */
-        where(propertyName, operator, value, type, ignoreCase) {
-            this.filterDetails.push({ propertyName, operator, value, type, ignoreCase });
-            return this;
-        }
-        ;
-        /** Same as where, but prefills the FilterType with 'and' */
-        andWhere(propertyName, operator, value, ignoreCase) {
-            this.where(propertyName, operator, value, FilterType.And, ignoreCase);
-            return this;
-        }
-        ;
-        /** Same as where, but prefills the FilterType with 'or' */
-        orWhere(propertyName, operator, value, ignoreCase) {
-            this.where(propertyName, operator, value, FilterType.Or, ignoreCase);
-            return this;
-        }
-        ;
-        /**
-         * Sets propertynames that you want to group on, order matters.
-         * @param {Array<string> | String} groupByProperties
-         * @returns joq object
-         */
-        group(groupByProperties) {
-            this.groupByProperties = groupByProperties;
-            return this;
-        }
-        /** Same as group, semantic sugar */
-        groupBy(propertyName) {
-            this.groupByProperties.push(propertyName);
-            return this;
-        }
-        ;
-        /** Same as group, semantic sugar */
-        thenGroupBy(propertyName) {
-            this.groupByProperties.push(propertyName);
-            return this;
-        }
-        ;
-        /**
-         * Subselects all objects based on provided selection.
-         */
-        select(selection) {
-            if (Array.isArray(selection)) {
-                this.selection = selection;
-            }
-            else if (selection !== "*") {
-                this.selection = [selection];
-            }
-            return this;
-        }
-        ;
-        /**
-         * distinct on specified columns in objects and make them unique and merge the other properties
-         */
-        distinct(properties, concatenationToken) {
-            if (concatenationToken) {
-                this.concatenationToken = concatenationToken;
-            }
-            if (Array.isArray(properties)) {
-                this.distinctProperties = properties;
-            }
-            else if (properties) {
-                this.distinctProperties = [properties];
-            }
-            return this;
-        }
-        /** Executes selection, group and where statements provided */
-        execute() {
-            /** always use a fresh copy. */
-            const copyOfModel = JSON.parse(JSON.stringify(this.model));
-            const filteredJsonArray = filterJsonArray(copyOfModel, this.filterDetails);
-            const sortedJsonArray = sortJsonArray(filteredJsonArray, this.sortDetails);
-            const distinctJsonArray = distinctJsonProperties(sortedJsonArray, this.distinctProperties, this.concatenationToken);
-            const selectedJsonArray = selectJsonArray(distinctJsonArray, this.selection);
-            const groupedJsonArray = groupJsonArray(selectedJsonArray, this.groupByProperties);
-            return groupedJsonArray;
-        }
-        /**
-         * @param sumProperties string or string array with the propertynames which you want to sum.
-         * @param jsonArray *optional* can be used with your own object array, or a subselection, default uses the one that you initialized JOQ with.
-         * @returns an object with { property: sum}
-         */
-        sum(sumProperties, jsonArray) {
-            const propertiesToSum = Array.isArray(sumProperties) ? sumProperties : [sumProperties];
-            return sumJsonArray(jsonArray || this.model, propertiesToSum);
-        }
-        ;
     }
 
     function isFlightkitElement(tagName, flkTag) {
@@ -977,6 +432,8 @@
         return parsedSvg.documentElement;
     }
 
+    // import JOQ from '@pennions/joq';
+
     class FlightkitTable extends HTMLElement {
         base;
         /** to render */
@@ -1022,7 +479,7 @@
 
         set contents(newValue) {
             this.analyzeData(newValue);
-            this._contents = new JOQ(newValue);
+            this._contents = newValue;
         }
 
         get orderBy() {
@@ -1140,14 +597,10 @@
 
         createHtml() {
             const tableElement = document.createElement('table');
+            let tableData = this.contents;
 
-            /** because of JOQ */
             if (this.orderBy.length) {
-                this.contents.sort(this.orderBy);
-            }
-            else {
-                /** reset if no order */
-                this.contents.sort([]);
+                tableData = sortJsonArray(this.contents, this.orderBy);
             }
 
             const tableHead = this.createHead();
@@ -1157,10 +610,9 @@
                 tableElement.append(this._createElement('caption'));
             }
 
-            const orderedData = this.contents.execute();
             let filteredData = [];
             if (this.filter.length) {
-                for (const data of orderedData) {
+                for (const data of tableData) {
                     let valuesInData = Object.values(data).join(" ").toLowerCase();
 
                     if (valuesInData.includes(this.filter)) {
@@ -1169,7 +621,7 @@
                 }
             }
             else {
-                filteredData = orderedData;
+                filteredData = tableData;
             }
 
 

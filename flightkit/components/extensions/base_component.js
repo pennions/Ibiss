@@ -1,5 +1,5 @@
-import { returnEventWithTopLevelElement } from '../../htmlbuilder/domTraversal';
-import { uuidv4 } from '../../htmlbuilder/uuid_v4';
+import { returnEventWithTopLevelElement } from '../../flightkit-functions/domTraversal';
+import { uuidv4 } from '../../flightkit-functions/uuid_v4';
 
 export class BaseComponent {
 

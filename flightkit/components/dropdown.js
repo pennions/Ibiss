@@ -1,5 +1,5 @@
-import { returnEventWithTopLevelElement } from '../htmlbuilder/domTraversal';
-import { chevronDownIcon, chevronUpIcon, rehydrateSvg } from '../htmlbuilder/icons';
+import { returnEventWithTopLevelElement } from '../flightkit-functions/domTraversal';
+import { chevronDownIcon, chevronUpIcon, rehydrateSvg } from '../flightkit-functions/icons';
 import { BaseComponent } from './extensions/base_component';
 
 export class FlightkitDropdown extends HTMLElement {

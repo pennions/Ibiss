@@ -1,5 +1,5 @@
-import { folderListIcon, fileListIcon, databaseListIcon, tableListIcon, columnListIcon } from '../htmlbuilder/icons';
-import { returnDataSetValue, returnEventWithTopLevelElement } from '../htmlbuilder/domTraversal';
+import { folderListIcon, fileListIcon, databaseListIcon, tableListIcon, columnListIcon } from '../flightkit-functions/icons';
+import { returnDataSetValue, returnEventWithTopLevelElement } from '../flightkit-functions/domTraversal';
 import { BaseComponent } from './extensions/base_component';
 
 export class FlightkitTreeNavigation extends HTMLElement {
