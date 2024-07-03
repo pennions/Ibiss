@@ -176,24 +176,6 @@ export class FlightkitTable extends HTMLElement {
             this.contents.sort([]);
         }
 
-        if (this.filter.length) {
-            const filters = [];
-
-            for (const property of this.columnOrder) {
-                filters.push({
-                    propertyName: property,
-                    value: this.filter,
-                    operator: 'like',
-                    type: 'or', /** optional, defaults to "and" **/
-                    ignoreCase: true /** optional, defaults to "false" **/
-                });
-            }
-            this.contents.filter(filters);
-        }
-        else {
-            this.contents.filter([]);
-        }
-
         const tableHead = this.createHead();
         tableElement.append(tableHead);
 
@@ -201,8 +183,23 @@ export class FlightkitTable extends HTMLElement {
             tableElement.append(this._createElement('caption'));
         }
 
-        const data = this.contents.execute();
-        const tableBody = this.createBody(data);
+        const orderedData = this.contents.execute();
+        let filteredData = []
+        if (this.filter.length) {
+            for (const data of orderedData) {
+                let valuesInData = Object.values(data).join(" ").toLowerCase();
+
+                if (valuesInData.includes(this.filter)) {
+                    filteredData.push(data)
+                }
+            }
+        }
+        else {
+            filteredData = orderedData
+        }
+
+
+        const tableBody = this.createBody(filteredData);
         tableElement.append(tableBody);
 
         if (this._templates['tfoot']) {

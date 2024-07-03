@@ -20,6 +20,11 @@
 </head>
 
 <body class="row gap-5 p-3">
+    <div>
+        <input type="text" id="table-filter" placeholder="filter">
+        <flk-table id="db-table"></flk-table>
+    </div>
+
     <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
     <div>
 
@@ -69,6 +74,22 @@
             databasesNav.setContents(window.databaseSet);
 
             databasesNav.init();
+             const dbTable = document.getElementById("db-table")
+            dbTable.setContents(window.databaseSet.database1.table1);
+            dbTable.init();
+
+            let timer;
+            document.getElementById('table-filter').addEventListener('keyup', (e) => {
+                if (timer) {
+                    clearTimeout(timer)
+                }
+
+                timer = setTimeout(() => {
+                    dbTable.filter = e.target.value;
+                    dbTable.init();
+                })
+
+            })
         };
     </script>
 </body>
