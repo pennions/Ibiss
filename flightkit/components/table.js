@@ -1,7 +1,7 @@
-import JOQ from '@pennions/joq';
+import { sortJsonArray } from '../flightkit-functions/sorting';
 import { BaseComponent } from './extensions/base_component';
-import { returnEventWithTopLevelElement, returnDataSetValue } from '../htmlbuilder/domTraversal';
-import { sortAscendingIcon, sortDescendingIcon } from '../htmlbuilder/icons';
+import { returnEventWithTopLevelElement, returnDataSetValue } from '../flightkit-functions/domTraversal';
+import { sortAscendingIcon, sortDescendingIcon } from '../flightkit-functions/icons';
 
 export class FlightkitTable extends HTMLElement {
     base;
@@ -48,7 +48,7 @@ export class FlightkitTable extends HTMLElement {
 
     set contents(newValue) {
         this.analyzeData(newValue);
-        this._contents = new JOQ(newValue);
+        this._contents = newValue;
     }
 
     get orderBy() {
@@ -166,14 +166,10 @@ export class FlightkitTable extends HTMLElement {
 
     createHtml() {
         const tableElement = document.createElement('table');
+        let tableData = this.contents;
 
-        /** because of JOQ */
         if (this.orderBy.length) {
-            this.contents.sort(this.orderBy);
-        }
-        else {
-            /** reset if no order */
-            this.contents.sort([]);
+            tableData = sortJsonArray(this.contents, this.orderBy);
         }
 
         const tableHead = this.createHead();
@@ -183,10 +179,9 @@ export class FlightkitTable extends HTMLElement {
             tableElement.append(this._createElement('caption'));
         }
 
-        const orderedData = this.contents.execute();
         let filteredData = []
         if (this.filter.length) {
-            for (const data of orderedData) {
+            for (const data of tableData) {
                 let valuesInData = Object.values(data).join(" ").toLowerCase();
 
                 if (valuesInData.includes(this.filter)) {
@@ -195,7 +190,7 @@ export class FlightkitTable extends HTMLElement {
             }
         }
         else {
-            filteredData = orderedData
+            filteredData = tableData
         }
 
 
