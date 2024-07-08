@@ -27,12 +27,11 @@
 
     <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
     <div>
+        <button class="bg-gray-light" type="button" id="deselect">Deselect database tree</button>
 
         <input id="search" class="m-2" type="text" placeholder="search" />
         <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" e-tree-click="clicky" max-depth="4"></flk-tree-nav>
     </div>
-
-    <hr />
 
     <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky"> </flk-tree-nav>
 
@@ -74,7 +73,7 @@
             databasesNav.setContents(window.databaseSet);
 
             databasesNav.init();
-             const dbTable = document.getElementById("db-table")
+            const dbTable = document.getElementById("db-table")
             dbTable.setContents(window.databaseSet.database1.table1);
             dbTable.init();
 
@@ -89,6 +88,10 @@
                     dbTable.init();
                 })
 
+            })
+
+            document.getElementById('deselect').addEventListener('click', () => {
+                myDbNav.deselectTree();
             })
         };
     </script>
