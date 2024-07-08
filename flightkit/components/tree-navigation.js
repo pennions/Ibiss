@@ -55,6 +55,15 @@ export class FlightkitTreeNavigation extends HTMLElement {
         this.base.addEvent('.flk-branch', 'click', this.emitNodeToggle);
     }
 
+    deselectTree() {
+        if (this.selectedElements.length) {
+            for (const selectedElement of this.selectedElements) {
+                selectedElement.classList.remove('font-weight-bold');
+                delete selectedElement.dataset.selected;
+            }
+        }
+    }
+
     emitNodeToggle(event) {
         event.stopPropagation();
 
@@ -103,11 +112,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
         while (!leafKey)
 
         if (flkElement.selectedElements.length) {
-            for (const selectedElement of flkElement.selectedElements) {
-                selectedElement.classList.remove('font-weight-bold');
-                delete selectedElement.dataset.selected;
-
-            }
+            flkElement.deselectTree();
         }
 
         // flkElement.previousElements = flkElement.selectedElements;
