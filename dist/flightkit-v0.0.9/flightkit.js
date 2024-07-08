@@ -954,11 +954,17 @@
                 this.base.addEvent(`#${thId}`, 'click', this.sortData);
 
                 const orderProperties = this.orderBy.find(obp => obp.propertyName === header);
+                const iconElement = document.createElement('span');
                 if (orderProperties) {
-                    const iconElement = document.createElement('span');
                     iconElement.innerHTML = orderProperties.direction === 'asc' ? sortAscendingIcon : sortDescendingIcon;
-                    thCell.append(iconElement);
                 }
+                else {
+                    iconElement.style.display = 'inline-block';
+                    iconElement.style.width = "24px";
+                }
+
+                thCell.append(iconElement);
+
                 headerRow.append(thCell);
             }
             tableHead.append(headerRow);
