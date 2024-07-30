@@ -7,15 +7,15 @@ export class FlightkitTable extends HTMLElement {
     base;
     /** to render */
     component = null;
+    properties = new Set();
+    uniqueEntriesByProperties = {};
+    propertyLabelDictionary = {};
     _contents = [];
     _orderBy = [];
-    properties = new Set();
     _columnOrder = [];
     _filter = '';
     _selectionProperty = ''; /** must be an unique property on the element to select on. */
     _selectedIds = new Set(); /** used to sync selections */
-    uniqueEntriesByProperties = {};
-    propertyLabelDictionary = {};
     _templates = {}; /** html templates to use for columns and caption/tfoot */
     _templateClasses = {};
 

@@ -7,6 +7,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     contents;
     component;
     listType = 'ul';
+    commentType = ''
     // currently just by adding this, it will change the iconset to database.
     iconSet;
     filter = { value: '', caseSensitive: false };
@@ -44,8 +45,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
         this.base = new BaseComponent();
         /** Check if there is contents already there. */
         this.setContents(this.getAttribute('contents'));
-
-        this.iconSet = this.getAttribute('icon-set') ? this.getAttribute('icon-type') : 'file';
+        this.commentType = this.getAttribute('comment') ?? '';
+        this.iconSet = this.getAttribute('icon-set') ?? 'file';
         this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
         this.setFilter(this.getAttribute('filter'));
 
@@ -266,18 +267,15 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
 
     createLeafText(text) {
-        let hasComment = typeof text === 'string' ? text.includes('(') || text.includes('[') : false;
+        let hasComment = typeof text === 'string' && this.commentType.length ? text.includes(this.commentType[0]) : false;
 
         let titleText = '';
         let commentText = ''
 
         if (hasComment) {
-            let roundBracketIndex = text.indexOf('(');
-            let squareBracketIndex = text.indexOf('[');
-            let indexToCut = squareBracketIndex === -1 ? roundBracketIndex : squareBracketIndex;
-
-            titleText = this.convertJsonKeyToTitle(text.substring(0, indexToCut));
-            commentText = text.substring(indexToCut);
+            let commentBracketIndex = text.indexOf(this.commentType[0]);
+            titleText = this.convertJsonKeyToTitle(text.substring(0, commentBracketIndex));
+            commentText = text.substring(commentBracketIndex + 1, text.length - 1).trim();
         }
         else {
             titleText = this.convertJsonKeyToTitle(text);
