@@ -16,13 +16,14 @@
         code {
             width: fit-content;
         }
+
     </style>
 </head>
 
 <body class="row gap-5 p-3">
     <div>
-        <input type="text" id="table-filter" placeholder="filter">
-        <flk-table id="db-table"></flk-table>
+        <input class="mb-2" type="text" id="table-filter" placeholder="filter">
+        <flk-table class="bg-white striped" id="db-table"></flk-table>
     </div>
 
     <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
@@ -30,7 +31,7 @@
         <button class="bg-gray-light" type="button" id="deselect">Deselect database tree</button>
 
         <input id="search" class="m-2" type="text" placeholder="search" />
-        <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" e-tree-click="clicky" max-depth="4"></flk-tree-nav>
+        <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" comment="(" e-tree-click="clicky" max-depth="4"></flk-tree-nav>
     </div>
 
     <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky"> </flk-tree-nav>
