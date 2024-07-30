@@ -17,6 +17,9 @@
             width: fit-content;
         }
 
+        #search {
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -28,10 +31,15 @@
 
     <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
     <div>
-        <button class="bg-gray-light" type="button" id="deselect">Deselect database tree</button>
+        <div class="column gap-3">
 
-        <input id="search" class="m-2" type="text" placeholder="search" />
-        <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" comment="(" e-tree-click="clicky" max-depth="4"></flk-tree-nav>
+            <button class="bg-gray-light" type="button" id="deselect">Deselect database tree</button>
+            <button id="toggleSearch" type="button" class="bg-gray-light"> Toggle search mode</button>
+        </div>
+
+        <input id="search" class="mt-5" type="text" placeholder="search" />
+        <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" comment="(" e-tree-click="clicky"
+            max-depth="4"></flk-tree-nav>
     </div>
 
     <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky"> </flk-tree-nav>
@@ -93,6 +101,19 @@
 
             document.getElementById('deselect').addEventListener('click', () => {
                 myDbNav.deselectTree();
+            })
+
+            document.getElementById('toggleSearch').addEventListener('click', () => {
+                const style = myDbNav.getAttribute('search-style');
+                if (!style || style === null) {
+                    myDbNav.setAttribute('search-style', 'hidden');
+                }
+                else if (style === 'highlight') {
+                    myDbNav.setAttribute('search-style', 'hidden');
+                }
+                else {
+                    myDbNav.setAttribute('search-style', 'highlight');
+                }
             })
         };
     </script>

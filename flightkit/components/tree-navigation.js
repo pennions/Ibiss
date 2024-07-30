@@ -8,13 +8,14 @@ export class FlightkitTreeNavigation extends HTMLElement {
     component;
     listType = 'ul';
     commentType = ''
+    searchStyle = '';
     // currently just by adding this, it will change the iconset to database.
     iconSet;
     filter = { value: '', caseSensitive: false };
     selectedElements = [];
 
     static get observedAttributes() {
-        return ['contents', 'icon-set', 'max-depth', 'filter'];
+        return ['contents', 'icon-set', 'max-depth', 'filter', 'search-style', 'comment'];
     };
 
     _jsonToValueArray(json) {
@@ -47,6 +48,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
         this.setContents(this.getAttribute('contents'));
         this.commentType = this.getAttribute('comment') ?? '';
         this.iconSet = this.getAttribute('icon-set') ?? 'file';
+        this.searchStyle = this.getAttribute('search-style') ?? 'highlight';
         this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
         this.setFilter(this.getAttribute('filter'));
 
@@ -187,25 +189,40 @@ export class FlightkitTreeNavigation extends HTMLElement {
     };
 
     applyFilter(element) {
-        let match;
+        let match, childMatch;
         const detailsEl = element.tagName.toLowerCase() === 'details';
+
+        /** doing a little bit more magic. Only open if a child is found that matches */
+        let childElements = element.dataset.branchValues.split(',');
+        /** remove the branch */
+        childElements.shift();
+
+        let childValues = childElements.join();
 
         if (this.filter.caseSensitive) {
             match = element.dataset.branchValues.includes(this.filter.value);
+            childMatch = childValues.includes(this.filter.value);
         }
         else {
             match = element.dataset.branchValues.toLowerCase().includes(this.filter.value.toLowerCase());
+            childMatch = childValues.toLowerCase().includes(this.filter.value.toLowerCase());
         }
 
-        /** hide the <li> */
+        /** show the <li> */
         if (match) {
-            element.parentElement.classList.remove('hidden');
+            this.unselectTree(element);
         }
         else {
-            element.parentElement.classList.add('hidden');
+            /** doing the opposite, so we are making the non-matches lighter. */
+            if (this.searchStyle === 'highlight') {
+                element.parentElement.style.opacity = '50%';
+            }
+            else {
+                element.parentElement.classList.add('hidden');
+            }
         }
 
-        if (detailsEl && match) {
+        if (detailsEl && match && childMatch) {
             element.setAttribute('open', '');
         }
         else {
@@ -213,8 +230,23 @@ export class FlightkitTreeNavigation extends HTMLElement {
         }
     }
 
-    resetTree(element) {
-        element.parentElement.classList.remove('hidden');
+    resetTree() {
+        let foundElements = this.querySelectorAll('[data-branch-values]');
+
+        for (const element of foundElements) {
+            element.parentElement.style.opacity = '';
+            element.parentElement.classList.remove('hidden');
+            element.removeAttribute('open');
+        }
+    }
+
+    unselectTree(element) {
+        if (this.searchStyle === 'highlight') {
+            element.parentElement.style.opacity = '';
+        }
+        else {
+            element.parentElement.classList.remove('hidden');
+        }
         element.removeAttribute('open');
     }
 
@@ -226,7 +258,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
                 let filterCleared = this.filter.value === undefined || this.filter.value.length === 0;
                 if (filterCleared) {
-                    this.resetTree(element);
+                    this.unselectTree(element);
                 }
                 else {
                     this.applyFilter(element);
@@ -436,7 +468,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
         this.component = mainList;
     };
 
-
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "contents": {
@@ -449,6 +480,14 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
             case "max-depth": {
                 this.maxDepth = typeof newValue === 'string' ? parseInt(newValue) : newValue;
+                break;
+            }
+            case "comment": {
+                this.commentType = newValue;
+                break;
+            }
+            case "search-style": {
+                this.searchStyle = newValue;
                 break;
             }
             case "filter": {
