@@ -1593,13 +1593,15 @@
             }
         }
 
-        resetTree() {
+        resetTree(all = true) {
             let foundElements = this.querySelectorAll('[data-branch-values]');
 
             for (const element of foundElements) {
                 element.parentElement.style.opacity = '';
                 element.parentElement.classList.remove('hidden');
-                element.removeAttribute('open');
+                if (all) {
+                    element.removeAttribute('open');
+                }
             }
         }
 
@@ -1611,6 +1613,11 @@
                 element.parentElement.classList.remove('hidden');
             }
             element.removeAttribute('open');
+        }
+
+        clearFilter() {
+            this.resetTree(false);
+            this.filter = { value: '', caseSensitive: false };
         }
 
         filterTree() {
