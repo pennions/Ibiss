@@ -230,13 +230,15 @@ export class FlightkitTreeNavigation extends HTMLElement {
         }
     }
 
-    resetTree() {
+    resetTree(all = true) {
         let foundElements = this.querySelectorAll('[data-branch-values]');
 
         for (const element of foundElements) {
             element.parentElement.style.opacity = '';
             element.parentElement.classList.remove('hidden');
-            element.removeAttribute('open');
+            if (all) {
+                element.removeAttribute('open');
+            }
         }
     }
 
@@ -248,6 +250,11 @@ export class FlightkitTreeNavigation extends HTMLElement {
             element.parentElement.classList.remove('hidden');
         }
         element.removeAttribute('open');
+    }
+
+    clearFilter() {
+        this.resetTree(false);
+        this.filter = { value: '', caseSensitive: false };
     }
 
     filterTree() {

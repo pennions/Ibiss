@@ -16,10 +16,6 @@
         code {
             width: fit-content;
         }
-
-        #search {
-            width: 100%;
-        }
     </style>
 </head>
 
@@ -35,9 +31,11 @@
 
             <button class="bg-gray-light" type="button" id="deselect">Deselect database tree</button>
             <button id="toggleSearch" type="button" class="bg-gray-light"> Toggle search mode</button>
+
         </div>
 
-        <input id="search" class="mt-5" type="text" placeholder="search" />
+        <div class="row gap-1 mt-5"><input id="search" type="text" placeholder="search" /> <button id="clearSearch"
+                type="button">X</button></div>
         <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" comment="(" e-tree-click="clicky"
             max-depth="4"></flk-tree-nav>
     </div>
@@ -101,6 +99,11 @@
 
             document.getElementById('deselect').addEventListener('click', () => {
                 myDbNav.deselectTree();
+            })
+
+            document.getElementById('clearSearch').addEventListener('click', () => {
+                myDbNav.clearFilter();
+                document.getElementById('search').value = ""
             })
 
             document.getElementById('toggleSearch').addEventListener('click', () => {
