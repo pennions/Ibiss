@@ -48,8 +48,42 @@ function getBooleanValue(value) {
     return value.toLocaleLowerCase() === 'true'
 }
 
+function logicalSort(a, b, direction) {
+    const regex = /^([a-zA-Z]*)(\d*)|(\d*)([a-zA-Z]*)$/;
+
+    /** Extract the parts of the strings and make them case insensitive, 
+     * else A1 and a1 will not allow multisort, which I think is confusing */
+    const matchA = a.toString().toLocaleLowerCase().match(regex);
+    const matchB = b.toString().toLocaleLowerCase().match(regex);
+
+    /** Determine the character and number parts */
+    const charPartA = matchA[1] || matchA[4];
+    const numPartA = parseInt(matchA[2] || matchA[3], 10) || 0;
+
+    const charPartB = matchB[1] || matchB[4];
+    const numPartB = parseInt(matchB[2] || matchB[3], 10) || 0;
+
+    /** check which order */
+    const desc = direction.includes('desc');
+
+    let leftHandCharValue = desc ? charPartB : charPartA;
+    let rightHandCharValue = desc ? charPartA : charPartB;
+    let leftHandNumValue = desc ? numPartB : numPartA;
+    let rightHandNumValue = desc ? numPartA : numPartB;
+
+    /** Compare the character parts first */
+    if (leftHandCharValue < rightHandCharValue) return -1;
+    if (leftHandCharValue > rightHandCharValue) return 1;
+
+    /* If characters are the same, compare the number parts **/
+    return leftHandNumValue - rightHandNumValue;
+}
+
 function sortFunction(applicableSorters, index = 0) {
     return function (a, b) {
+        if (index > 0) {
+            debugger;
+        }
 
         const { propertyName, direction } = applicableSorters[index];
 
@@ -72,13 +106,14 @@ function sortFunction(applicableSorters, index = 0) {
         const valueAHasNumber = extractNumber(valueA)
         const valueBHasNumber = extractNumber(valueB)
 
+        let logicalSortNeeded = false;
+
         if (valuesAreNumbers) {
             valueA = parseFloat(valueA).toPrecision(12);
             valueB = parseFloat(valueB).toPrecision(12);
         }
         else if (valueAHasNumber !== null && valueBHasNumber !== null) {
-            valueA = parseFloat(valueAHasNumber).toPrecision(12);
-            valueB = parseFloat(valueBHasNumber).toPrecision(12);
+            logicalSortNeeded = true;
         }
 
         if (valuesAreBooleans) {
@@ -103,10 +138,13 @@ function sortFunction(applicableSorters, index = 0) {
             }
         }
 
-        // check if -1 or 1, 0. if 0 then check again.
+        /** check if -1 or 1, 0. if 0 then check again. */
         let comparisonValue = 0;
 
-        if (valuesAreBooleans || valuesAreDates || valuesAreNumbers) {
+        if (logicalSortNeeded) {
+            comparisonValue = logicalSort(valueA, valueB, direction);
+        }
+        else if (valuesAreBooleans || valuesAreDates || valuesAreNumbers) {
             /** Yes this works for all these things. :D */
             comparisonValue = leftHandValue - rightHandValue;
         }
