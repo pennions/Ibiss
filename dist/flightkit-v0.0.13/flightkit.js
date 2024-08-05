@@ -1415,6 +1415,9 @@
         filter = { value: '', caseSensitive: false };
         selectedElements = [];
 
+        /** making a dictionary for the tree values so that it is not rendered in the dom for large trees */
+        _treeValues = {}
+
         static get observedAttributes() {
             return ['contents', 'icon-set', 'max-depth', 'filter', 'search-style', 'comment'];
         };
@@ -1528,7 +1531,6 @@
 
                 /** for when we have 2 spans */
                 if (parent.childNodes.length && parent.childNodes[0].childNodes.length && parent.childNodes[0].childNodes[0].tagName === 'DIV') {
-                    console.log(parent.childNodes[0].childNodes);
                     flkElement.selectedElements = parent.childNodes[0].childNodes[0].childNodes;
                 }
             }
@@ -1555,9 +1557,9 @@
 
             if (typeof jsonKey !== 'string') jsonKey = jsonKey.toString();
 
-            const result = jsonKey.replace(/([A-Z_])/g, ($1) => {
+            const result = jsonKey.replace(/([-_])/g, ($1) => {
                 if ($1 === "_") return " ";
-                else return ` ${$1}`;
+                else return $1;
             }).trim();
             const convertedKey = result.charAt(0).toUpperCase() + result.slice(1);
             return convertedKey;
@@ -1594,18 +1596,26 @@
             const detailsEl = element.tagName.toLowerCase() === 'details';
 
             /** doing a little bit more magic. Only open if a child is found that matches */
-            let childElements = element.dataset.branchValues.split(',');
-            /** remove the branch */
-            childElements.shift();
+            let childElements = structuredClone(this._treeValues[element.dataset.branchValueId]);
 
-            let childValues = childElements.join();
+            const isBranch = Array.isArray(childElements);
+
+            /** When it is a leaf. */
+            let allValues = isBranch ? childElements.join() : childElements;
+
+            /** remove the branch */
+            if (isBranch) {
+                childElements.shift();
+            }
+
+            let childValues = isBranch ? childElements.join() : '';
 
             if (this.filter.caseSensitive) {
-                match = element.dataset.branchValues.includes(this.filter.value);
+                match = allValues.includes(this.filter.value);
                 childMatch = childValues.includes(this.filter.value);
             }
             else {
-                match = element.dataset.branchValues.toLowerCase().includes(this.filter.value.toLowerCase());
+                match = allValues.toLowerCase().includes(this.filter.value.toLowerCase());
                 childMatch = childValues.toLowerCase().includes(this.filter.value.toLowerCase());
             }
 
@@ -1632,7 +1642,7 @@
         }
 
         resetTree(all = true) {
-            let foundElements = this.querySelectorAll('[data-branch-values]');
+            let foundElements = this.querySelectorAll('[data-branch-value-id]');
 
             for (const element of foundElements) {
                 element.parentElement.style.opacity = '';
@@ -1660,7 +1670,7 @@
 
         filterTree() {
             let searchTimer = setTimeout(() => {
-                let foundElements = this.querySelectorAll('[data-branch-values]');
+                let foundElements = this.querySelectorAll('[data-branch-value-id]');
 
                 for (const element of foundElements) {
 
@@ -1759,8 +1769,18 @@
             leaf.style.left = '2px';
             let leafText = document.createElement('span');
 
+            let branchValueId = uuidv4();
+            
+            /** making sure it is unique. */
+            while (this._treeValues[branchValueId]) {
+                branchValueId = uuidv4();
+            }
+            
+            leafText.dataset.branchValueId = branchValueId;
+            
             let allBranchValues = [text].concat(branchValues);
-            leafText.dataset.branchValues = [...new Set(allBranchValues)].join();
+            this._treeValues[branchValueId] = [...new Set(allBranchValues)].join();
+
             /** to get the leaf */
             leafText.dataset.leafKey = allBranchValues[0];
 
@@ -1789,6 +1809,7 @@
                 let leafNodes = Array.isArray(node) ? node : Object.keys(node);
 
                 for (const leaf of leafNodes) {
+
                     let branchValues;
                     if (node[leaf]) {
                         branchValues = this._jsonToValueArray(node[leaf]);
@@ -1817,7 +1838,15 @@
                     let branch = document.createElement('details');
                     branch.classList.add('flk-branch');
                     /** set values as we go down, for easy filtering */
-                    branch.dataset.branchValues = [nodeKey].concat(this._jsonToValueArray(node[nodeKey])); /** also want to key above. */
+                    let branchValueId = uuidv4();
+
+                    /** making sure it is unique. */
+                    while (this._treeValues[branchValueId]) {
+                        branchValueId = uuidv4();
+                    }
+     
+                    branch.dataset.branchValueId = branchValueId;
+                    this._treeValues[branchValueId] = [nodeKey].concat(this._jsonToValueArray(node[nodeKey])); /** also want to key above. */
 
                     /** fix offset for custom icon */
                     branch.style.position = 'relative';
