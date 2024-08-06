@@ -1,7 +1,7 @@
 import { folderListIcon, fileListIcon, databaseListIcon, tableListIcon, columnListIcon } from '../flightkit-functions/icons';
 import { returnDataSetValue, returnEventWithTopLevelElement } from '../flightkit-functions/domTraversal';
 import { BaseComponent } from './extensions/base_component';
-import { uuidv4 } from '../flightkit-functions/uuid_v4';
+import { variableUID } from '../flightkit-functions/uuid_v4';
 
 export class FlightkitTreeNavigation extends HTMLElement {
     base;
@@ -23,17 +23,12 @@ export class FlightkitTreeNavigation extends HTMLElement {
     };
 
     _jsonToValueArray(json) {
-
-        let jsonString = JSON.stringify(json);
-        /** replace any array and object brackets */
-        jsonString = jsonString.replace(/[\[\]{}\"]/g, "");
-        let jsonKeyValueArray = jsonString.split(',');
-        let values = [];
-
-        for (const kvPair of jsonKeyValueArray) {
-            values = values.concat(kvPair.split(":"));
+        if (Array.isArray(json)) {
+            return [...new Set(json.flatMap(Object.values))];
         }
-        return [...new Set(values)];
+        else {
+            return Object.values(json)
+        }
     }
 
     _emit(event, ftElement, detail) {
@@ -93,7 +88,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
             else if (data[crumb] === null) {
                 data = null
             }
-            else {
+            else if (Array.isArray(data)) {
                 /** Dealing with an array of objects */
                 let extractedData = [];
                 for (const obj of data) {
@@ -120,11 +115,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
         if (flkElement.selectedElements.length) {
             flkElement.deselectTree();
+            flkElement.selectedElements = [];
         }
-
-        // flkElement.previousElements = flkElement.selectedElements;
-        flkElement.selectedElements = [];
-
 
         if (parent.tagName === 'DETAILS') {
             flkElement.selectedElements.push(parent.childNodes[0]);
@@ -136,6 +128,9 @@ export class FlightkitTreeNavigation extends HTMLElement {
         }
         else {
             flkElement.selectedElements.push(parent)
+            if (parent.childNodes.length && parent.childNodes[0].tagName === 'DIV') {
+                flkElement.selectedElements = parent.childNodes[0].childNodes
+            }
         }
 
         for (const selectedElement of flkElement.selectedElements) {
@@ -315,7 +310,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
         this.filterTree();
     }
 
-
     createLeafText(text) {
         let hasComment = typeof text === 'string' && this.commentType.length ? text.includes(this.commentType[0]) : false;
 
@@ -369,15 +363,9 @@ export class FlightkitTreeNavigation extends HTMLElement {
         leaf.style.left = '2px';
         let leafText = document.createElement('span');
 
-        let branchValueId = uuidv4();
-        
-        /** making sure it is unique. */
-        while (this._treeValues[branchValueId]) {
-            branchValueId = uuidv4();
-        }
-        
+        let branchValueId = variableUID();
         leafText.dataset.branchValueId = branchValueId;
-        
+
         let allBranchValues = [text].concat(branchValues);
         this._treeValues[branchValueId] = [...new Set(allBranchValues)].join();
 
@@ -438,13 +426,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 let branch = document.createElement('details');
                 branch.classList.add('flk-branch');
                 /** set values as we go down, for easy filtering */
-                let branchValueId = uuidv4();
+                let branchValueId = variableUID();
 
-                /** making sure it is unique. */
-                while (this._treeValues[branchValueId]) {
-                    branchValueId = uuidv4();
-                }
- 
                 branch.dataset.branchValueId = branchValueId;
                 this._treeValues[branchValueId] = [nodeKey].concat(this._jsonToValueArray(node[nodeKey])); /** also want to key above. */
 

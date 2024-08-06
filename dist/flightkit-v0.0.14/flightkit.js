@@ -237,20 +237,37 @@
         const guid = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
             (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
         );
-        /** This will be unique enough */
-        const newGuid = guid.split('-')[0];
 
         if (!window.$flightkitUUIDStore) {
-            window.$flightkitUUIDStore = [];
+            window.$flightkitUUIDStore = {};
         }
 
         /** verify to be absolutely sure ;) */
-        if (window.$flightkitUUIDStore.some(guid => guid === newGuid)) {
+        if (window.$flightkitUUIDStore[guid] !== undefined) {
             return uuidv4();
         }
         else {
-            window.$flightkitUUIDStore.push(newGuid);
-            return newGuid;
+            window.$flightkitUUIDStore[guid] = true;
+            return guid;
+        }
+    }
+    function variableUID(length = 3) {
+        let guid = 'x'.repeat(length).replace(/[x]/g, () =>
+            (crypto.getRandomValues(new Uint8Array(1))[0] & 0xf).toString(16)
+        );
+
+        if (!window.$flightkitUUIDStore) {
+            window.$flightkitUUIDStore = {};
+        }
+
+        /** verify to be absolutely sure ;) */
+        if (window.$flightkitUUIDStore[guid] !== undefined) {
+            /** if we did hit it, make sure we limit the amount of hits by just adding to the length */
+            return variableUID(length + 1);
+        }
+        else {
+            window.$flightkitUUIDStore[guid] = true;
+            return guid;
         }
     }
 
@@ -1423,17 +1440,12 @@
         };
 
         _jsonToValueArray(json) {
-
-            let jsonString = JSON.stringify(json);
-            /** replace any array and object brackets */
-            jsonString = jsonString.replace(/[\[\]{}\"]/g, "");
-            let jsonKeyValueArray = jsonString.split(',');
-            let values = [];
-
-            for (const kvPair of jsonKeyValueArray) {
-                values = values.concat(kvPair.split(":"));
+            if (Array.isArray(json)) {
+                return [...new Set(json.flatMap(Object.values))];
             }
-            return [...new Set(values)];
+            else {
+                return Object.values(json)
+            }
         }
 
         _emit(event, ftElement, detail) {
@@ -1493,7 +1505,7 @@
                 else if (data[crumb] === null) {
                     data = null;
                 }
-                else {
+                else if (Array.isArray(data)) {
                     /** Dealing with an array of objects */
                     let extractedData = [];
                     for (const obj of data) {
@@ -1520,11 +1532,8 @@
 
             if (flkElement.selectedElements.length) {
                 flkElement.deselectTree();
+                flkElement.selectedElements = [];
             }
-
-            // flkElement.previousElements = flkElement.selectedElements;
-            flkElement.selectedElements = [];
-
 
             if (parent.tagName === 'DETAILS') {
                 flkElement.selectedElements.push(parent.childNodes[0]);
@@ -1536,6 +1545,9 @@
             }
             else {
                 flkElement.selectedElements.push(parent);
+                if (parent.childNodes.length && parent.childNodes[0].tagName === 'DIV') {
+                    flkElement.selectedElements = parent.childNodes[0].childNodes;
+                }
             }
 
             for (const selectedElement of flkElement.selectedElements) {
@@ -1769,15 +1781,9 @@
             leaf.style.left = '2px';
             let leafText = document.createElement('span');
 
-            let branchValueId = uuidv4();
-            
-            /** making sure it is unique. */
-            while (this._treeValues[branchValueId]) {
-                branchValueId = uuidv4();
-            }
-            
+            let branchValueId = variableUID();
             leafText.dataset.branchValueId = branchValueId;
-            
+
             let allBranchValues = [text].concat(branchValues);
             this._treeValues[branchValueId] = [...new Set(allBranchValues)].join();
 
@@ -1838,13 +1844,8 @@
                     let branch = document.createElement('details');
                     branch.classList.add('flk-branch');
                     /** set values as we go down, for easy filtering */
-                    let branchValueId = uuidv4();
+                    let branchValueId = variableUID();
 
-                    /** making sure it is unique. */
-                    while (this._treeValues[branchValueId]) {
-                        branchValueId = uuidv4();
-                    }
-     
                     branch.dataset.branchValueId = branchValueId;
                     this._treeValues[branchValueId] = [nodeKey].concat(this._jsonToValueArray(node[nodeKey])); /** also want to key above. */
 
