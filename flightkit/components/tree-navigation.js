@@ -275,7 +275,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
                 let filterCleared = this.filter.value === undefined || this.filter.value.length === 0;
                 if (filterCleared) {
-                    this.unselectTree(element);
+                    this.resetTree();
                 }
                 else {
                     this.applyFilter(element);
@@ -552,6 +552,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
             case "search-style": {
                 this.searchStyle = newValue;
+                this.filterTree();
                 break;
             }
             case "filter": {
@@ -559,8 +560,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 break;
             }
         }
-
-        if (!this._setup) {
+        if (!['filter', 'search-style'].includes(name) && !this._setup) {
             this.init();
         }
     }
