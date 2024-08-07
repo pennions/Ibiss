@@ -333,9 +333,16 @@ window.sectionSet = {
             },
             {
                 "employee_name": "Lisa"
+            },
+            {
+                "e...": "foo"
             }
         ]
     },
     "Section Z": "Secret section",
-    "Section list": ["A", "B", "C"]
+    "Section list": ["A", "B", "C"],
+    "Dotted": [{
+        "Crazy...": "Anna"
+    },
+    ],
 }

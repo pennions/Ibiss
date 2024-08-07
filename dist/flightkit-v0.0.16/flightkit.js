@@ -1440,12 +1440,18 @@
         };
 
         _jsonToValueArray(json) {
-            if (Array.isArray(json)) {
-                return [...new Set(json.flatMap(Object.values))];
+            let jsonString = JSON.stringify(json);
+            /** replace any array and object brackets */
+            jsonString = jsonString.replace(/[\[\]{}\"]/g, "");
+            let jsonKeyValueArray = jsonString.split(',');
+            let values = [];
+
+            for (const kvPair of jsonKeyValueArray) {
+
+                values = values.concat(kvPair.split(":"));
+
             }
-            else {
-                return Object.values(json)
-            }
+            return [...new Set(values)];
         }
 
         _emit(event, ftElement, detail) {
@@ -1609,7 +1615,6 @@
 
             /** doing a little bit more magic. Only open if a child is found that matches */
             let childElements = structuredClone(this._treeValues[element.dataset.branchValueId]);
-
             const isBranch = Array.isArray(childElements);
 
             /** When it is a leaf. */
@@ -1638,7 +1643,7 @@
             else {
                 /** doing the opposite, so we are making the non-matches lighter. */
                 if (this.searchStyle === 'highlight') {
-                    element.parentElement.style.opacity = '50%';
+                    element.parentElement.style.color = "rgba(0, 0, 0, 0.5)";
                 }
                 else {
                     element.parentElement.classList.add('hidden');
@@ -1657,7 +1662,7 @@
             let foundElements = this.querySelectorAll('[data-branch-value-id]');
 
             for (const element of foundElements) {
-                element.parentElement.style.opacity = '';
+                element.parentElement.style.color = '';
                 element.parentElement.classList.remove('hidden');
                 if (all) {
                     element.removeAttribute('open');
@@ -1667,7 +1672,7 @@
 
         unselectTree(element) {
             if (this.searchStyle === 'highlight') {
-                element.parentElement.style.opacity = '';
+                element.parentElement.style.color = '';
             }
             else {
                 element.parentElement.classList.remove('hidden');
