@@ -189,6 +189,12 @@ export class BaseComponent {
         const eventTimer = setTimeout(() => {
             this._addEvents(parentElement);
             clearTimeout(eventTimer);
+            parentElement.dispatchEvent(new CustomEvent('loaded', {
+                bubbles: true,
+                cancelable: true
+            }));
         }, 10);
+
+
     }
 };

@@ -14,6 +14,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     iconSet;
     filter = { value: '', caseSensitive: false };
     selectedElements = [];
+    _setup = true;
 
     /** making a dictionary for the tree values so that it is not rendered in the dom for large trees */
     _treeValues = {}
@@ -81,7 +82,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
         const flkEvent = returnEventWithTopLevelElement(event, 'flk-tree-nav');
         const flkElement = flkEvent.target;
         const item = returnDataSetValue(event, 'branchKey');
-        const depth = returnDataSetValue(event, 'depth');
+        const depth = parseInt(returnDataSetValue(event, 'depth'));
 
         let data = flkElement.contents;
         const trail = item.split('.');
@@ -104,7 +105,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 data = extractedData;
             }
         }
-   
+
         let leafKey;
         let parent = event.target
 
@@ -558,24 +559,27 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 break;
             }
         }
-        /** in Vue3 this is not triggered. You need to set a :key property and handle that */
-        this.init();
+
+        if (!this._setup) {
+            this.init();
+        }
     }
 
     /** grab inner HTML from here */
     connectedCallback() {
-        this.init();
+        if (!this._setup) {
+            this.init();
+        }
     };
 
     disconnectedCallback() {
         this.base.removeEvents(this);
     };
 
-    /** Needed for vanilla webcomponent and compatibility with Vue3
-     * If I try to render this on setContents, Vue3 gives illegal operation.
-     */
+    /** You need to use this way to use the tree nav*/
     init() {
         this.createHtml();
         this.base.render(this);
+        this._setup = false;
     };
 }

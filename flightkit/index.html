@@ -40,7 +40,7 @@
             max-depth="1"></flk-tree-nav>
     </div>
 
-    <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky"> </flk-tree-nav>
+    <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky" e-loaded="log"> </flk-tree-nav>
 
     <code>
         Click on a tree to get the Preview
@@ -50,6 +50,10 @@
     </code>
 
     <script>
+
+        function log(e) {
+            console.log('"loaded!', e)
+        }
         function clicky(e) {
 
             let previewEl = document.getElementById('clicky-preview')
