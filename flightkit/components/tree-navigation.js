@@ -349,6 +349,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
         else {
             element.innerText = leafText.titleText;
         }
+
+        return leafText;
     }
 
     createLeaf(text, element, key, branchValues = []) {
@@ -372,7 +374,14 @@ export class FlightkitTreeNavigation extends HTMLElement {
         /** to get the leaf */
         leafText.dataset.leafKey = allBranchValues[0];
 
-        this.createTextTag(text, leafText);
+        const appliedText = this.createTextTag(text, leafText);
+
+        if (appliedText.commentText) {
+            leaf.title = `${appliedText.titleText} ${appliedText.commentText}`;
+        }
+        else {
+            leaf.title = appliedText.titleText;
+        }
 
         leafText.style.position = 'relative';
         leafText.style.top = '-3px';
@@ -437,8 +446,15 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 branch.classList.add('cursor-default');
                 let branchName = document.createElement('summary');
 
-                this.createTextTag(nodeKey, branchName);
+                let appliedText = this.createTextTag(nodeKey, branchName);
                 branch.dataset.leafKey = nodeKey;
+
+                if (appliedText.commentText) {
+                    branch.title = `${appliedText.titleText} ${appliedText.commentText}`;
+                }
+                else {
+                    branch.title = appliedText.titleText;
+                }
 
                 branch.append(branchName);
                 trunk.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
