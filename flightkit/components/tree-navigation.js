@@ -275,7 +275,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
                 let filterCleared = this.filter.value === undefined || this.filter.value.length === 0;
                 if (filterCleared) {
-                    this.resetTree();
+                    this.deselectTree(element);
                 }
                 else {
                     this.applyFilter(element);
