@@ -30,9 +30,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
         let values = [];
 
         for (const kvPair of jsonKeyValueArray) {
-
             values = values.concat(kvPair.split(":"));
-
         }
         return [...new Set(values)];
     }
@@ -83,6 +81,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
         const flkEvent = returnEventWithTopLevelElement(event, 'flk-tree-nav');
         const flkElement = flkEvent.target;
         const item = returnDataSetValue(event, 'branchKey');
+        const depth = returnDataSetValue(event, 'depth');
 
         let data = flkElement.contents;
         const trail = item.split('.');
@@ -105,7 +104,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 data = extractedData;
             }
         }
-
+   
         let leafKey;
         let parent = event.target
 
@@ -148,9 +147,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
         /** because of internal array, we have to do a substring. */
         const path = item.substring(item.indexOf('.') + 1);
-
         let leafText = flkElement.createLeafText(trail.reverse()[0])
-        flkElement._emit('tree-click', flkElement, { path, data, key: leafKey, label: `${leafText.titleText} ${leafText.commentText}`.trim(), branch: typeof data === 'object' });
+        flkElement._emit('tree-click', flkElement, { depth, path, data, key: leafKey, label: `${leafText.titleText} ${leafText.commentText}`.trim(), branch: typeof data === 'object' });
     }
 
     convertJsonKeyToTitle(jsonKey) {
@@ -358,11 +356,12 @@ export class FlightkitTreeNavigation extends HTMLElement {
         return leafText;
     }
 
-    createLeaf(text, element, key, branchValues = []) {
+    createLeaf(text, element, key, depth, branchValues = []) {
         let leaf = document.createElement('li');
         leaf.classList.add('cursor-no-select');
         leaf.style.marginTop = '0.4rem';
         leaf.dataset.branchKey = key;
+        leaf.dataset.depth = depth;
 
         const iconToUse = this.iconSet === 'file' ? fileListIcon : columnListIcon;
         leaf.style.listStyleImage = `url('data:image/svg+xml,${iconToUse}')`;
@@ -406,6 +405,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
     }
 
     createBranch(node, element, key, depth) {
+        const newDepth = depth + 1;
+
         /** We can now cap the depth, for better visualization */
         if (depth === this.maxDepth && typeof node === 'object') {
 
@@ -417,13 +418,13 @@ export class FlightkitTreeNavigation extends HTMLElement {
                     }
                     // todo does not work for arrays yet.
                     if (typeof node[leafNodeKey] === 'object') {
-                        const leafKeys = Object.keys(node[leafNodeKey]) 
-                        for(const leafKey of leafKeys) {
-                            this.createLeaf(leafKey, element, `${key}.${leafNodeKey}`, branchValues);
+                        const leafKeys = Object.keys(node[leafNodeKey])
+                        for (const leafKey of leafKeys) {
+                            this.createLeaf(leafKey, element, `${key}.${leafNodeKey}`, depth, branchValues);
                         }
                     }
                     else {
-                        this.createLeaf(node[leafNodeKey], element, `${key}.${leafNodeKey}`, branchValues);
+                        this.createLeaf(node[leafNodeKey], element, `${key}.${leafNodeKey}`, depth, branchValues);
                     }
                 }
             }
@@ -435,14 +436,14 @@ export class FlightkitTreeNavigation extends HTMLElement {
                     if (node[leaf]) {
                         branchValues = this._jsonToValueArray(node[leaf]);
                     }
-                    this.createLeaf(leaf, element, `${key}.${leaf}`, branchValues);
+                    this.createLeaf(leaf, element, `${key}.${leaf}`, depth, branchValues);
                 }
             }
         }
         else if (Array.isArray(node)) {
             for (let nodeKey in node) {
                 let branch = document.createElement(this.listType);
-                element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
+                element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, newDepth));
             }
         }
         else if (node !== null && typeof node === 'object') {
@@ -455,6 +456,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 trunk.style.position = 'relative';
                 trunk.style.left = '2px';
                 trunk.dataset.branchKey = `${key}.${nodeKey}`;
+                trunk.dataset.depth = depth;
 
 
                 let branch = document.createElement('details');
@@ -482,7 +484,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 }
 
                 branch.append(branchName);
-                trunk.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, depth + 1));
+                trunk.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, newDepth));
                 branches.push(trunk);
             }
 
@@ -504,7 +506,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
         }
         else {
-            this.createLeaf(node, element, key);
+            this.createLeaf(node, element, key, depth);
         }
         return element;
     }

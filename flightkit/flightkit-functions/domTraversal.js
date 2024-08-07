@@ -45,5 +45,5 @@ export function returnDataSetValue(event, datasetName) {
     }
     while (!datasetValue);
 
-    return { depth: parseInt(target.dataset.treeDepth), datasetValue };
+    return datasetValue;
 }
