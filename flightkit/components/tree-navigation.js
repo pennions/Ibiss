@@ -201,7 +201,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
         /** When it is a leaf. */
         let allValues = isBranch ? childElements.join() : childElements;
-
+        let searchValues = allValues.replace(/[_]/g, " ");
+        
         /** remove the branch */
         if (isBranch) {
             childElements.shift();
@@ -210,11 +211,11 @@ export class FlightkitTreeNavigation extends HTMLElement {
         let childValues = isBranch ? childElements.join() : '';
 
         if (this.filter.caseSensitive) {
-            match = allValues.includes(this.filter.value);
+            match = searchValues.includes(this.filter.value);
             childMatch = childValues.includes(this.filter.value);
         }
         else {
-            match = allValues.toLowerCase().includes(this.filter.value.toLowerCase());
+            match = searchValues.toLowerCase().includes(this.filter.value.toLowerCase());
             childMatch = childValues.toLowerCase().includes(this.filter.value.toLowerCase());
         }
 
@@ -268,18 +269,16 @@ export class FlightkitTreeNavigation extends HTMLElement {
     }
 
     filterTree() {
+        let filterCleared = this.filter.value === undefined || this.filter.value.length === 0;
+        if (filterCleared) {
+            this.resetTree();
+            return;
+        }
+
         let searchTimer = setTimeout(() => {
             let foundElements = this.querySelectorAll('[data-branch-value-id]');
-
             for (const element of foundElements) {
-
-                let filterCleared = this.filter.value === undefined || this.filter.value.length === 0;
-                if (filterCleared) {
-                    this.deselectTree(element);
-                }
-                else {
-                    this.applyFilter(element);
-                }
+                this.applyFilter(element);
             }
             clearTimeout(searchTimer);
         }, 10);
@@ -552,7 +551,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
             case "search-style": {
                 this.searchStyle = newValue;
-                this.resetTree();
+                this.resetTree(false);
                 this.filterTree();
                 break;
             }
