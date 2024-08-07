@@ -1975,6 +1975,7 @@
                 }
                 case "search-style": {
                     this.searchStyle = newValue;
+                    this.resetTree();
                     this.filterTree();
                     break;
                 }

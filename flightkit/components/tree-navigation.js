@@ -552,6 +552,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
             case "search-style": {
                 this.searchStyle = newValue;
+                this.resetTree();
                 this.filterTree();
                 break;
             }
