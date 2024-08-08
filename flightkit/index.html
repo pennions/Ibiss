@@ -31,6 +31,7 @@
 
             <button class="bg-gray-light" type="button" id="deselect">Deselect database tree</button>
             <button id="toggleSearch" type="button" class="bg-gray-light"> Toggle search mode</button>
+            <button id="toggleComment" type="button" class="bg-gray-light"> Toggle comment mode</button>
 
         </div>
 
@@ -50,9 +51,9 @@
     </code>
 
     <script>
-
+        var myDbNav;
         function log(e) {
-            console.log('"loaded!', e)
+            console.log('"loaded!')
         }
         function clicky(e) {
 
@@ -71,7 +72,7 @@
 
             myTreeNav.init();
 
-            const myDbNav = document.getElementById('db-nav');
+            myDbNav = document.getElementById('db-nav');
             myDbNav.setContents(window.sectionSet);
 
             myDbNav.init();
@@ -120,6 +121,19 @@
                 }
                 else {
                     myDbNav.setAttribute('search-style', 'highlight');
+                }
+            })
+            document.getElementById('toggleComment').addEventListener('click', () => {
+                const commentInverted = myDbNav.getAttribute('invert-comment');
+
+                if (!commentInverted || commentInverted === null) {
+                    myDbNav.setAttribute('invert-comment', 'true');
+                }
+                else if (commentInverted === 'true') {
+                    myDbNav.setAttribute('invert-comment', 'false');
+                }
+                else {
+                    myDbNav.setAttribute('invert-comment', 'true');
                 }
             })
         };

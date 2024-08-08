@@ -367,6 +367,11 @@ export class FlightkitTable extends HTMLElement {
         }
     }
 
+    setTemplate(name, template) {
+        if (!name || !template || typeof template !== 'string') return;
+        this._templates[name] = template;
+    }
+
     setContents(newValue) {
         /** check if it came from an attibute callback, or directly set as property */
         const valueToSet = newValue || this.contents || [];

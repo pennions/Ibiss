@@ -2,6 +2,7 @@ import { folderListIcon, fileListIcon, databaseListIcon, tableListIcon, columnLi
 import { returnDataSetValue, returnEventWithTopLevelElement } from '../flightkit-functions/domTraversal';
 import { BaseComponent } from './extensions/base_component';
 import { variableUID } from '../flightkit-functions/uuid_v4';
+import { getAllValuesAndKeysFromJson } from '../flightkit-functions/json';
 
 export class FlightkitTreeNavigation extends HTMLElement {
     base;
@@ -9,6 +10,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     component;
     listType = 'ul';
     commentType = ''
+    invertComment = false;
     searchStyle = '';
     // currently just by adding this, it will change the iconset to database.
     iconSet;
@@ -16,24 +18,18 @@ export class FlightkitTreeNavigation extends HTMLElement {
     selectedElements = [];
     _setup = true;
 
+    /** To make it so, something will not collapse when clicking, remember that we filtered, so the next click action will not close if open. */
+    _justFiltered = false;
+
     /** making a dictionary for the tree values so that it is not rendered in the dom for large trees */
     _treeValues = {}
 
     static get observedAttributes() {
-        return ['contents', 'icon-set', 'max-depth', 'filter', 'search-style', 'comment'];
+        return ['contents', 'icon-set', 'max-depth', 'filter', 'search-style', 'comment', 'invert-comment'];
     };
 
     _jsonToValueArray(json) {
-        let jsonString = JSON.stringify(json);
-        /** replace any array and object brackets */
-        jsonString = jsonString.replace(/[\[\]{}\"]/g, "");
-        let jsonKeyValueArray = jsonString.split(',');
-        let values = [];
-
-        for (const kvPair of jsonKeyValueArray) {
-            values = values.concat(kvPair.split(":"));
-        }
-        return [...new Set(values)];
+        return [...new Set(getAllValuesAndKeysFromJson(json))];
     }
 
     _emit(event, ftElement, detail) {
@@ -54,12 +50,37 @@ export class FlightkitTreeNavigation extends HTMLElement {
         this.iconSet = this.getAttribute('icon-set') ?? 'file';
         this.searchStyle = this.getAttribute('search-style') ?? 'highlight';
         this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
+        this.invertComment = this.getAttribute('invert-comment') ? true : false;
         this.setFilter(this.getAttribute('filter'));
 
         this.style.display = 'block';
         this.style.maxWidth = 'fit-content';
         this.style.margin = '0 1rem 0 0';
         this.base.addEvent('.flk-branch', 'click', this.emitNodeToggle);
+        this.base.addEvent('.flk-tree-summary', 'click', this.stopCollapseWhenJustFiltered)
+    }
+
+    stopCollapseWhenJustFiltered(event) {
+        const flkEvent = returnEventWithTopLevelElement(event, 'flk-tree-nav');
+        const flkElement = flkEvent.target;
+
+        if (!flkElement._justFiltered) {
+            return true
+        }
+
+        let detailsElement = event.target
+
+        do {
+            if (detailsElement.tagName !== 'DETAILS') {
+                detailsElement = detailsElement.parentNode || detailsElement.parentElement;
+            }
+        }
+        while (detailsElement.tagName !== 'DETAILS')
+
+        if (flkElement._justFiltered === true && detailsElement.open) {
+            event.preventDefault();
+            flkElement._justFiltered = false;
+        }
     }
 
     deselectTree() {
@@ -83,9 +104,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
         const flkElement = flkEvent.target;
         const item = returnDataSetValue(event, 'branchKey');
         const depth = parseInt(returnDataSetValue(event, 'depth'));
-
         let data = flkElement.contents;
-        const trail = item.split('.');
+        const trail = item.split('¶'); /** using pilcrow (¶) here because sometimes we have a . in the name */
 
         for (const crumb of trail) {
             if (data[crumb]) {
@@ -146,9 +166,10 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
         }
 
-        /** because of internal array, we have to do a substring. */
-        const path = item.substring(item.indexOf('.') + 1);
         let leafText = flkElement.createLeafText(trail.reverse()[0])
+        /** somehow there is always a 0 on the end. remove that and then reverse to get the correct path as array to avoid any . issues */
+        trail.pop();
+        const path = trail.reverse()
         flkElement._emit('tree-click', flkElement, { depth, path, data, key: leafKey, label: `${leafText.titleText} ${leafText.commentText}`.trim(), branch: typeof data === 'object' });
     }
 
@@ -192,6 +213,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     };
 
     applyFilter(element) {
+        this._justFiltered = true;
         let match, childMatch;
         const detailsEl = element.tagName.toLowerCase() === 'details';
 
@@ -200,9 +222,8 @@ export class FlightkitTreeNavigation extends HTMLElement {
         const isBranch = Array.isArray(childElements);
 
         /** When it is a leaf. */
-        let allValues = isBranch ? childElements.join() : childElements;
-        let searchValues = allValues.replace(/[_]/g, " ");
-        
+        let searchValues = isBranch ? childElements.join() : childElements;
+
         /** remove the branch */
         if (isBranch) {
             childElements.shift();
@@ -290,6 +311,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
         try {
             switch (typeof valueToSet) {
                 case 'string': {
+                    /** if it is added as a stringified json */
                     if (valueToSet.includes('{')) {
                         this.filter = JSON.parse(valueToSet);
                         if (this.filter.caseSensitive === false) {
@@ -323,6 +345,12 @@ export class FlightkitTreeNavigation extends HTMLElement {
             let commentBracketIndex = text.indexOf(this.commentType[0]);
             titleText = this.convertJsonKeyToTitle(text.substring(0, commentBracketIndex));
             commentText = text.substring(commentBracketIndex + 1, text.length - 1).trim();
+
+            if (this.invertComment) {
+                let tmpTitleText = titleText;
+                titleText = commentText;
+                commentText = tmpTitleText;
+            }
         }
         else {
             titleText = this.convertJsonKeyToTitle(text);
@@ -358,7 +386,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
     createLeaf(text, element, key, depth, branchValues = []) {
         let leaf = document.createElement('li');
-        leaf.classList.add('cursor-no-select');
+        leaf.classList.add('cursor-pointer');
         leaf.style.marginTop = '0.4rem';
         leaf.dataset.branchKey = key;
         leaf.dataset.depth = depth;
@@ -420,11 +448,11 @@ export class FlightkitTreeNavigation extends HTMLElement {
                     if (typeof node[leafNodeKey] === 'object') {
                         const leafKeys = Object.keys(node[leafNodeKey])
                         for (const leafKey of leafKeys) {
-                            this.createLeaf(leafKey, element, `${key}.${leafNodeKey}`, depth, branchValues);
+                            this.createLeaf(leafKey, element, `${key}¶${leafNodeKey}`, depth, branchValues);
                         }
                     }
                     else {
-                        this.createLeaf(node[leafNodeKey], element, `${key}.${leafNodeKey}`, depth, branchValues);
+                        this.createLeaf(node[leafNodeKey], element, `${key}¶${leafNodeKey}`, depth, branchValues);
                     }
                 }
             }
@@ -436,14 +464,14 @@ export class FlightkitTreeNavigation extends HTMLElement {
                     if (node[leaf]) {
                         branchValues = this._jsonToValueArray(node[leaf]);
                     }
-                    this.createLeaf(leaf, element, `${key}.${leaf}`, depth, branchValues);
+                    this.createLeaf(leaf, element, `${key}¶${leaf}`, depth, branchValues);
                 }
             }
         }
         else if (Array.isArray(node)) {
             for (let nodeKey in node) {
                 let branch = document.createElement(this.listType);
-                element.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, newDepth));
+                element.append(this.createBranch(node[nodeKey], branch, `${key}¶${nodeKey}`, newDepth));
             }
         }
         else if (node !== null && typeof node === 'object') {
@@ -452,12 +480,11 @@ export class FlightkitTreeNavigation extends HTMLElement {
             for (const nodeKey of nodeKeys) {
 
                 let trunk = document.createElement('li');
-                trunk.classList.add('cursor-no-select');
+                trunk.classList.add('cursor-pointer');
                 trunk.style.position = 'relative';
                 trunk.style.left = '2px';
-                trunk.dataset.branchKey = `${key}.${nodeKey}`;
+                trunk.dataset.branchKey = `${key}¶${nodeKey}`;
                 trunk.dataset.depth = depth;
-
 
                 let branch = document.createElement('details');
                 branch.classList.add('flk-branch');
@@ -470,8 +497,9 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 /** fix offset for custom icon */
                 branch.style.position = 'relative';
                 branch.style.top = '-3px';
-                branch.classList.add('cursor-default');
+                branch.classList.add('cursor-pointer');
                 let branchName = document.createElement('summary');
+                branchName.classList.add('flk-tree-summary');
 
                 let appliedText = this.createTextTag(nodeKey, branchName);
                 branch.dataset.leafKey = nodeKey;
@@ -484,7 +512,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
                 }
 
                 branch.append(branchName);
-                trunk.append(this.createBranch(node[nodeKey], branch, `${key}.${nodeKey}`, newDepth));
+                trunk.append(this.createBranch(node[nodeKey], branch, `${key}¶${nodeKey}`, newDepth));
                 branches.push(trunk);
             }
 
@@ -547,6 +575,16 @@ export class FlightkitTreeNavigation extends HTMLElement {
             }
             case "comment": {
                 this.commentType = newValue;
+                break;
+            }
+            case "invert-comment": {
+                if (typeof newValue === 'boolean') {
+                    this.invertComment = newValue
+
+                }
+                else {
+                    this.invertComment = newValue.toString().toLowerCase() === 'true';
+                }
                 break;
             }
             case "search-style": {
