@@ -31,6 +31,7 @@
 
             <button class="bg-gray-light" type="button" id="deselect">Deselect database tree</button>
             <button id="toggleSearch" type="button" class="bg-gray-light"> Toggle search mode</button>
+            <button id="toggleComment" type="button" class="bg-gray-light"> Toggle comment mode</button>
 
         </div>
 
@@ -40,7 +41,7 @@
             max-depth="1"></flk-tree-nav>
     </div>
 
-    <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky"> </flk-tree-nav>
+    <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky" e-loaded="log"> </flk-tree-nav>
 
     <code>
         Click on a tree to get the Preview
@@ -50,6 +51,10 @@
     </code>
 
     <script>
+        var myDbNav;
+        function log(e) {
+            console.log('"loaded!')
+        }
         function clicky(e) {
 
             let previewEl = document.getElementById('clicky-preview')
@@ -67,7 +72,7 @@
 
             myTreeNav.init();
 
-            const myDbNav = document.getElementById('db-nav');
+            myDbNav = document.getElementById('db-nav');
             myDbNav.setContents(window.sectionSet);
 
             myDbNav.init();
@@ -116,6 +121,19 @@
                 }
                 else {
                     myDbNav.setAttribute('search-style', 'highlight');
+                }
+            })
+            document.getElementById('toggleComment').addEventListener('click', () => {
+                const commentInverted = myDbNav.getAttribute('invert-comment');
+
+                if (!commentInverted || commentInverted === null) {
+                    myDbNav.setAttribute('invert-comment', 'true');
+                }
+                else if (commentInverted === 'true') {
+                    myDbNav.setAttribute('invert-comment', 'false');
+                }
+                else {
+                    myDbNav.setAttribute('invert-comment', 'true');
                 }
             })
         };
