@@ -701,7 +701,7 @@
         _updateCheckboxes(ftElement) {
             const allSelectionCheckboxes = ftElement.querySelectorAll('.flk-selection-checkbox');
             const currentSelection = ftElement._selectedIds.size;
-            const maxSelection = ftElement.contents.execute().length;
+            const maxSelection = ftElement.contents.length;
             const notAllSelected = currentSelection !== maxSelection;
             const allSelected = currentSelection === maxSelection;
             const hasSelection = currentSelection !== 0;
@@ -749,10 +749,9 @@
             const flightkitEvent = returnEventWithTopLevelElement(event);
             const ftElement = flightkitEvent.target;
             ftElement._selectedIds = isChecked ? new Set(
-                ftElement.contents.execute()
-                    .map(obj => obj[ftElement._selectionProperty])) : new Set();
+                ftElement.contents.map(obj => obj[ftElement._selectionProperty])) : new Set();
 
-            const selection = isChecked ? ftElement.contents.execute() : [];
+            const selection = isChecked ? ftElement.contents : [];
             ftElement._emit('select', ftElement, { selection });
             ftElement._updateCheckboxes(ftElement);
         }
@@ -773,7 +772,7 @@
 
             const selectionProperty = ftElement._selectionProperty;
 
-            const selection = ftElement.contents.execute().filter(obj => ftElement._selectedIds.has(obj[selectionProperty]));
+            const selection = ftElement.contents.filter(obj => ftElement._selectedIds.has(obj[selectionProperty]));
             ftElement._emit('select', ftElement, { selection });
             ftElement._updateCheckboxes(ftElement);
         }
@@ -993,7 +992,7 @@
                 selectAllCheckbox.id = thSelectAllId;
 
                 /** handle a rerender of the table on thigs like sort or filter. */
-                const maxSelection = this.contents.execute().length;
+                const maxSelection = this.contents.length;
 
                 if (this._selectedIds.size > 0 && this._selectedIds.size < maxSelection) {
                     selectAllCheckbox.indeterminate = true;
