@@ -22,7 +22,9 @@
 <body class="row gap-5 p-3">
     <div>
         <input class="mb-2" type="text" id="table-filter" placeholder="filter">
-        <flk-table class="bg-white striped" id="db-table"></flk-table>
+        <flk-table base-class="foo foo1 foo2" class="bg-white striped" id="db-table">
+            <template name="column1">{{ $fooifier }} + {{ column6 }}</template>
+        </flk-table>
     </div>
 
     <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
@@ -51,9 +53,18 @@
     </code>
 
     <script>
+
+        function fooifier(property, object) {
+            console.log(object);
+            if (object[property] === 'value1') {
+                return "<b>foo-" + object[property] + "</b> <span id='clickme' title='click for annotations'>&#128221;</span>";
+            }
+            else return object[property];
+        }
+
         var myDbNav;
         function log(e) {
-            console.log('"loaded!')
+            console.log('loaded!')
         }
         function clicky(e) {
 
@@ -86,6 +97,7 @@
 
             databasesNav.init();
             const dbTable = document.getElementById("db-table")
+            dbTable.addEvent("#clickme", "click", () => alert("Hello!"))
             dbTable.setContents(window.databaseSet.database1.table1);
             dbTable.init();
 

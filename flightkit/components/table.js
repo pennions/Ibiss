@@ -412,20 +412,23 @@ export class FlightkitTable extends HTMLElement {
         return convertedKey;
     }
 
-    /** replaces {{ property }} with the value */
-    parseTemplate(template, object) {
+    /** replaces {{ property }} with the value or passes property to a globally available function */
+    parseTemplate(property, template, object) {
         return template.replace(/\{\{([\s\S]+?)\}\}/gim, (_, p1) => {
-
-            let replacement = '';
+            let replacement, templateItem = '';
 
             p1 = p1.trim();
 
-            let templateItem = object[p1];
+            /** Check if it is a function */
+            if (p1[0] === "$") {
+                replacement = window[p1.substring(1)](property, object);
+            } else {
+                templateItem = object[p1];
+            }
 
             if (templateItem) {
                 replacement = templateItem;
             }
-
             return Array.isArray(replacement) ? replacement.join(', ') : replacement.toString().trim();
         });
     }
@@ -468,7 +471,7 @@ export class FlightkitTable extends HTMLElement {
             const tableCell = document.createElement('td');
 
             if (this._templates[property]) {
-                tableCell.innerHTML = this.parseTemplate(this._templates[property], rowContent);
+                tableCell.innerHTML = this.parseTemplate(property, this._templates[property], rowContent);
                 /** when you use templating inside the element. */
                 if (this._templateClasses[property]) {
                     tableCell.classList.add(...this._templateClasses[property]);

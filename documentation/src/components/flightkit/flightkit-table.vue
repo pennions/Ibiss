@@ -6,7 +6,7 @@ import { ardeaDataset } from '@/assets/js/ardeaDataset'
 const tableComponentCode = '<flk-table>  </flk-table>'
 const vanillaSetup = `window.onload = () => {\n                let ftTable = document.getElementById('ft-table');\n                ftTable.setContents(ardeaSet);\n                ftTable.init();\n      \n   })\n};`
 const templateExample = '<button class="test" title="{{common_name}}">{{ common_name }}</button>'
-const templatePlaceholder = '{{ common_name }}'
+const templatePlaceholder = '{{ common_name }} / {{ $globalFunction }}'
 
 const customTemplates = {
   common_name: `<i>{{ common_name }}</i>`
@@ -114,8 +114,9 @@ function handleSelect(event) {
                   <td>
                     a stringified JSON object that has a template that will be used. Use a
                     placeholder with the property like:
-                    <code>{{ templatePlaceholder }}</code
-                    >to use any value you want out of the row. <br /><b class="mr-1">E.G.</b>
+                    <code>{{ templatePlaceholder }}</code>to use any value you want out of the row. if you place a '$'
+                    before, it will look for a global available function and pass the property and the object as the arguments
+                    <br /><b class="mr-1">E.G.</b>
                     <code class="language-html">{{ customTemplateString }} </code>
                   </td>
                 </tr>
@@ -192,32 +193,17 @@ function handleSelect(event) {
           <div class="column gap-3 mb-3">
             <i><b>With filter and custom template:</b></i>
 
-            <input
-              class="self-align-start"
-              type="text"
-              placeholder="filter table"
-              @keyup="changeFilter"
-            />
-            <flk-table
-              :key="tKey"
-              id="foo"
-              :filter="filter"
-              class="table"
-              :contents="ardeaDataset"
-              :templates="JSON.stringify(customTemplates)"
-            ></flk-table>
+            <input class="self-align-start" type="text" placeholder="filter table" @keyup="changeFilter" />
+            <flk-table :key="tKey" id="foo" :filter="filter" class="table" :contents="ardeaDataset"
+              :templates="JSON.stringify(customTemplates)"></flk-table>
           </div>
 
           <div class="column gap-3">
             <i><b>With selection-property:</b></i>
 
             <div class="row justify-between">
-              <flk-table
-                selection-property="scientific_name"
-                class="table"
-                @select="handleSelect"
-                :contents="ardeaDataset"
-              ></flk-table>
+              <flk-table selection-property="scientific_name" class="table" @select="handleSelect"
+                :contents="ardeaDataset"></flk-table>
 
               <div>
                 <span class="mr-5">Example function:</span>
