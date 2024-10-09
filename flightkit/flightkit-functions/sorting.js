@@ -81,10 +81,6 @@ function logicalSort(a, b, direction) {
 
 function sortFunction(applicableSorters, index = 0) {
     return function (a, b) {
-        if (index > 0) {
-            debugger;
-        }
-
         const { propertyName, direction } = applicableSorters[index];
 
         /** if it is undefined, just make it a string. */
