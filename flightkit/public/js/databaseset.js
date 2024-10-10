@@ -35,7 +35,7 @@ window.databaseSet = {
             },
             {
                 "column1": "value18",
-                "column2": 19,
+                "column2": 18,
                 "column3": true,
                 "column4": "value20",
                 "column5": 21,
@@ -45,8 +45,8 @@ window.databaseSet = {
                 "column1": "value18",
                 "column2": 19,
                 "column3": true,
-                "column4": "value20",
-                "column5": 21,
+                "column4": "value 28",
+                "column5": 17.5,
                 "column6": "b1"
             }
         ],
@@ -63,7 +63,7 @@ window.databaseSet = {
                 "column1": "value18",
                 "column2": 19,
                 "column3": true,
-                "column4": "value20",
+                "column4": "value29",
                 "column5": 21,
                 "column6": "a2"
             }
