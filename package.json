@@ -1,8 +1,8 @@
 {
   "name": "@pennions/ibiss",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "avian_version": "0.0.2",
-  "flightkit_version": "0.0.17",
+  "flightkit_version": "0.0.18",
   "htmx_plugin_version": "0.0.1",
   "rocketjs_version": "0.0.1",
   "description": "Frontend library of Pennions",

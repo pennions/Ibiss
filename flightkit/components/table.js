@@ -10,7 +10,8 @@ export class FlightkitTable extends HTMLElement {
     properties = new Set();
     uniqueEntriesByProperties = {};
     propertyLabelDictionary = {};
-    _contents = [];
+    contentAnnotations = {}
+    _contents = []; /** has getter/setter */
     _orderBy = [];
     _columnOrder = [];
     _filter = '';
@@ -20,7 +21,7 @@ export class FlightkitTable extends HTMLElement {
     _templateClasses = {};
 
     static get observedAttributes() {
-        return ['contents', 'columns', 'order', 'filter', 'selection-property', 'templates'];
+        return ['contents', 'columns', 'order', 'filter', 'selection-property', 'templates', 'annotations'];
     };
 
     get columnOrder() {
@@ -94,6 +95,7 @@ export class FlightkitTable extends HTMLElement {
         this.setTemplates(this.getAttribute('templates'));
         this.setColumnOrder(this.getAttribute('columns'));
         this.filter = this.getAttribute('filter') || '';
+        this.setAnnotations(this.getAttribute('annotations'));
 
         const presetOrder = this.getAttribute('order');
         if (presetOrder) {
@@ -147,6 +149,10 @@ export class FlightkitTable extends HTMLElement {
                 this.setColumnOrder(newValue);
                 break;
             }
+            case "annotations": {
+                this.setAnnotations(newValue);
+                break;
+            }
         }
         /** in Vue3 this is not triggered. You need to set a :key property and handle that */
         this.createHtml();
@@ -155,7 +161,6 @@ export class FlightkitTable extends HTMLElement {
 
     _createElement(elementName) {
         const element = document.createElement(elementName);
-
         element.innerHTML = this._templates[elementName];
 
         if (this._templateClasses[elementName]) {
@@ -192,7 +197,6 @@ export class FlightkitTable extends HTMLElement {
         else {
             filteredData = tableData
         }
-
 
         const tableBody = this.createBody(filteredData);
         tableElement.append(tableBody);
@@ -397,6 +401,40 @@ export class FlightkitTable extends HTMLElement {
         }
     }
 
+    setAnnotations(newValue) {
+        /** check if it came from an attibute callback, or directly set as property */
+        const valueToSet = newValue || this.contentAnnotations || {};
+        try {
+            switch (typeof valueToSet) {
+                case 'string': {
+                    this.contentAnnotations = JSON.parse(valueToSet) || {};
+                    break;
+                }
+                case 'object': {
+                    this.contentAnnotations = valueToSet;
+                    break;
+                }
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    getAnnotation(property, type) {
+        if (Object.keys(this.contentAnnotations).length === 0) return {}
+        if (!this.contentAnnotations[type]) return {}
+
+        const possibleAnnotation = this.contentAnnotations[type];
+        if (!possibleAnnotation.hasOwnProperty(property)) return {}
+
+        /** use _ as a placeholder to annotate empty fields */
+        if (!possibleAnnotation[property]) return {}
+
+        return possibleAnnotation;
+    };
+
+
     /** function to create HTML */
     convertJsonKeyToTitle(jsonKey) {
         if (typeof jsonKey !== 'string') jsonKey = jsonKey.toString();
@@ -412,22 +450,32 @@ export class FlightkitTable extends HTMLElement {
     }
 
     /** replaces {{ property }} with the value or passes property to a globally available function */
-    parseTemplate(property, template, object) {
+    parseTemplate(property, template, object, annotation) {
         return template.replace(/\{\{([\s\S]+?)\}\}/gim, (_, p1) => {
+
             let replacement, templateItem = '';
 
             p1 = p1.trim();
 
-            /** Check if it is a function */
+            /** Check if it is a function or annotation */
             if (p1[0] === "$") {
-                replacement = window[p1.substring(1)](property, object);
-            } else {
-                templateItem = object[p1];
+                replacement = window[p1.substring(1)](property, object, annotation);
+            } else if (p1[0] === "+") {
+                replacement = annotation[property] && annotation[property][p1.substring(1)] ? annotation[property][p1.substring(1)] : "";
+            }
+            else {
+                templateItem = object[p1].toString();
             }
 
             if (templateItem) {
-                replacement = templateItem;
+                if (annotation[property] && annotation[property][templateItem]) {
+                    replacement = annotation[property][templateItem]
+                }
+                else {
+                    replacement = templateItem;
+                }
             }
+
             return Array.isArray(replacement) ? replacement.join(', ') : replacement.toString().trim();
         });
     }
@@ -467,17 +515,30 @@ export class FlightkitTable extends HTMLElement {
         }
 
         for (const property of this.columnOrder) {
+            const annotation = this.getAnnotation(property, "body");
+
             const tableCell = document.createElement('td');
+            let currentValue = rowContent[property];
 
             if (this._templates[property]) {
-                tableCell.innerHTML = this.parseTemplate(property, this._templates[property], rowContent);
+                tableCell.innerHTML = this.parseTemplate(property, this._templates[property], rowContent, annotation);
                 /** when you use templating inside the element. */
                 if (this._templateClasses[property]) {
                     tableCell.classList.add(...this._templateClasses[property]);
                 }
             }
             else {
-                tableCell.innerText = rowContent[property];
+                if (annotation && annotation.hasOwnProperty(property)) {
+                    let possibleCellValue = annotation[property][currentValue || "_"];
+                    /** check if there is actually a value else resort to the original one */
+                    if (possibleCellValue && possibleCellValue.length) {
+                        tableCell.title = currentValue;
+                    }
+                    tableCell.innerText = possibleCellValue || currentValue;
+                }
+                else {
+                    tableCell.innerText = currentValue;
+                }
             }
 
             tableRow.append(tableCell);
@@ -488,7 +549,7 @@ export class FlightkitTable extends HTMLElement {
     createBody(data) {
         const tableBody = document.createElement('tbody');
         for (const rowContent of data) {
-            const tableRow = this.createRow(rowContent, null);
+            const tableRow = this.createRow(rowContent);
             tableBody.append(tableRow);
         }
         return tableBody;
@@ -527,7 +588,16 @@ export class FlightkitTable extends HTMLElement {
             thCell.dataset.column = header;
 
             const headerText = document.createElement('span');
-            headerText.innerText = this.convertJsonKeyToTitle(header);
+            const annotation = this.getAnnotation(header, "header");
+
+            if (annotation[header]) {
+                headerText.title = header;
+                headerText.innerText = annotation[header];
+            }
+            else {
+                headerText.innerText = this.convertJsonKeyToTitle(header);
+            }
+
             thCell.append(headerText);
             this.base.addEvent(`#${thId}`, 'click', this.sortData);
 

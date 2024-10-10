@@ -115,10 +115,35 @@ function handleSelect(event) {
                     a stringified JSON object that has a template that will be used. Use a
                     placeholder with the property like:
                     <code>{{ templatePlaceholder }}</code>to use any value you want out of the row. if you place a '$'
-                    before, it will look for a global available function and pass the property and the object as the arguments
+                    before, it will look for a global available function and pass the property and the object as the
+                    arguments
                     <br /><b class="mr-1">E.G.</b>
                     <code class="language-html">{{ customTemplateString }} </code>
                   </td>
+
+                </tr>
+
+                <tr>
+                  <td><code>annotations=""</code></td>
+                  <td>Ability to add annotations that apply to your content.</td>
+                  <td>
+                    a stringified JSON object that has the following signature:
+                    <pre>
+  {
+	"header": {
+		"scientific_name": "Heron science name"
+	},
+	"body": {
+		"common_name": {
+			"Grey heron": "Grijze reiger */
+      "custom": "Hello"
+		}
+	}
+}
+</pre>
+You can also access these in the custom function using '+' sign e.g. { { +custom } }
+                  </td>
+
                 </tr>
 
                 <tr>

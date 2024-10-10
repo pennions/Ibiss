@@ -22,8 +22,13 @@
 <body class="row gap-5 p-3">
     <div>
         <input class="mb-2" type="text" id="table-filter" placeholder="filter">
-        <flk-table base-class="foo foo1 foo2" class="bg-white striped" id="db-table">
-            <template name="column1">{{ $fooifier }} + {{ column6 }}</template>
+        <flk-table class="bg-white striped" id="db-table">
+            <template name="column1">
+                <div title="{{ +notes }}">{{ $fooifier }} + {{ column6 }}</div>
+            </template>
+            <template name="column3">
+             <i>{{ column3 }}</i>
+            </template>
         </flk-table>
     </div>
 
@@ -54,8 +59,7 @@
 
     <script>
 
-        function fooifier(property, object) {
-            console.log(object);
+        function fooifier(property, object, annotation) {
             if (object[property] === 'value1') {
                 return "<b>foo-" + object[property] + "</b> <span id='clickme' title='click for annotations'>&#128221;</span>";
             }
@@ -97,6 +101,24 @@
 
             databasesNav.init();
             const dbTable = document.getElementById("db-table")
+            window.dbTable = dbTable;
+            dbTable.setAnnotations({
+                header: {
+                    column4: "Values"
+                },
+                body: {
+                    column1: {
+                        notes: "<h1>Hiya!</h1>"
+                    },
+                    column3: {
+                        "true": "Yes"
+                    },
+                    column4: {
+                        "_": "NA",
+                        "value 28": "Something :D"
+                    }
+                }
+            })
             dbTable.addEvent("#clickme", "click", () => alert("Hello!"))
             dbTable.setContents(window.databaseSet.database1.table1);
             dbTable.init();

@@ -27,7 +27,7 @@ export class FlightkitModal extends HTMLElement {
         flkElement.classList.add('hidden');
     }
 
-    closeModal(event) {
+    closeModal() {
         this.classList.add('hidden');
     }
 
