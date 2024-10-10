@@ -101,6 +101,17 @@ function handleSelect(event) {
                 </tr>
 
                 <tr>
+                  <td><code>hide=""</code></td>
+                  <td>
+                    you can hide specific rows based on a column and values. (case sensitive)
+                  </td>
+                  <td>
+                    A string that starts with the name of the column a pipe and then the values comma separated.
+                    <br /><b>E.G.</b> "common_name|Grey heron,Cocoi heron
+                  </td>
+                </tr>
+
+                <tr>
                   <td><code>filter=""</code></td>
                   <td>Used to do a global search on the table.</td>
                   <td>
@@ -141,7 +152,7 @@ function handleSelect(event) {
 	}
 }
 </pre>
-You can also access these in the custom function using '+' sign e.g. { { +custom } }
+                    You can also access these in the custom function using '+' sign e.g. { { +custom } }
                   </td>
 
                 </tr>
