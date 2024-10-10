@@ -19,9 +19,11 @@ export class FlightkitTable extends HTMLElement {
     _selectedIds = new Set(); /** used to sync selections */
     _templates = {}; /** html templates to use for columns and caption/tfoot */
     _templateClasses = {};
+    _hideValues = [];
+    _hideColumn = "";
 
     static get observedAttributes() {
-        return ['contents', 'columns', 'order', 'filter', 'selection-property', 'templates', 'annotations'];
+        return ['contents', 'columns', 'order', 'filter', 'selection-property', 'templates', 'annotations', 'hide'];
     };
 
     get columnOrder() {
@@ -96,6 +98,7 @@ export class FlightkitTable extends HTMLElement {
         this.setColumnOrder(this.getAttribute('columns'));
         this.filter = this.getAttribute('filter') || '';
         this.setAnnotations(this.getAttribute('annotations'));
+        this.setHiddenRows(this.getAttribute('hide'));
 
         const presetOrder = this.getAttribute('order');
         if (presetOrder) {
@@ -151,6 +154,10 @@ export class FlightkitTable extends HTMLElement {
             }
             case "annotations": {
                 this.setAnnotations(newValue);
+                break;
+            }
+            case "hide": {
+                this.setHiddenRows(newValue);
                 break;
             }
         }
@@ -328,6 +335,19 @@ export class FlightkitTable extends HTMLElement {
         }
         else {
             this._columnOrder = [];
+        }
+    }
+
+    /** signature: column|value1,value2,value3 */
+    setHiddenRows(hideRows) {
+        if (hideRows) {
+            const parts = hideRows.split("|");
+            this._hideColumn = parts[0]
+            this._hideValues = parts[1].split(',');
+        }
+        else {
+            this._hideValues = [];
+            this._hideColumn = "";
         }
     }
 
@@ -549,6 +569,9 @@ export class FlightkitTable extends HTMLElement {
     createBody(data) {
         const tableBody = document.createElement('tbody');
         for (const rowContent of data) {
+            /** check if we should hide this row */
+            if (rowContent[this._hideColumn] && this._hideValues.includes(rowContent[this._hideColumn].toString())) continue;
+
             const tableRow = this.createRow(rowContent);
             tableBody.append(tableRow);
         }
