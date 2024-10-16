@@ -21,9 +21,11 @@ export class FlightkitTable extends HTMLElement {
     _templateClasses = {};
     _hideValues = [];
     _hideColumn = "";
+    _page = "";
+    _itemsPerPage = 0;
 
     static get observedAttributes() {
-        return ['contents', 'columns', 'order', 'filter', 'selection-property', 'templates', 'annotations', 'hide'];
+        return ['contents', 'columns', 'order', 'filter', 'selection-property', 'templates', 'annotations', 'hide', 'pagination'];
     };
 
     get columnOrder() {
@@ -123,8 +125,8 @@ export class FlightkitTable extends HTMLElement {
             }
             this.setTemplates(templatesToAdd);
         }
-
     }
+
     /** we only need this if we dont use get/set */
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
@@ -158,6 +160,10 @@ export class FlightkitTable extends HTMLElement {
             }
             case "hide": {
                 this.setHiddenRows(newValue);
+                break;
+            }
+            case "pagination": {
+                this.setPagination(newValue);
                 break;
             }
         }
@@ -211,7 +217,6 @@ export class FlightkitTable extends HTMLElement {
         if (this._templates['tfoot']) {
             tableElement.append(this._createElement('tfoot'));
         }
-
         this.component = tableElement;
     }
 
@@ -264,6 +269,7 @@ export class FlightkitTable extends HTMLElement {
             bubbles: true,
             cancelable: true
         });
+
         ftElement.dispatchEvent(selectEvent);
     }
 
@@ -335,6 +341,25 @@ export class FlightkitTable extends HTMLElement {
         }
         else {
             this._columnOrder = [];
+        }
+    }
+
+    setPagination(newPagination) {
+        if (newPagination) {
+            const paginationParts = newPagination.split("|");
+            this._page = parseInt(paginationParts[0]);
+            this._itemsPerPage = parseInt(paginationParts[1]);
+
+            /** Only on initialize */
+            if (this.component === null) {
+                let renderTimer = setTimeout(() => {
+                    this._emit('paginate', this, { maxPages: Math.ceil(this._contents.length / this._itemsPerPage) })
+                    clearTimeout(renderTimer);
+                }, 100)
+            }
+            else {
+                this._emit('paginate', this, { maxPages: Math.ceil(this._contents.length / this._itemsPerPage) })
+            }
         }
     }
 
@@ -568,7 +593,21 @@ export class FlightkitTable extends HTMLElement {
 
     createBody(data) {
         const tableBody = document.createElement('tbody');
-        for (const rowContent of data) {
+
+        let paginatedData = structuredClone(data);
+        if (this._itemsPerPage > 0) {
+            let startingPoint = 0;
+            let endpoint = this._itemsPerPage;
+
+            if (this._page - 1 > 0) {
+                startingPoint = this._page * this._itemsPerPage - this._itemsPerPage;
+                endpoint = startingPoint + this._itemsPerPage;
+            }
+
+            paginatedData = paginatedData.slice(startingPoint, endpoint)
+        }
+
+        for (const rowContent of paginatedData) {
             /** check if we should hide this row */
             if (rowContent[this._hideColumn] && this._hideValues.includes(rowContent[this._hideColumn].toString())) continue;
 

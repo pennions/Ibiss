@@ -171,6 +171,23 @@ function handleSelect(event) {
                     selected <b>E.G.</b> selection-property="id"
                   </td>
                 </tr>
+
+                <tr>
+                  <td><code>pagination=""</code></td>
+                  <td>
+                    Use with [page]|[itemsPerPage] e.g. 1|100 to use pagination inside the table. (N.B. it is 1 based. So the first page is 1 not 0)
+                  </td>
+                  <td>
+                    Whenever the pagination is set, it emits an event 'paginate', for short you can add
+                    e-paginate="yourFunction" to the flk-table
+                    to get the maximum amount of pages. Whenever the page changes or the amount per page changes you get
+                    a new number emitted. <br /><b>Usage:</b>
+                    pagination="1|100"
+                  </td>
+                </tr>
+
+
+
                 <tr>
                   <td><code>e-{event}</code></td>
                   <td>builtin event handling.</td>

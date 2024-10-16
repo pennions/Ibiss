@@ -22,7 +22,7 @@
 <body class="row gap-5 p-3">
     <div>
         <input class="mb-2" type="text" id="table-filter" placeholder="filter">
-        <flk-table class="bg-white striped" id="db-table">
+        <flk-table class="bg-white striped" id="db-table" pagination="1|20" e-paginate="maxPages">
             <template name="column1">
                 <div title="{{ +notes }}">{{ $fooifier }} + {{ column6 }}</div>
             </template>
@@ -69,6 +69,9 @@
         var myDbNav;
         function log(e) {
             console.log('loaded!')
+        }
+        function maxPages(e) {
+            console.log(e)
         }
         function clicky(e) {
 
