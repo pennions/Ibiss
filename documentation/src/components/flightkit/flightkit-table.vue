@@ -175,7 +175,7 @@ function handleSelect(event) {
                 <tr>
                   <td><code>pagination=""</code></td>
                   <td>
-                    Use with [page]|[itemsPerPage] e.g. 1|100 to use pagination inside the table.
+                    Use with [page]|[itemsPerPage] e.g. 1|100 to use pagination inside the table. (N.B. it is 1 based. So the first page is 1 not 0)
                   </td>
                   <td>
                     Whenever the pagination is set, it emits an event 'paginate', for short you can add
