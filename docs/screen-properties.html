@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pennions Screen checker</title>
+</head>
+<style>
+    pre {
+        background-color: lightgrey;
+        border: 0.5px solid black;
+        margin: 0 auto;
+        padding: 2rem;
+        width: 50%;
+        margin-top: 10rem;
+    }
+</style>
+
+<body>
+
+    <pre id="view">
+
+    </pre>
+    <script>
+        window.onload = () => {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const devicePixelRatio = window.devicePixelRatio;
+
+            let scalingFactor = window.devicePixelRatio; // Scaling factor
+            let element = document.querySelector("body");
+            let computedFontSize = window.getComputedStyle(element).fontSize; // Adjusted font size
+
+            let data = `Zoom level: ${scalingFactor}\r\n`;
+            data += `Adjusted font size of body: ${computedFontSize}\r\n`;
+            data += `Device Pixel Ratio: ${devicePixelRatio}\r\n`;
+            data += `Viewport Width: ${viewportWidth}\r\n`;
+            data += `Viewport Height: ${viewportHeight}\r\n`;
+            document.getElementById('view').innerText = data;
+        }
+    </script>
+
+</body>
+
+</html>
