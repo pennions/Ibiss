@@ -44,20 +44,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
     constructor() {
         super();
         this.base = new BaseComponent();
-        /** Check if there is contents already there. */
-        this.setContents(this.getAttribute('contents'));
-        this.commentType = this.getAttribute('comment') ?? '';
-        this.iconSet = this.getAttribute('icon-set') ?? 'file';
-        this.searchStyle = this.getAttribute('search-style') ?? 'highlight';
-        this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
-        this.invertComment = this.getAttribute('invert-comment') ? true : false;
-        this.setFilter(this.getAttribute('filter'));
-
-        this.style.display = 'block';
-        this.style.maxWidth = 'fit-content';
-        this.style.margin = '0 1rem 0 0';
-        this.base.addEvent('.flk-branch', 'click', this.emitNodeToggle);
-        this.base.addEvent('.flk-tree-summary', 'click', this.stopCollapseWhenJustFiltered)
     }
 
     stopCollapseWhenJustFiltered(event) {
@@ -603,8 +589,22 @@ export class FlightkitTreeNavigation extends HTMLElement {
         }
     }
 
-    /** grab inner HTML from here */
     connectedCallback() {
+        /** Check if there is contents already there. */
+        this.setContents(this.getAttribute('contents'));
+        this.commentType = this.getAttribute('comment') ?? '';
+        this.iconSet = this.getAttribute('icon-set') ?? 'file';
+        this.searchStyle = this.getAttribute('search-style') ?? 'highlight';
+        this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
+        this.invertComment = this.getAttribute('invert-comment') ? true : false;
+        this.setFilter(this.getAttribute('filter'));
+
+        this.style.display = 'block';
+        this.style.maxWidth = 'fit-content';
+        this.style.margin = '0 1rem 0 0';
+        this.base.addEvent('.flk-branch', 'click', this.emitNodeToggle);
+        this.base.addEvent('.flk-tree-summary', 'click', this.stopCollapseWhenJustFiltered)
+
         if (!this._setup) {
             this.init();
         }
