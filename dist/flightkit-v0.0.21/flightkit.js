@@ -581,36 +581,6 @@
             super();
             /** We can not inherit from this using extends, because of vue3  */
             this.base = new BaseComponent();
-            this.setContents(this.getAttribute('contents'));
-            this.setTemplates(this.getAttribute('templates'));
-            this.setColumnOrder(this.getAttribute('columns'));
-            this.filter = this.getAttribute('filter') || '';
-            this.setAnnotations(this.getAttribute('annotations'));
-            this.setHiddenRows(this.getAttribute('hide'));
-
-            const presetOrder = this.getAttribute('order');
-            if (presetOrder) {
-                this.orderBy = presetOrder;
-            }
-
-            const selectionProperty = this.getAttribute('selection-property');
-            if (selectionProperty) {
-                this._selectionProperty = selectionProperty;
-            }
-
-            const innerTemplates = this.getElementsByTagName('template');
-
-            if (innerTemplates.length) {
-                const templatesToAdd = {};
-                for (const template of innerTemplates) {
-                    const templateName = template.getAttribute('name');
-                    templatesToAdd[templateName] = template.innerHTML;
-                    if (template.classList.length) {
-                        this._templateClasses[templateName] = [...template.classList];
-                    }
-                }
-                this.setTemplates(templatesToAdd);
-            }
         }
 
         /** we only need this if we dont use get/set */
@@ -707,6 +677,37 @@
         }
 
         connectedCallback() {
+            this.setContents(this.getAttribute('contents'));
+            this.setTemplates(this.getAttribute('templates'));
+            this.setColumnOrder(this.getAttribute('columns'));
+            this.filter = this.getAttribute('filter') || '';
+            this.setAnnotations(this.getAttribute('annotations'));
+            this.setHiddenRows(this.getAttribute('hide'));
+
+            const presetOrder = this.getAttribute('order');
+            if (presetOrder) {
+                this.orderBy = presetOrder;
+            }
+
+            const selectionProperty = this.getAttribute('selection-property');
+            if (selectionProperty) {
+                this._selectionProperty = selectionProperty;
+            }
+
+            const innerTemplates = this.getElementsByTagName('template');
+
+            if (innerTemplates.length) {
+                const templatesToAdd = {};
+                for (const template of innerTemplates) {
+                    const templateName = template.getAttribute('name');
+                    templatesToAdd[templateName] = template.innerHTML;
+                    if (template.classList.length) {
+                        this._templateClasses[templateName] = [...template.classList];
+                    }
+                }
+                this.setTemplates(templatesToAdd);
+            }
+
             this.createHtml();
             this.base.render(this);
         };
@@ -1650,20 +1651,6 @@
         constructor() {
             super();
             this.base = new BaseComponent();
-            /** Check if there is contents already there. */
-            this.setContents(this.getAttribute('contents'));
-            this.commentType = this.getAttribute('comment') ?? '';
-            this.iconSet = this.getAttribute('icon-set') ?? 'file';
-            this.searchStyle = this.getAttribute('search-style') ?? 'highlight';
-            this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
-            this.invertComment = this.getAttribute('invert-comment') ? true : false;
-            this.setFilter(this.getAttribute('filter'));
-
-            this.style.display = 'block';
-            this.style.maxWidth = 'fit-content';
-            this.style.margin = '0 1rem 0 0';
-            this.base.addEvent('.flk-branch', 'click', this.emitNodeToggle);
-            this.base.addEvent('.flk-tree-summary', 'click', this.stopCollapseWhenJustFiltered);
         }
 
         stopCollapseWhenJustFiltered(event) {
@@ -2209,8 +2196,22 @@
             }
         }
 
-        /** grab inner HTML from here */
         connectedCallback() {
+            /** Check if there is contents already there. */
+            this.setContents(this.getAttribute('contents'));
+            this.commentType = this.getAttribute('comment') ?? '';
+            this.iconSet = this.getAttribute('icon-set') ?? 'file';
+            this.searchStyle = this.getAttribute('search-style') ?? 'highlight';
+            this.maxDepth = this.getAttribute('max-depth') ? parseInt(this.getAttribute('max-depth')) : -1;
+            this.invertComment = this.getAttribute('invert-comment') ? true : false;
+            this.setFilter(this.getAttribute('filter'));
+
+            this.style.display = 'block';
+            this.style.maxWidth = 'fit-content';
+            this.style.margin = '0 1rem 0 0';
+            this.base.addEvent('.flk-branch', 'click', this.emitNodeToggle);
+            this.base.addEvent('.flk-tree-summary', 'click', this.stopCollapseWhenJustFiltered);
+
             if (!this._setup) {
                 this.init();
             }

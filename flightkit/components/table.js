@@ -95,36 +95,6 @@ export class FlightkitTable extends HTMLElement {
         super();
         /** We can not inherit from this using extends, because of vue3  */
         this.base = new BaseComponent();
-        this.setContents(this.getAttribute('contents'));
-        this.setTemplates(this.getAttribute('templates'));
-        this.setColumnOrder(this.getAttribute('columns'));
-        this.filter = this.getAttribute('filter') || '';
-        this.setAnnotations(this.getAttribute('annotations'));
-        this.setHiddenRows(this.getAttribute('hide'));
-
-        const presetOrder = this.getAttribute('order');
-        if (presetOrder) {
-            this.orderBy = presetOrder;
-        }
-
-        const selectionProperty = this.getAttribute('selection-property');
-        if (selectionProperty) {
-            this._selectionProperty = selectionProperty;
-        }
-
-        const innerTemplates = this.getElementsByTagName('template');
-
-        if (innerTemplates.length) {
-            const templatesToAdd = {};
-            for (const template of innerTemplates) {
-                const templateName = template.getAttribute('name');
-                templatesToAdd[templateName] = template.innerHTML;
-                if (template.classList.length) {
-                    this._templateClasses[templateName] = [...template.classList];
-                }
-            }
-            this.setTemplates(templatesToAdd);
-        }
     }
 
     /** we only need this if we dont use get/set */
@@ -221,6 +191,37 @@ export class FlightkitTable extends HTMLElement {
     }
 
     connectedCallback() {
+        this.setContents(this.getAttribute('contents'));
+        this.setTemplates(this.getAttribute('templates'));
+        this.setColumnOrder(this.getAttribute('columns'));
+        this.filter = this.getAttribute('filter') || '';
+        this.setAnnotations(this.getAttribute('annotations'));
+        this.setHiddenRows(this.getAttribute('hide'));
+
+        const presetOrder = this.getAttribute('order');
+        if (presetOrder) {
+            this.orderBy = presetOrder;
+        }
+
+        const selectionProperty = this.getAttribute('selection-property');
+        if (selectionProperty) {
+            this._selectionProperty = selectionProperty;
+        }
+
+        const innerTemplates = this.getElementsByTagName('template');
+
+        if (innerTemplates.length) {
+            const templatesToAdd = {};
+            for (const template of innerTemplates) {
+                const templateName = template.getAttribute('name');
+                templatesToAdd[templateName] = template.innerHTML;
+                if (template.classList.length) {
+                    this._templateClasses[templateName] = [...template.classList];
+                }
+            }
+            this.setTemplates(templatesToAdd);
+        }
+
         this.createHtml();
         this.base.render(this);
     };
