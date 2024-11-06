@@ -515,14 +515,14 @@ export class FlightkitTable extends HTMLElement {
 
             if (templateItem) {
                 if (annotation[property] && annotation[property][templateItem]) {
-                    replacement = annotation[property][templateItem]
+                    replacement = annotation[property][templateItem].trim();
                 }
                 else {
-                    replacement = templateItem;
+                    replacement = templateItem.trim();
                 }
             }
 
-            return Array.isArray(replacement) ? replacement.join(', ') : replacement.toString().trim();
+            return Array.isArray(replacement) ? replacement.join(', ') : replacement.toString();
         });
     }
 

@@ -1001,14 +1001,14 @@
 
                 if (templateItem) {
                     if (annotation[property] && annotation[property][templateItem]) {
-                        replacement = annotation[property][templateItem];
+                        replacement = annotation[property][templateItem].trim();
                     }
                     else {
-                        replacement = templateItem;
+                        replacement = templateItem.trim();
                     }
                 }
 
-                return Array.isArray(replacement) ? replacement.join(', ') : replacement.toString().trim();
+                return Array.isArray(replacement) ? replacement.join(', ') : replacement.toString();
             });
         }
 
@@ -1625,6 +1625,9 @@
         selectedElements = [];
         _setup = true;
 
+        /** Keep track of bubbling event, because we cannot stop propagation, it conflicts with things like dropdown */
+        _lastEventEmitted = 0;
+
         /** To make it so, something will not collapse when clicking, remember that we filtered, so the next click action will not close if open. */
         _justFiltered = false;
 
@@ -1639,13 +1642,14 @@
             return [...new Set(getAllValuesAndKeysFromJson(json))];
         }
 
-        _emit(event, ftElement, detail) {
+        _emit(event, flkElement, detail) {
+            detail.fkTreeEvent = true;
             let selectEvent = new CustomEvent(event, {
                 detail,
                 bubbles: true,
                 cancelable: true
             });
-            ftElement.dispatchEvent(selectEvent);
+            flkElement.dispatchEvent(selectEvent);
         }
 
         constructor() {
@@ -1686,15 +1690,23 @@
         }
 
         emitNodeToggle(event) {
-            event.stopPropagation();
-
             /** Clicked in between items in a list, ignore. */
             if (["LI", "UL"].includes(event.target.tagName)) {
                 return false;
             }
-
             const flkEvent = returnEventWithTopLevelElement(event, 'flk-tree-nav');
             const flkElement = flkEvent.target;
+
+           /** Check if an event bubbled, so we do not do it twice. */
+            var lastEventEmitted = flkElement._lastEventEmitted;
+            flkElement._lastEventEmitted = event.timeStamp;
+
+            if (lastEventEmitted !== 0) {
+                var noSignificantChange = event.timeStamp - lastEventEmitted < 30;
+                if (noSignificantChange) {
+                    return false;
+                }
+            }
             const item = returnDataSetValue(event, 'branchKey');
             const depth = parseInt(returnDataSetValue(event, 'depth'));
             let data = flkElement.contents;
