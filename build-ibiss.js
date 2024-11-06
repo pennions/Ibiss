@@ -18,7 +18,7 @@ function build() {
         }
     }
 
-    fs.rmdir('./dist', { recursive: true }, () => {
+    fs.rm('./dist', { recursive: true }, () => {
         console.log('cleaning done');
         const rollupCommands = [
             "npx rollup --config rollup.config.js",

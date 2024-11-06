@@ -22,12 +22,12 @@
 <body class="row gap-5 p-3">
     <div>
         <input class="mb-2" type="text" id="table-filter" placeholder="filter">
-        <flk-table class="bg-white striped" id="db-table" pagination="1|20" e-paginate="maxPages">
+        <flk-table class="bg-white striped" id="db-table" pagination="1|20">
             <template name="column1">
                 <div title="{{ +notes }}">{{ $fooifier }} + {{ column6 }}</div>
             </template>
             <template name="column3">
-             <i>{{ column3 }}</i>
+                <i>{{ column3 }}</i>
             </template>
         </flk-table>
     </div>
@@ -48,7 +48,7 @@
             max-depth="1"></flk-tree-nav>
     </div>
 
-    <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky" e-loaded="log"> </flk-tree-nav>
+    <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky"> </flk-tree-nav>
 
     <code>
         Click on a tree to get the Preview
@@ -67,14 +67,9 @@
         }
 
         var myDbNav;
-        function log(e) {
-            console.log('loaded!')
-        }
-        function maxPages(e) {
-            console.log(e)
-        }
-        function clicky(e) {
 
+        function clicky(e) {
+            console.log(e)
             let previewEl = document.getElementById('clicky-preview')
             previewEl.innerText = JSON.stringify(e.contents, null, 4);
         }
