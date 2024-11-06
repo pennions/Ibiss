@@ -36,7 +36,6 @@ export class FlightkitTreeNavigation extends HTMLElement {
     }
 
     _emit(event, flkElement, detail) {
-        detail.fkTreeEvent = true;
         let selectEvent = new CustomEvent(event, {
             detail,
             bubbles: true,
