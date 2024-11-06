@@ -384,7 +384,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     createLeaf(text, element, key, depth, branchValues = []) {
         let leaf = document.createElement('li');
         leaf.classList.add('cursor-pointer');
-        leaf.style.marginTop = '0.4rem';
+        leaf.style.paddingTop = '0.4rem';
         leaf.dataset.branchKey = key;
         leaf.dataset.depth = depth;
 
