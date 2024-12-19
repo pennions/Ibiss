@@ -93,6 +93,8 @@ export class BaseComponent {
         const ftEvent = returnEventWithTopLevelElement(event);
         ftEvent.contents = event.detail;
         const callback = ftEvent.target.getAttribute(`e-${ftEvent.type}`);
+        if (!callback) return;
+
         const callbackParts = callback.split('.');
 
         let actualCallback = undefined;
