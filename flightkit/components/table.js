@@ -171,8 +171,32 @@ export class FlightkitTable extends HTMLElement {
         if (this.filter.length) {
             for (const data of tableData) {
                 let valuesInData = Object.values(data).join(" ").toLowerCase();
+                let valueInAnnotation = false;
+                if (Object.keys(this.contentAnnotations).length) {
 
-                if (valuesInData.includes(this.filter)) {
+                    for (const property of this.columnOrder) {
+                        const annotation = this.getAnnotation(property, "body");
+
+                        let annotationProperties = annotation[property];
+
+                        if (annotationProperties && Object.keys(annotationProperties).length) {
+                            let dataComparison = data[property]
+                          
+                            if (dataComparison != null) {
+                                let annotationValue = annotationProperties[dataComparison]
+                                if (annotationValue) {
+                                    valueInAnnotation = annotationValue.toString().toLowerCase().includes(this.filter.toLowerCase())
+                                }
+                            }
+                        }
+
+                        if (valueInAnnotation) {
+                            break;
+                        }
+                    }
+                }
+
+                if (valuesInData.includes(this.filter.toLowerCase()) || valueInAnnotation) {
                     filteredData.push(data)
                 }
             }
