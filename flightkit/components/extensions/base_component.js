@@ -26,8 +26,6 @@ export class BaseComponent {
             for (const event of eventsToAdd) {
                 const eventAttribute = `e-${event}`;
                 this.addEvent(selector, event, parentElement.getAttribute(eventAttribute));
-
-                console.log({selector, event, a: parentElement.getAttribute(eventAttribute)})
             }
         }
 
