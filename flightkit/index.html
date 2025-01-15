@@ -1,175 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Flightkit dev</title>
+        <script src="/js/irisset.js"></script>
+        <script src="/js/ardeaset.js"></script>
+        <script src="/js/databaseset.js"></script>
+        <script src="/js/sectionset.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
+        <script type="module" src="/main.js" defer></script>
+        <style>
+            code {
+                width: fit-content;
+            }
+        </style>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Flightkit dev</title>
-    <script src="/js/irisset.js"></script>
-    <script src="/js/ardeaset.js"></script>
-    <script src="/js/databaseset.js"></script>
-    <script src="/js/sectionset.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/avian.min.css" />
-    <script type="module" src="/main.js" defer></script>
-    <style>
-        code {
-            width: fit-content;
-        }
-    </style>
-</head>
-
-<body class="row gap-5 p-3">
-    <div>
-        <input class="mb-2" type="text" id="table-filter" placeholder="filter">
-        <flk-table class="bg-white striped" id="db-table" pagination="1|20">
-            <template name="column1">
-                <div title="{{ +notes }}">{{ $fooifier }} + {{ column6 }}</div>
-            </template>
-            <template name="column3">
-                <i>{{ column3 }}</i>
-            </template>
-        </flk-table>
-    </div>
-
-    <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
-    <div>
-        <div class="column gap-3">
-
-            <button class="bg-gray-light" type="button" id="deselect">Deselect database tree</button>
-            <button id="toggleSearch" type="button" class="bg-gray-light"> Toggle search mode</button>
-            <button id="toggleComment" type="button" class="bg-gray-light"> Toggle comment mode</button>
-
+    <body class="row gap-5 p-3">
+        <div>
+            <input
+                class="mb-2"
+                type="text"
+                id="table-filter"
+                placeholder="filter"
+            />
+            <flk-table class="bg-white striped" id="db-table" pagination="1|20">
+                <template name="column1">
+                    <div title="{{ +notes }}">
+                        {{ $fooifier }} + {{ column6 }}
+                    </div>
+                </template>
+                <template name="column3">
+                    <i>{{ column3 }}</i>
+                </template>
+            </flk-table>
         </div>
 
-        <div class="row gap-1 mt-5"><input id="search" type="text" placeholder="search" /> <button id="clearSearch"
-                type="button">X</button></div>
-        <flk-tree-nav id="db-nav" class="mt-5" icon-set="database" comment="(" e-tree-click="clicky"
-            max-depth="1"></flk-tree-nav>
-    </div>
+        <flk-tree-nav id="tree-nav" e-tree-click="clicky"></flk-tree-nav>
+        <div>
+            <div class="column gap-3">
+                <button class="bg-gray-light" type="button" id="deselect">
+                    Deselect database tree
+                </button>
+                <button id="toggleSearch" type="button" class="bg-gray-light">
+                    Toggle search mode
+                </button>
+                <button id="toggleComment" type="button" class="bg-gray-light">
+                    Toggle comment mode
+                </button>
+            </div>
 
-    <flk-tree-nav id="databases" icon-set="database" max-depth="3" e-tree-click="clicky"> </flk-tree-nav>
+            <div class="row gap-1 mt-5">
+                <input id="search" type="text" placeholder="search" />
+                <button id="clearSearch" type="button">X</button>
+            </div>
+            <flk-tree-nav
+                id="db-nav"
+                class="mt-5"
+                icon-set="database"
+                comment="("
+                e-tree-click="clicky"
+                max-depth="1"
+            ></flk-tree-nav>
+        </div>
 
-    <code>
-        Click on a tree to get the Preview
-        <pre id="clicky-preview">
+        <flk-tree-nav
+            id="databases"
+            icon-set="database"
+            max-depth="3"
+            e-tree-click="clicky"
+        >
+        </flk-tree-nav>
 
-        </pre>
-    </code>
+        <code>
+            Click on a tree to get the Preview
+            <pre id="clicky-preview"></pre>
+        </code>
 
-    <script>
+        <button id="openmodal">Click for modal</button>
+        <flk-modal id="modalTest" e-modal-close="test"><div class="p-3">Hi</div></flk-modal>
 
-        function fooifier(property, object, annotation) {
-            if (object[property] === 'value1') {
-                return "<b>foo-" + object[property] + "</b> <span id='clickme' title='click for annotations'>&#128221;</span>";
-            }
-            else return object[property];
-        }
-
-        var myDbNav;
-
-        function clicky(e) {
-            console.log(e)
-            let previewEl = document.getElementById('clicky-preview')
-            previewEl.innerText = JSON.stringify(e.contents, null, 4);
-        }
-
-        function searchDbTree(e) {
-            let myDbNav = document.getElementById('db-nav');
-            myDbNav.setFilter(e.target.value);
-        }
-
-        window.onload = () => {
-            const myTreeNav = document.getElementById('tree-nav');
-            myTreeNav.setContents(window.sectionSet);
-
-            myTreeNav.init();
-
-            myDbNav = document.getElementById('db-nav');
-            myDbNav.setContents(window.sectionSet);
-
-            myDbNav.init();
-
+        <script>
             document
-                .getElementById('search')
-                .addEventListener('keyup', searchDbTree);
+                .getElementById('openmodal')
+                .addEventListener('click', () =>
+                    document.getElementById('modalTest').openModal()
+                );
+            function test(e) {
+                console.log('emitted', { e });
+            }
 
-            const databasesNav = document.getElementById('databases');
-            databasesNav.setContents(window.databaseSet);
+            function fooifier(property, object, annotation) {
+                if (object[property] === 'value1') {
+                    return (
+                        '<b>foo-' +
+                        object[property] +
+                        "</b> <span id='clickme' title='click for annotations'>&#128221;</span>"
+                    );
+                } else return object[property];
+            }
 
-            databasesNav.init();
-            const dbTable = document.getElementById("db-table")
-            window.dbTable = dbTable;
-            dbTable.setAnnotations({
-                header: {
-                    column4: "Values"
-                },
-                body: {
-                    column1: {
-                        notes: "<h1>Hiya!</h1>"
+            var myDbNav;
+
+            function clicky(e) {
+                console.log(e);
+                let previewEl = document.getElementById('clicky-preview');
+                previewEl.innerText = JSON.stringify(e.contents, null, 4);
+            }
+
+            function searchDbTree(e) {
+                let myDbNav = document.getElementById('db-nav');
+                myDbNav.setFilter(e.target.value);
+            }
+
+            window.onload = () => {
+                const myTreeNav = document.getElementById('tree-nav');
+                myTreeNav.setContents(window.sectionSet);
+
+                myTreeNav.init();
+
+                myDbNav = document.getElementById('db-nav');
+                myDbNav.setContents(window.sectionSet);
+
+                myDbNav.init();
+
+                document
+                    .getElementById('search')
+                    .addEventListener('keyup', searchDbTree);
+
+                const databasesNav = document.getElementById('databases');
+                databasesNav.setContents(window.databaseSet);
+
+                databasesNav.init();
+                const dbTable = document.getElementById('db-table');
+                window.dbTable = dbTable;
+                dbTable.setAnnotations({
+                    header: {
+                        column4: 'Values'
                     },
-                    column3: {
-                        "true": "Yes"
-                    },
-                    column4: {
-                        "_": "NA",
-                        "value 28": "Something :D"
+                    body: {
+                        column1: {
+                            notes: '<h1>Hiya!</h1>'
+                        },
+                        column3: {
+                            true: 'Yes'
+                        },
+                        column4: {
+                            _: 'NA',
+                            'value 28': 'Something :D'
+                        }
                     }
-                }
-            })
-            dbTable.addEvent("#clickme", "click", () => alert("Hello!"))
-            dbTable.setContents(window.databaseSet.database1.table1);
-            dbTable.init();
+                });
+                dbTable.addEvent('#clickme', 'click', () => alert('Hello!'));
+                dbTable.setContents(window.databaseSet.database1.table1);
+                dbTable.init();
 
-            let timer;
-            document.getElementById('table-filter').addEventListener('keyup', (e) => {
-                if (timer) {
-                    clearTimeout(timer)
-                }
+                let timer;
+                document
+                    .getElementById('table-filter')
+                    .addEventListener('keyup', (e) => {
+                        if (timer) {
+                            clearTimeout(timer);
+                        }
 
-                timer = setTimeout(() => {
-                    dbTable.filter = e.target.value;
-                    dbTable.init();
-                })
+                        timer = setTimeout(() => {
+                            dbTable.filter = e.target.value;
+                            dbTable.init();
+                        });
+                    });
 
-            })
+                document
+                    .getElementById('deselect')
+                    .addEventListener('click', () => {
+                        myDbNav.deselectTree();
+                    });
 
-            document.getElementById('deselect').addEventListener('click', () => {
-                myDbNav.deselectTree();
-            })
+                document
+                    .getElementById('clearSearch')
+                    .addEventListener('click', () => {
+                        myDbNav.clearFilter();
+                        document.getElementById('search').value = '';
+                    });
 
-            document.getElementById('clearSearch').addEventListener('click', () => {
-                myDbNav.clearFilter();
-                document.getElementById('search').value = ""
-            })
+                document
+                    .getElementById('toggleSearch')
+                    .addEventListener('click', () => {
+                        const style = myDbNav.getAttribute('search-style');
+                        if (!style || style === null) {
+                            myDbNav.setAttribute('search-style', 'hidden');
+                        } else if (style === 'highlight') {
+                            myDbNav.setAttribute('search-style', 'hidden');
+                        } else {
+                            myDbNav.setAttribute('search-style', 'highlight');
+                        }
+                    });
+                document
+                    .getElementById('toggleComment')
+                    .addEventListener('click', () => {
+                        const commentInverted =
+                            myDbNav.getAttribute('invert-comment');
 
-            document.getElementById('toggleSearch').addEventListener('click', () => {
-                const style = myDbNav.getAttribute('search-style');
-                if (!style || style === null) {
-                    myDbNav.setAttribute('search-style', 'hidden');
-                }
-                else if (style === 'highlight') {
-                    myDbNav.setAttribute('search-style', 'hidden');
-                }
-                else {
-                    myDbNav.setAttribute('search-style', 'highlight');
-                }
-            })
-            document.getElementById('toggleComment').addEventListener('click', () => {
-                const commentInverted = myDbNav.getAttribute('invert-comment');
-
-                if (!commentInverted || commentInverted === null) {
-                    myDbNav.setAttribute('invert-comment', 'true');
-                }
-                else if (commentInverted === 'true') {
-                    myDbNav.setAttribute('invert-comment', 'false');
-                }
-                else {
-                    myDbNav.setAttribute('invert-comment', 'true');
-                }
-            })
-        };
-    </script>
-</body>
-
+                        if (!commentInverted || commentInverted === null) {
+                            myDbNav.setAttribute('invert-comment', 'true');
+                        } else if (commentInverted === 'true') {
+                            myDbNav.setAttribute('invert-comment', 'false');
+                        } else {
+                            myDbNav.setAttribute('invert-comment', 'true');
+                        }
+                    });
+            };
+        </script>
+    </body>
 </html>

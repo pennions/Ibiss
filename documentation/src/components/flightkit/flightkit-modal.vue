@@ -89,6 +89,13 @@ function closeModal() {
                   <td></td>
                   <td>Closes the modal</td>
                 </tr>
+
+                
+                <tr>
+                  <td>Catch event that is emitted when X is pressed</td>
+                  <td><code>e-modal-close="test"</code></td>
+                  <td>Calls the window.test function, notifying that the modal has been closed via the header</td>
+                </tr>
               </tbody>
             </table>
           </div>

@@ -25,6 +25,7 @@ export class FlightkitModal extends HTMLElement {
         const flkEvent = returnEventWithTopLevelElement(event, 'flk-modal');
         const flkElement = flkEvent.target;
         flkElement.classList.add('hidden');
+        flkElement._emit("modal-close", flkElement)
     }
 
     closeModal() {
@@ -104,6 +105,7 @@ export class FlightkitModal extends HTMLElement {
         this.base.render(this);
         /** start hidden ofcourse. */
         this.classList.add('hidden');
+        
     };
 
     disconnectedCallback() {
