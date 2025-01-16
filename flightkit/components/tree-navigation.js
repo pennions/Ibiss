@@ -16,7 +16,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
     iconSet;
     filter = { value: '', caseSensitive: false };
     selectedElements = [];
-    _setup = true;
+    _setup = false;
 
     /** Keep track of bubbling event, because we cannot stop propagation, it conflicts with things like dropdown */
     _lastEventEmitted = 0;
@@ -627,6 +627,7 @@ export class FlightkitTreeNavigation extends HTMLElement {
 
     /** You need to use this way to use the tree nav*/
     init() {
+        this._setup = true;
         this.createHtml();
         this.base.render(this);
         this._setup = false;

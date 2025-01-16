@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import Card from '../shared/Card.vue'
+import { treeNavFiles } from '@/assets/js/treeNavData'
 
 const componentCode = '<flk-tree-nav>  </flk-tree-nav>'
 
@@ -66,6 +67,14 @@ onMounted(() => {
                     <b>N.B.</b> you can also enter a string.
                   </td>
                 </tr>
+                <tr>
+                  <td>
+                    <code>comment="{"</code> or <code>comment="["</code> are used for designating
+                    comments
+                  </td>
+                  <td>Sets the commentType for the tree.</td>
+                  <td>Makes the comment smaller in size and italic.</td>
+                </tr>
               </tbody>
               <tfoot>
                 <tr>
@@ -78,8 +87,9 @@ onMounted(() => {
             </table>
           </div>
         </section>
-        <p>It uses attributes and url svgs. Which do not work in vue3. :(</p>
       </div>
     </article>
+
+    <flk-tree-nav :contents="treeNavFiles" comment="("> </flk-tree-nav>
   </Card>
 </template>
