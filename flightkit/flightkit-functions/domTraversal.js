@@ -21,7 +21,7 @@ export function returnEventWithTopLevelElement(event, flkTag) {
             target = target.parentNode || target.parentElement;
         }
     }
-    while (!isFlightkitElement(target.tagName, flkTag)); /** check until we get the flightkit element */
+    while (target != null && !isFlightkitElement(target.tagName, flkTag)); /** check until we get the flightkit element */
 
     return {
         target,
