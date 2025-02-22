@@ -1,4 +1,4 @@
-import { version } from '../package.json';
+import { flightkit_version } from '../package.json';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
@@ -10,7 +10,7 @@ export const flightkitConfig = [
     {
         input: 'flightkit/main.js',
         output: {
-            file: `dist/${pkg}-v${version}/${name}.js`,
+            file: `dist/${pkg}-v${flightkit_version}/${name}.js`,
             format: 'iife'
         },
         plugins
