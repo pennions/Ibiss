@@ -8,7 +8,7 @@ table {
         padding: 0.5rem 2.5rem 0.6rem 0.5rem;
     }
 
-    &:not(.no-hover) tbody tr {
+    &.hover tbody tr {
         &:hover {
             background-color: var(--table-hover);
         }
@@ -51,7 +51,7 @@ table {
             background-color: var(--table-stripe);
         }
 
-        & tbody tr:hover {
+        &.hover tbody tr:hover {
             background-color: var(--table-striped-hover);
         }
     }
@@ -64,7 +64,7 @@ table {
     /** only target mozilla, so edge won't break */
     @-moz-document url-prefix() {
         padding-right: 1.7rem;
-    }
+    };
     display: inline-block;
     width: fit-content;
     overflow-x: hidden;

@@ -53,8 +53,8 @@ onMounted(() => {
           </tfoot>
         </table>
 
-        <p>Table with the <code>no-hover</code>class:</p>
-        <table class="no-hover">
+        <p>Table with the <code>hover</code>class:</p>
+        <table class="hover">
           <thead>
             <tr>
               <th>Column header 1</th>
