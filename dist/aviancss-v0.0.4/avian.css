@@ -2208,7 +2208,16 @@ table th,
 table td {
   text-align: left;
   vertical-align: top;
-  padding: 0.5rem 2.5rem 0.6rem 0.5rem;
+  padding: 0.5rem 2.5rem 0.5rem 0.5rem;
+}
+table th:has(input),
+table td:has(input) {
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+}
+table th:has(input) input[type='checkbox'],
+table th:has(input) input[type='radio'] {
+  position: relative;
+  bottom: 2px;
 }
 table.hover tbody tr:hover {
   background-color: var(--table-hover);
