@@ -8,6 +8,10 @@ table {
         padding: 0.5rem 2.5rem 0.5rem 0.5rem;
     }
 
+    tr td:last-child {
+        padding-right: 1rem;
+    }
+
     th:has(input),
     td:has(input) {
         padding: 0.5rem 0.5rem 0.5rem 1rem;
@@ -68,18 +72,30 @@ table {
             background-color: var(--table-striped-hover);
         }
     }
-}
 
-.table-container {
-    .border();
-    .border-light();
-
-    /** only target mozilla, so edge won't break */
-    @-moz-document url-prefix() {
-        padding-right: 1.7rem;
+    &.align-top tr td {
+        vertical-align: top;
     }
-    display: inline-block;
-    width: fit-content;
-    overflow-x: hidden;
-    overflow-y: auto;
+
+    &.align-middle tr td {
+        vertical-align: middle;
+    }
+
+    &.align-bottom tr td {
+        vertical-align: bottom;
+    }
+
+    .table-container {
+        .border();
+        .border-light();
+
+        /** only target mozilla, so edge won't break */
+        @-moz-document url-prefix() {
+            padding-right: 1.7rem;
+        }
+        display: inline-block;
+        width: fit-content;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
 }
