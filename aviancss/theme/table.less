@@ -92,14 +92,14 @@ table {
     /** only target mozilla, so edge won't break */
     @-moz-document url-prefix() {
         padding-right: 1.7rem;
-    }
+    };
 
     display: inline-block;
-    width: fit-content;
     overflow-x: hidden;
     overflow-y: auto;
 
     & table {
         border-right: 0.5px solid var(--light);
+        width: 100%;
     }
 }

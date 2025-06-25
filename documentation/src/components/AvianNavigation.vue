@@ -21,7 +21,7 @@ import { RouterLink } from 'vue-router'
       <h3 class="mt-3 mb-2">Layout</h3>
       <hr />
       <ul class="ml-0 list-style-none">
-        <li class="my-1 ml-1"><router-link to="/table">Table</router-link></li>
+        <li class="mb-1 mt-2 ml-1"><router-link to="/table">Table</router-link></li>
         <li class="mb-1 ml-1"><router-link to="/flex">Flex</router-link></li>
         <li class="mb-1 ml-1"><router-link to="/margins-paddings">Margins and Paddings</router-link></li>
         <li class="mb-1 ml-1"><router-link to="/responsive">Responsive hide/show</router-link></li>
@@ -30,14 +30,14 @@ import { RouterLink } from 'vue-router'
       <h3 class="mt-3 mb-2">Interactive</h3>
       <hr />
       <ul class="ml-0 list-style-none">
-        <li class="my-1 ml-1"><router-link to="/buttons">Buttons</router-link></li>
+        <li class="mt-2 mb-1 ml-1"><router-link to="/buttons">Buttons</router-link></li>
         <li class="mb-1 ml-1"><router-link to="/links">Links</router-link></li>
         <li class="ml-1"><router-link to="/inputs">Inputs</router-link></li>
       </ul>
       <h3 class="mt-3 mb-2">Utilities</h3>
       <hr />
       <ul class="ml-0 list-style-none">
-        <li class="my-1 ml-1"><router-link to="/icons">Icons</router-link></li>
+        <li class="mt-2 mb-1 ml-1"><router-link to="/icons">Icons</router-link></li>
         <li class="mb-1 ml-1"><router-link to="/colors">Colors</router-link></li>
         <li class="mb-1 ml-1"><router-link to="/borders">Borders</router-link></li>
         <li class="mb-1 ml-1"><router-link to="/shadows">Shadows</router-link></li>

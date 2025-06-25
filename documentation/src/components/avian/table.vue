@@ -255,9 +255,3 @@ onMounted(() => {
     </article>
   </Card>
 </template>
-
-<style scoped>
-table {
-  max-width: fit-content;
-}
-</style>
