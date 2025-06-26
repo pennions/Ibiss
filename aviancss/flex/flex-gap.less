@@ -21,3 +21,21 @@
 .gap-5 {
     gap: var(--distance-5);
 }
+
+@media (min-width: @md) and (max-width: @lg) {
+    .tgap-0 { .gap-0(); }
+    .tgap-1 { .gap-1(); }
+    .tgap-2 { .gap-2(); }
+    .tgap-3 { .gap-3(); }
+    .tgap-4 { .gap-4(); }
+    .tgap-5 { .gap-5(); }
+}
+
+@media (max-width: (@md - 1px)) {
+    .mgap-0 { .gap-0(); }
+    .mgap-1 { .gap-1(); }
+    .mgap-2 { .gap-2(); }
+    .mgap-3 { .gap-3(); }
+    .mgap-4 { .gap-4(); }
+    .mgap-5 { .gap-5(); }
+}
