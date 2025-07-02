@@ -55,13 +55,8 @@ code,
 kbd,
 samp,
 pre {
-	font-family:
-		ui-monospace,
-		SFMono-Regular,
-		Consolas,
-		'Liberation Mono',
-		Menlo,
-		monospace;
+    font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono',
+        Menlo, monospace;
 }
 
 kbd,
@@ -73,6 +68,21 @@ code:not([class*='language']) {
     border-radius: 0.2rem;
     .border();
     bottom: 0.1rem;
+}
+
+pre.code-example {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    background-color: var(--code-background);
+    border-radius: 0.2rem;
+    .border();
+    bottom: 0.1rem;
+
+    & > code {
+        border: none;
+        margin: 1rem;
+    }
 }
 
 mark {

@@ -211,6 +211,19 @@ code:not([class*='language']) {
   border: 0.5px solid var(--border-color);
   bottom: 0.1rem;
 }
+pre.code-example {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  background-color: var(--code-background);
+  border-radius: 0.2rem;
+  border: 0.5px solid var(--border-color);
+  bottom: 0.1rem;
+}
+pre.code-example > code {
+  border: none;
+  margin: 1rem;
+}
 mark {
   background-color: var(--accent);
 }
@@ -1239,6 +1252,78 @@ tbody th {
     width: calc(100% - var(--distance-5));
     max-width: initial;
   }
+  .tgap-0 .f-100 {
+    flex: 0 0 100%;
+  }
+  .tgap-0 .f-50 {
+    flex: 0 0 50%;
+  }
+  .tgap-0 .f-33 {
+    flex: 0 0 33.33%;
+  }
+  .tgap-0 .f-25 {
+    flex: 0 0 25%;
+  }
+  .tgap-0 .f-20 {
+    flex: 0 0 20%;
+  }
+  .tgap-0 .f-16 {
+    flex: 0 0 16.67%;
+  }
+  .tgap-0 .f-10 {
+    flex: 0 0 10%;
+  }
+  .tgap-0 .f-8 {
+    flex: 0 0 8.33%;
+  }
+  .tgap-0 .f-auto {
+    flex: 1 1 auto;
+    min-width: auto;
+    width: initial;
+    max-width: fit-content;
+  }
+  .tgap-0 .f-fill {
+    flex: 1;
+    min-width: initial;
+    width: 100%;
+    max-width: initial;
+  }
+  .tgap-0 .tf-100 {
+    flex: 0 0 100%;
+  }
+  .tgap-0 .tf-50 {
+    flex: 0 0 50%;
+  }
+  .tgap-0 .tf-33 {
+    flex: 0 0 33.33%;
+  }
+  .tgap-0 .tf-25 {
+    flex: 0 0 25%;
+  }
+  .tgap-0 .tf-20 {
+    flex: 0 0 20%;
+  }
+  .tgap-0 .tf-16 {
+    flex: 0 0 16.67%;
+  }
+  .tgap-0 .tf-10 {
+    flex: 0 0 10%;
+  }
+  .tgap-0 .tf-8 {
+    flex: 0 0 8.33%;
+  }
+  .tgap-0 .tf-auto {
+    flex: 1 1 auto;
+    min-width: auto;
+    width: initial;
+    max-width: fit-content;
+  }
+  .tgap-0 .tf-fill {
+    flex: 1;
+    min-width: initial;
+    width: 100%;
+    max-width: initial;
+  }
   .tgap-1 > .f-100 {
     flex: 0 0 100%;
   }
@@ -1825,6 +1910,78 @@ tbody th {
     flex: 1;
     min-width: initial;
     width: calc(100% - var(--distance-5));
+    max-width: initial;
+  }
+  .mgap-0 .f-100 {
+    flex: 0 0 100%;
+  }
+  .mgap-0 .f-50 {
+    flex: 0 0 50%;
+  }
+  .mgap-0 .f-33 {
+    flex: 0 0 33.33%;
+  }
+  .mgap-0 .f-25 {
+    flex: 0 0 25%;
+  }
+  .mgap-0 .f-20 {
+    flex: 0 0 20%;
+  }
+  .mgap-0 .f-16 {
+    flex: 0 0 16.67%;
+  }
+  .mgap-0 .f-10 {
+    flex: 0 0 10%;
+  }
+  .mgap-0 .f-8 {
+    flex: 0 0 8.33%;
+  }
+  .mgap-0 .f-auto {
+    flex: 1 1 auto;
+    min-width: auto;
+    width: initial;
+    max-width: fit-content;
+  }
+  .mgap-0 .f-fill {
+    flex: 1;
+    min-width: initial;
+    width: 100%;
+    max-width: initial;
+  }
+  .mgap-0 .mf-100 {
+    flex: 0 0 100%;
+  }
+  .mgap-0 .mf-50 {
+    flex: 0 0 50%;
+  }
+  .mgap-0 .mf-33 {
+    flex: 0 0 33.33%;
+  }
+  .mgap-0 .mf-25 {
+    flex: 0 0 25%;
+  }
+  .mgap-0 .mf-20 {
+    flex: 0 0 20%;
+  }
+  .mgap-0 .mf-16 {
+    flex: 0 0 16.67%;
+  }
+  .mgap-0 .mf-10 {
+    flex: 0 0 10%;
+  }
+  .mgap-0 .mf-8 {
+    flex: 0 0 8.33%;
+  }
+  .mgap-0 .mf-auto {
+    flex: 1 1 auto;
+    min-width: auto;
+    width: initial;
+    max-width: fit-content;
+  }
+  .mgap-0 .mf-fill {
+    flex: 1;
+    min-width: initial;
+    width: 100%;
     max-width: initial;
   }
   .mgap-1 {
