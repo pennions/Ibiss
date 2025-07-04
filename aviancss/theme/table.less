@@ -5,7 +5,7 @@ table {
     td {
         text-align: left;
         vertical-align: top;
-        padding: 0.5rem 2.5rem 0.5rem 0.5rem;
+        padding: 0.5rem 1rem 0.5rem 0.5rem;
     }
 
     tr td:last-child {
@@ -84,18 +84,22 @@ table {
     &.align-bottom tr td {
         vertical-align: bottom;
     }
+}
+.table-container {
+    .border();
+    .border-light();
 
-    .table-container {
-        .border();
-        .border-light();
+    /** only target mozilla, so edge won't break */
+    @-moz-document url-prefix() {
+        padding-right: 1.7rem;
+    };
 
-        /** only target mozilla, so edge won't break */
-        @-moz-document url-prefix() {
-            padding-right: 1.7rem;
-        }
-        display: inline-block;
-        width: fit-content;
-        overflow-x: hidden;
-        overflow-y: auto;
+    display: inline-block;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    & table {
+        border-right: 0.5px solid var(--light);
+        width: 100%;
     }
 }

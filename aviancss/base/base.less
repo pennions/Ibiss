@@ -20,7 +20,6 @@ body {
     font-size: 1.6rem;
     text-rendering: optimizeSpeed;
     line-height: 1.5;
-    height: 100svh;
 }
 
 h1,
@@ -33,28 +32,8 @@ h6 {
 }
 
 p {
-    max-width: 75ch; /** max character count per line */
+    line-height: 1.5;
     text-wrap: pretty; /** removes orphans e.g. single words on the end */
-}
-
-/** add a default space for the marker to show */
-ul,
-ol {
-    margin-left: 2rem;
-}
-
-/** Make images easier to work with */
-img,
-picture {
-    max-width: 100%;
-    display: block;
-}
-
-/** for default centering of lucide icons **/
-.lucide {
-    position: relative;
-    top: 3px;
-    left: 2px;
 }
 
 /** Remove all animations, transitions and smooth scroll for people that prefer not to see them */

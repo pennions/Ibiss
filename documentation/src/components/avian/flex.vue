@@ -1,5 +1,5 @@
 <script setup>
-import Card from '../shared/Card.vue'
+import Card from '../shared/Card.vue';
 </script>
 
 <template>
@@ -221,10 +221,8 @@ import Card from '../shared/Card.vue'
           <p>
             The following classes can be used to set the width for row or height when column of a
             particular flex-element.
-            <small class="block my-3"
-              ><b>NB. </b>These do not work very well with tables, they do not adhere to these
-              constraints</small
-            >
+            <small class="block my-3"><b>NB. </b>These do not work very well with tables, they do not adhere to these
+              constraints</small>
           </p>
           <table>
             <thead>
@@ -392,6 +390,22 @@ import Card from '../shared/Card.vue'
           <div class="row trow-reverse mrow-reverse">
             <div class="bg-primary p-2 f-50">First on desktop</div>
             <div class="bg-success p-2 f-50">First on tablet and mobile</div>
+          </div>
+
+          <p class="my-3">With gap property on row</p>
+          <div class="row gap-3">
+            <div class="bg-primary p-2 f-25 tf-50 mf-100">
+              Default flex 25, tablet flex 50, mobile flex 100
+            </div>
+            <div class="bg-accent p-2 f-25 tf-50 mf-100">
+              Default flex 25, tablet flex 50, mobile flex 100
+            </div>
+            <div class="bg-danger p-2 f-25 tf-50 mf-100">
+              Default flex 25, tablet flex 50, mobile flex 100
+            </div>
+            <div class="bg-success p-2 f-25 tf-50 mf-100">
+              Default flex 25, tablet flex 50, mobile flex 100
+            </div>
           </div>
         </section>
       </section>
